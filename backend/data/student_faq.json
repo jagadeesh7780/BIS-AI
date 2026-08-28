@@ -1,0 +1,177 @@
+[
+  {
+    "id": "STU-001",
+    "role": "student",
+    "category": "Basics",
+    "question": "What is BIS and what does it do?",
+    "answer": "BIS (Bureau of Indian Standards) is India's national standards body, established under the BIS Act, 2016, functioning under the Ministry of Consumer Affairs, Food & Public Distribution. It formulates Indian Standards (IS), operates certification schemes like ISI Mark, Hallmarking, and CRS, runs testing laboratories, and represents India in ISO and IEC."
+  },
+  {
+    "id": "STU-002",
+    "role": "student",
+    "category": "Basics",
+    "question": "What is the difference between a mandatory and a voluntary Indian Standard?",
+    "answer": "A mandatory standard is enforced through a Quality Control Order (QCO) - products in that category legally cannot be sold in India without certification (e.g. steel under the Steel and Steel Products QCO). A voluntary standard, like general plastics testing methods (IS-13360), provides a benchmark manufacturers can choose to follow without legal compulsion."
+  },
+  {
+    "id": "STU-003",
+    "role": "student",
+    "category": "Standards Development",
+    "question": "How is a new Indian Standard created?",
+    "answer": "A Technical Committee made up of industry experts, government representatives, consumer groups, and testing labs drafts the standard. It goes through a Wide Circulation Draft stage for public review and comment, revisions based on feedback, and final approval before being published as an official IS number."
+  },
+  {
+    "id": "STU-004",
+    "role": "student",
+    "category": "Certification Schemes",
+    "question": "What are the main types of BIS certification schemes?",
+    "answer": "The main schemes are: ISI Mark (Scheme I) for general products with a notified IS, CRS (Scheme II) for electronics/IT products, Hallmarking for gold and silver jewellery, FMCS for foreign manufacturers, ECO Mark for environment-friendly products, Scheme X for machinery and electrical equipment, and voluntary Management Systems Certification."
+  },
+  {
+    "id": "STU-005",
+    "role": "student",
+    "category": "Standard Numbering",
+    "question": "What does a standard number like 'IS 2062' actually mean?",
+    "answer": "'IS' stands for Indian Standard, and the number (2062) is a unique identifier assigned when the standard is published. It doesn't indicate the year directly - the year of the latest revision is usually appended in citations, e.g., IS 2062:2011, to specify which version is in force, and revisions are tracked as 'First Revision', 'Second Revision', etc."
+  },
+  {
+    "id": "STU-006",
+    "role": "student",
+    "category": "Case Studies",
+    "question": "Can you give an example of how a single product might need multiple standards?",
+    "answer": "A pressure cooker is a good example: IS-16046 covers the cooker's own safety specification (lid lock, safety valve), while the steel or aluminium body material might separately reference metals testing standards like IS-1608 for tensile properties, and the sampling procedure for batch inspection could reference IS-2500."
+  },
+  {
+    "id": "STU-007",
+    "role": "student",
+    "category": "Research",
+    "question": "Where can I access the full text of an Indian Standard for my research/project?",
+    "answer": "Full IS documents can be purchased or accessed through the BIS Standardization portal (manakonline.in) and the BIS e-Book Store, or viewed at BIS regional offices, branch libraries, and the central BIS Library in New Delhi. Summaries and scope sections are useful for quick reference, but citing academic or engineering work should reference the official published document."
+  },
+  {
+    "id": "STU-008",
+    "role": "student",
+    "category": "Categories",
+    "question": "What broad categories of products does BIS cover?",
+    "answer": "BIS standards span categories including Electrical Appliances, Steel & Metals, Construction Materials, Fire Safety, Safety Equipment, Plastics & Polymers, Household Products, Consumer Products, Food & Packaging, Textiles & Footwear, Gas & Fuel Equipment, and Electronics & IT - essentially covering most manufactured goods sold in India."
+  },
+  {
+    "id": "STU-009",
+    "role": "student",
+    "category": "Testing Concepts",
+    "question": "What is tensile testing and why does BIS have a standard for it?",
+    "answer": "Tensile testing measures a material's yield strength, tensile strength, and elongation by pulling a sample until it deforms or breaks. IS-1608 standardizes this test method for metals so that results are consistent and comparable across different labs and manufacturers."
+  },
+  {
+    "id": "STU-010",
+    "role": "student",
+    "category": "Careers",
+    "question": "What career paths exist for someone interested in standards and quality testing?",
+    "answer": "Common paths include working as a BIS scientific/technical officer (recruited via competitive exam), a quality control engineer in manufacturing, a lab technician at a BIS-recognized testing laboratory, a compliance/regulatory affairs specialist, or a certification consultant helping manufacturers navigate ISI/CRS/FMCS licensing."
+  },
+  {
+    "id": "STU-011",
+    "role": "student",
+    "category": "Comparative Study",
+    "question": "How do Indian Standards compare to international standards like ISO?",
+    "answer": "Many Indian Standards are harmonized with or adapted from international standards (ISO, IEC) to align with global practice, though BIS may add India-specific requirements (like tropical climate conditions or local material availability). BIS is India's official representative body at ISO and IEC."
+  },
+  {
+    "id": "STU-012",
+    "role": "student",
+    "category": "Project Ideas",
+    "question": "What kind of project could I build using BIS standards data?",
+    "answer": "Good project directions include: a RAG-based chatbot to answer standards questions, a barcode/mark scanner app that looks up certification validity via the CARE app's data model, a compliance checklist generator for a specific product category, or a comparison tool that highlights differences between related standards (e.g., steel grades or cement grades)."
+  },
+  {
+    "id": "STU-013",
+    "role": "student",
+    "category": "Training & Learning",
+    "question": "Does BIS offer any training programs I could attend as a student?",
+    "answer": "Yes, BIS runs Product Specific Capsule Courses and broader training strategy programs through its Training Portal, along with an International Training Program (ITP) that has an Alumni Portal. These are aimed mainly at industry professionals but some awareness/outreach sessions are open to students and early-career engineers."
+  },
+  {
+    "id": "STU-014",
+    "role": "student",
+    "category": "Outreach Initiatives",
+    "question": "What are 'BIS Talks' and 'Manak Manch' that I've seen mentioned on the BIS website?",
+    "answer": "These are BIS's public outreach and engagement initiatives - 'BIS Talks' features discussions on standardization topics, and 'Manak Manch' is a forum-style platform for stakeholder engagement on standards. BIS also runs 'Standard of the Week' and 'Standard of the Month' features to highlight specific IS standards for public awareness."
+  },
+  {
+    "id": "STU-015",
+    "role": "student",
+    "category": "Consumer Protection Research",
+    "question": "If I'm researching consumer protection in India, how does BIS fit in?",
+    "answer": "BIS enforces mandatory quality standards through QCOs and runs the CARE app's Complaint Management System, giving consumers a formal channel to report substandard or counterfeit certified products - making BIS a key case study alongside consumer courts and FSSAI in India's product-safety regulatory landscape."
+  },
+  {
+    "id": "STU-016",
+    "role": "student",
+    "category": "Difference from Other Marks",
+    "question": "What's the difference between the ISI mark, AGMARK, and FSSAI mark I see on products?",
+    "answer": "The ISI mark (BIS) covers general industrial and consumer product safety/quality; AGMARK (Directorate of Marketing & Inspection) covers agricultural commodity grading; and the FSSAI mark (Food Safety and Standards Authority of India) covers packaged food safety - each is issued by a different regulatory body, though some products like packaged drinking water fall specifically under BIS."
+  },
+  {
+    "id": "STU-017",
+    "role": "student",
+    "category": "History",
+    "question": "How old is BIS and what preceded it?",
+    "answer": "BIS traces back to the Indian Standards Institution (ISI), established in 1947, which is why the certification mark is still called the 'ISI mark' today. BIS itself was constituted as a statutory body first under the Bureau of Indian Standards Act, 1986, and later re-constituted under the BIS Act, 2016."
+  },
+  {
+    "id": "STU-018",
+    "role": "student",
+    "category": "Regional Structure",
+    "question": "How is BIS organized geographically?",
+    "answer": "BIS operates through Regional Offices (Central, Eastern, Northern, Southern, Western) plus numerous branch offices and laboratories across major cities like Kolkata, Mohali, Chennai, Mumbai, Bengaluru, Patna, and Guwahati, each handling certification, testing, and enforcement for their region."
+  },
+  {
+    "id": "STU-019",
+    "role": "student",
+    "category": "Digital Transformation",
+    "question": "How has BIS certification become more digital in recent years?",
+    "answer": "Since 2026, nearly all BIS certification workflows - Scheme-I (ISI), CRS, and FMCS - have moved to the Manak Online portal (manakonline.in), phasing out manual/offline processing. This is a useful case study if you're researching e-governance or digital transformation in regulatory bodies."
+  },
+  {
+    "id": "STU-020",
+    "role": "student",
+    "category": "Sampling & Statistics",
+    "question": "What is 'sampling inspection' and where is it standardized?",
+    "answer": "Sampling inspection is a statistical quality control method where a subset of a production batch is tested rather than every unit, balancing testing cost against confidence in quality. IS-2500 provides standard sampling plans and procedures used across many BIS-certified product categories."
+  },
+  {
+    "id": "STU-021",
+    "role": "student",
+    "category": "Quality Management",
+    "question": "What's the connection between BIS and ISO 9001?",
+    "answer": "BIS offers voluntary Management Systems Certification aligned with IS/ISO 9001 for Quality Management Systems (and similar Indian-adopted standards for environmental and food safety management), letting Indian organizations get an internationally recognized QMS certification through their national standards body."
+  },
+  {
+    "id": "STU-022",
+    "role": "student",
+    "category": "Emerging Areas",
+    "question": "Are there newer BIS standards related to electronics and battery safety I should know about for a tech project?",
+    "answer": "Yes - relevant newer areas include IS-16101 (lithium-ion battery safety), IS-16333 (mobile charger safety), and IS-13252 (IT equipment safety), all under the CRS scheme, reflecting growing regulatory focus on consumer electronics fire and shock safety."
+  },
+  {
+    "id": "STU-023",
+    "role": "student",
+    "category": "Fieldwork Ideas",
+    "question": "How could I do a small field survey related to BIS certification for a college project?",
+    "answer": "You could survey local retailers or consumers on awareness of the ISI mark and BIS CARE app, check a sample of products (like electrical appliances or LPG accessories) in local shops for valid ISI marks using the CARE app, and analyze how many carry verifiable certification versus unmarked/uncertified equivalents."
+  },
+  {
+    "id": "STU-024",
+    "role": "student",
+    "category": "Publication Language",
+    "question": "Are Indian Standards published only in English?",
+    "answer": "Indian Standards are officially published mainly in English (and often Hindi, given BIS's Rajbhasha Hindi initiatives), while consumer-facing tools like the BIS CARE app go further, supporting 12 languages including Hindi, English, and 10 regional languages for broader public accessibility."
+  },
+  {
+    "id": "STU-025",
+    "role": "student",
+    "category": "Newsletter & Resources",
+    "question": "How can I stay updated on new or revised standards for ongoing research?",
+    "answer": "BIS publishes a Monthly Newsletter and maintains 'New Standards' and 'Revised Standards' sections on its website, alongside the 'Know Your Standard' search tool - useful for tracking updates relevant to your research area over time."
+  }
+]

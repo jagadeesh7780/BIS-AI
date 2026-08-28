@@ -1,0 +1,247 @@
+[
+  {
+    "id": "MFR-001",
+    "role": "manufacturer",
+    "category": "Certification Process",
+    "question": "How do I get ISI certification for my product?",
+    "answer": "Apply online through the BIS Manak Online portal (manakonline.in) using Form V for Scheme-I, submit test reports from a BIS-recognized laboratory, undergo a factory inspection by BIS officers, pass sample testing verification, and you'll be granted a license with ISI mark usage rights. The full process typically takes 4 to 6 months."
+  },
+  {
+    "id": "MFR-002",
+    "role": "manufacturer",
+    "category": "Certification Process",
+    "question": "What documents are required to apply for a BIS license?",
+    "answer": "You generally need: company registration/incorporation certificate, factory layout and manufacturing process details, list of testing equipment in your in-house lab, test reports from a BIS-recognized lab, and details of raw materials used. Exact document lists vary by product category and are listed against each IS code on the Manak Online portal."
+  },
+  {
+    "id": "MFR-003",
+    "role": "manufacturer",
+    "category": "Fees",
+    "question": "What does it cost to apply for an ISI license?",
+    "answer": "At application stage for Scheme-I, you pay an application fee of INR 1,000 plus preliminary inspection charges of INR 7,000 per man-day for the BIS officer's factory visit (travel and accommodation may be billed separately). The annual license fee of INR 1,000 and the marking fee are paid later, only after the license is granted."
+  },
+  {
+    "id": "MFR-004",
+    "role": "manufacturer",
+    "category": "Fees",
+    "question": "Are there fee concessions for small manufacturers?",
+    "answer": "Yes. MSMEs get marking-fee concessions - up to 80% for Micro enterprises, 50% for Small enterprises, and 20% for Medium enterprises - compared to the standard marking fee rates, provided you have valid MSME/Udyam registration."
+  },
+  {
+    "id": "MFR-005",
+    "role": "manufacturer",
+    "category": "Applicability",
+    "question": "Is BIS certification mandatory or voluntary for my product?",
+    "answer": "It depends on whether your product falls under a Quality Control Order (QCO). Items like steel, cement, electrical appliances, LPG cylinders, and pressure cookers require mandatory ISI certification once a QCO is notified for that category. Others remain voluntary unless a specific mandatory order applies - check the certification_scheme field against your product's IS code."
+  },
+  {
+    "id": "MFR-006",
+    "role": "manufacturer",
+    "category": "Electronics/IT",
+    "question": "I manufacture electronic goods. Do I need CRS registration instead of ISI mark?",
+    "answer": "Yes, most electronics and IT hardware products - including mobile chargers, laptops, and audio/video equipment - fall under the Compulsory Registration Scheme (CRS/Scheme II), notified by MeitY. It's based on self-declaration after lab testing rather than a factory inspection, and is typically completed in 1 to 2 months."
+  },
+  {
+    "id": "MFR-007",
+    "role": "manufacturer",
+    "category": "Portal",
+    "question": "What is the Manak Online / MANAK portal and do I have to use it?",
+    "answer": "Manak Online (manakonline.in) is BIS's official digital platform for certification, registration, and compliance. Since 2026, almost all application types - Scheme-I (ISI), CRS, and FMCS - must be submitted through this portal; manual/offline processing has been largely phased out."
+  },
+  {
+    "id": "MFR-008",
+    "role": "manufacturer",
+    "category": "Costs & Timelines",
+    "question": "How long does the ISI Mark licensing process usually take?",
+    "answer": "Typically 4 to 6 months from application to license grant, covering document verification, factory inspection, and sample testing. Products under the simplified/fast-track procedure can be approved much faster, sometimes within 30 days, if documentation is complete on the first submission."
+  },
+  {
+    "id": "MFR-009",
+    "role": "manufacturer",
+    "category": "License Validity",
+    "question": "How long is a BIS license valid once granted?",
+    "answer": "As of recent updates, BIS licenses are valid for 5 years (previously 3 years), reducing the frequency of renewal cycles for manufacturers. You'll still need to file periodic compliance/production reports during that period."
+  },
+  {
+    "id": "MFR-010",
+    "role": "manufacturer",
+    "category": "Factory Inspection",
+    "question": "What happens during a BIS factory inspection?",
+    "answer": "A BIS officer visits your manufacturing unit to verify production capability, in-house testing facilities, quality control procedures, and raw material sourcing against the requirements of the relevant Indian Standard. Samples may be drawn on the spot and sent for independent lab testing before the license is granted."
+  },
+  {
+    "id": "MFR-011",
+    "role": "manufacturer",
+    "category": "Multiple Products",
+    "question": "Can one factory hold licenses for multiple products under different standards?",
+    "answer": "Yes. A manufacturing unit can hold separate BIS licenses for each product/standard combination it produces, as long as each meets its own inspection and testing requirements. Each license is tracked independently under Manak Online with its own CM/L number."
+  },
+  {
+    "id": "MFR-012",
+    "role": "manufacturer",
+    "category": "Renewal",
+    "question": "How do I renew my BIS license before it expires?",
+    "answer": "Apply for renewal on Manak Online before expiry, submit updated test reports, and be prepared for a possible surveillance/renewal inspection. Since license validity is now 5 years, most manufacturers start the renewal process 2-3 months before expiry to avoid a lapse in ISI mark usage rights."
+  },
+  {
+    "id": "MFR-013",
+    "role": "manufacturer",
+    "category": "Testing Labs",
+    "question": "Which BIS-recognized labs can test my product before I apply?",
+    "answer": "This depends on your product category and location. BIS operates regional/branch laboratories (e.g. Ghaziabad, Kolkata, Mohali, Chennai, Mumbai, Bengaluru, Patna, Guwahati) each with different specializations, plus a wider network of private BIS-recognized labs. Use the lab finder to check the nearest one handling your product category."
+  },
+  {
+    "id": "MFR-014",
+    "role": "manufacturer",
+    "category": "Steel & Construction",
+    "question": "What standard applies to TMT bars I manufacture for construction?",
+    "answer": "TMT (Thermo-Mechanically Treated) steel bars used for concrete reinforcement fall under IS-1786, which specifies tensile strength and bend test requirements. ISI Mark certification is mandatory under the Steel and Steel Products QCO."
+  },
+  {
+    "id": "MFR-015",
+    "role": "manufacturer",
+    "category": "Steel & Construction",
+    "question": "My company makes cold-rolled steel sheets for appliance bodies - what standard applies?",
+    "answer": "Cold-rolled low carbon steel sheet and strip used in automotive, appliance, and general engineering applications is covered under IS-513, which is mandatory under the Steel and Steel Products QCO along with roughly 150 other steel-related standards."
+  },
+  {
+    "id": "MFR-016",
+    "role": "manufacturer",
+    "category": "Jewellery",
+    "question": "I'm a jeweller - what's the process for hallmarking my gold jewellery?",
+    "answer": "Register with BIS as a hallmarking applicant, submit each article to an Assaying and Hallmarking Centre (AHC) for purity testing, and once approved, the article is hallmark-stamped and assigned a HUID (Hallmark Unique Identification) number. This usually takes a few hours to a few days per batch."
+  },
+  {
+    "id": "MFR-017",
+    "role": "manufacturer",
+    "category": "Non-Compliance",
+    "question": "What happens if I sell a product without required BIS certification?",
+    "answer": "Selling a product that falls under a mandatory Quality Control Order without valid BIS certification is a legal violation under the BIS Act, 2016, and can lead to penalties, product seizure, and prosecution. Always check whether your product category has a mandatory QCO before manufacturing or importing."
+  },
+  {
+    "id": "MFR-018",
+    "role": "manufacturer",
+    "category": "Foreign Manufacturers",
+    "question": "I manufacture outside India - can I still get an ISI mark to export to India?",
+    "answer": "Yes, through the Foreign Manufacturers Certification Scheme (FMCS). You need to appoint an Authorized Indian Representative (AIR), submit technical documentation via Manak Online, undergo testing and a factory inspection at your overseas site, and once certified, your products carry the same ISI mark as domestic products. As of 2026, FMCS applications are also fully online through Manak Online."
+  },
+  {
+    "id": "MFR-019",
+    "role": "manufacturer",
+    "category": "Compliance Reporting",
+    "question": "Do I need to submit any reports after getting my license?",
+    "answer": "Yes. License holders are generally required to submit periodic compliance/annual production statements. Late or missing filings can attract penalties or affect renewal, so it's worth tracking your filing calendar alongside your license validity date."
+  },
+  {
+    "id": "MFR-020",
+    "role": "manufacturer",
+    "category": "Machinery & Electrical Equipment",
+    "question": "I manufacture industrial machinery - do I need a different certification from ISI mark?",
+    "answer": "Heavy industrial, electrical, and high-risk equipment now falls under Scheme X, introduced by the Machinery and Electrical Equipment Safety (Omnibus Technical Regulation) Order. It requires conformity to Type A/B/C safety standards and results in a Certificate of Conformity (CoC) valid for 3 years, rather than a standard ISI license."
+  },
+  {
+    "id": "MFR-021",
+    "role": "manufacturer",
+    "category": "Household Appliances",
+    "question": "What standard covers my new air fryer / small kitchen appliance product line?",
+    "answer": "Small household electric cooking appliances are covered under standards like IS-15158, which extends the general household appliance safety principles (from IS-302) to newer appliance types. ISI Mark certification is mandatory."
+  },
+  {
+    "id": "MFR-022",
+    "role": "manufacturer",
+    "category": "LPG & Gas Equipment",
+    "question": "What are the requirements for manufacturing LPG cylinders or regulators?",
+    "answer": "LPG cylinders fall under IS-3196 and pressure regulators under IS-9798, both mandatory under ISI Mark. Given the safety-critical nature of these products, expect stringent factory inspection and batch-testing requirements, including hydrostatic and valve testing."
+  },
+  {
+    "id": "MFR-023",
+    "role": "manufacturer",
+    "category": "Safety Equipment",
+    "question": "I manufacture industrial safety helmets - what's the applicable standard?",
+    "answer": "Industrial safety helmets used at construction and factory sites fall under IS-2925, which specifies impact resistance and penetration protection requirements, and requires mandatory ISI Mark certification."
+  },
+  {
+    "id": "MFR-024",
+    "role": "manufacturer",
+    "category": "Simplified Procedure",
+    "question": "Is there a faster certification route for smaller or lower-risk products?",
+    "answer": "Yes - BIS operates a Simplified Procedure for select lower-risk product categories, where a large share of applications are cleared within 30 days when documentation is complete on first submission. Check the 'List of Products Under Simplified Procedure' on the BIS website to see if your product qualifies."
+  },
+  {
+    "id": "MFR-025",
+    "role": "manufacturer",
+    "category": "License Cancellation",
+    "question": "Can BIS cancel or suspend my license?",
+    "answer": "Yes. If surveillance testing finds your product non-conforming, if you fail to pay annual fees, or if you're found misusing the mark, BIS can suspend or cancel your license. Reinstatement typically requires corrective action and re-verification."
+  },
+  {
+    "id": "MFR-026",
+    "role": "manufacturer",
+    "category": "Product Classification",
+    "question": "How do I know which Indian Standard applies to my product before I even apply?",
+    "answer": "Start with the 'Products under Compulsory Certification' list on the BIS website or the 'Know Your Standards' feature in the BIS CARE app, search by product name/category, and confirm the exact IS number and its latest revision year before beginning documentation - misclassification is one of the most common causes of application rejection."
+  },
+  {
+    "id": "MFR-027",
+    "role": "manufacturer",
+    "category": "Quality Systems",
+    "question": "Besides product certification, can I get my factory's quality management system certified?",
+    "answer": "Yes, BIS also offers voluntary Management Systems Certification (QMS, EMS, FSMS, ISMS) aligned with standards like IS/ISO 9001. This involves a documentation review and an on-site audit by BIS auditors, separate from product-specific ISI certification, and is typically completed in 3 to 6 months."
+  },
+  {
+    "id": "MFR-028",
+    "role": "manufacturer",
+    "category": "Eco-Friendly Products",
+    "question": "Can I get an environmental/green label alongside my ISI mark?",
+    "answer": "Yes, through the voluntary ECO Mark Scheme, available for notified categories like soaps and detergents, batteries, paints, packaging materials, and textiles. It's usually processed alongside or shortly after ISI Mark certification and displayed together with the ISI mark on the product."
+  },
+  {
+    "id": "MFR-029",
+    "role": "manufacturer",
+    "category": "Rejection & Reapplication",
+    "question": "My BIS application was rejected - what are the common reasons and can I reapply?",
+    "answer": "Common rejection reasons include incorrect product/IS code classification, incomplete or mismatched documentation between company and product records, and expired or invalid lab test reports. You can reapply after correcting the issue; there's no permanent bar, but repeated rejections delay your market entry, so it helps to double-check classification and documents before resubmitting."
+  },
+  {
+    "id": "MFR-030",
+    "role": "manufacturer",
+    "category": "Batteries & Electronics",
+    "question": "I make power banks with lithium-ion cells - what certification applies?",
+    "answer": "Lithium-ion batteries used in portable electronic devices, including power banks, fall under IS-16101 and are covered under the CRS (Mandatory) scheme administered by MeitY-notified rules, given the fire-safety risk associated with these cells."
+  },
+  {
+    "id": "MFR-031",
+    "role": "manufacturer",
+    "category": "Textiles & Footwear",
+    "question": "What standard applies to industrial safety footwear I manufacture?",
+    "answer": "Leather safety footwear for industrial and occupational use is covered under IS-15298, which is mandatory ISI Mark certification, covering material quality, sole grip, and toe protection requirements."
+  },
+  {
+    "id": "MFR-032",
+    "role": "manufacturer",
+    "category": "New QCOs",
+    "question": "How do I stay updated on new Quality Control Orders that might affect my product?",
+    "answer": "New QCOs are notified by the relevant ministry (Consumer Affairs, Steel, Chemicals, Electronics/MeitY, etc.) and published on the BIS website and in the Official Gazette, often with a grace period before enforcement. It's worth checking the BIS website's notifications section periodically if you manufacture in a sector prone to new QCOs, like chemicals, PVC, or electronics."
+  },
+  {
+    "id": "MFR-033",
+    "role": "manufacturer",
+    "category": "Cement",
+    "question": "I manufacture cement - which specific standard and grade do I need to certify against?",
+    "answer": "It depends on your product grade: IS-269 for 33-grade OPC, IS-8112 for 43-grade OPC, and IS-12269 for 53-grade OPC, all under mandatory ISI Mark certification with strength, setting time, and soundness requirements verified per batch."
+  },
+  {
+    "id": "MFR-034",
+    "role": "manufacturer",
+    "category": "Startups & MSMEs",
+    "question": "As a startup, is there any support to help me navigate BIS certification?",
+    "answer": "Beyond the marking-fee concessions for MSMEs (up to 80% for Micro units), BIS conducts awareness and training programs for manufacturers, and many state MSME facilitation centres or industry associations offer guidance on the application process. It's worth checking with your local BIS branch office for sector-specific support."
+  },
+  {
+    "id": "MFR-035",
+    "role": "manufacturer",
+    "category": "Toys",
+    "question": "I manufacture toys - what does IS-9873 actually test for?",
+    "answer": "IS-9873 covers mechanical and physical safety (like choking-hazard-sized parts and sharp edges), flammability, and limits on migration of certain hazardous elements from toy materials, for toys intended for children up to 14 years of age. ISI Mark is mandatory for this category."
+  }
+]

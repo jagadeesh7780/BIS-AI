@@ -1,0 +1,905 @@
+[
+  {
+    "id": "IS-302",
+    "number": "IS 302",
+    "title": "Safety of Household and Similar Electrical Appliances",
+    "category": "Electrical Appliances",
+    "summary": "Covers general safety requirements for household electrical appliances such as mixers, irons, and heaters, including protection against electric shock, mechanical hazards, and fire.",
+    "scope": "Electrical appliances for household and similar use, rated voltage not exceeding 250V single-phase.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-2062",
+    "number": "IS 2062",
+    "title": "Hot Rolled Medium and High Tensile Structural Steel",
+    "category": "Steel & Metals",
+    "summary": "Specifies requirements for hot rolled steel products used in general structural purposes such as bridges and buildings, including chemical composition and mechanical properties.",
+    "scope": "Plates, strips, angles, and structural steel sections used in construction and fabrication.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-15410",
+    "number": "IS 15410",
+    "title": "Protective Helmets for Two-Wheeler Riders",
+    "category": "Safety Equipment",
+    "summary": "Specifies requirements for protective helmets including shock absorption, penetration resistance, retention system strength, and field of vision.",
+    "scope": "Helmets for riders and pillion riders of two-wheeled motor vehicles.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-4031",
+    "number": "IS 4031",
+    "title": "Methods of Physical Tests for Hydraulic Cement",
+    "category": "Construction Materials",
+    "summary": "Describes methods for testing physical properties of cement including fineness, setting time, soundness, and compressive strength.",
+    "scope": "All types of hydraulic cement including ordinary Portland cement and blended cements.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1239",
+    "number": "IS 1239",
+    "title": "Mild Steel Tubes, Tubulars and Other Wrought Steel Fittings",
+    "category": "Steel & Metals",
+    "summary": "Covers requirements for steel tubes used for water, gas, and steam applications, specifying dimensions, tolerances, and mechanical properties.",
+    "scope": "Welded and seamless steel tubes used in plumbing and structural applications.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-14625",
+    "number": "IS 14625",
+    "title": "Portable Fire Extinguishers - Specification",
+    "category": "Fire Safety",
+    "summary": "Specifies requirements for portable fire extinguishers including construction, capacity, and performance testing for effective fire suppression.",
+    "scope": "Portable fire extinguishers used in residential, commercial, and industrial settings.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-13360",
+    "number": "IS 13360",
+    "title": "Plastics - Methods of Testing",
+    "category": "Plastics & Polymers",
+    "summary": "Provides testing methodology for plastic materials including tensile strength, density, and thermal properties.",
+    "scope": "Raw plastic materials and finished plastic products across industries.",
+    "certification_scheme": "Voluntary (unless product-specific mandatory order applies)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-694",
+    "number": "IS 694",
+    "title": "PVC Insulated Cables for Electric Power and Lighting",
+    "category": "Electrical Appliances",
+    "summary": "Specifies requirements for PVC insulated electric cables used for power and lighting wiring, including insulation thickness and voltage grade.",
+    "scope": "Single-core and multi-core PVC insulated cables up to 1100V grade.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1786",
+    "number": "IS 1786",
+    "title": "High Strength Deformed Steel Bars for Concrete Reinforcement",
+    "category": "Construction Materials",
+    "summary": "Specifies requirements for TMT (Thermo-Mechanically Treated) steel bars used for reinforcing concrete structures, including tensile strength and bend test requirements.",
+    "scope": "Reinforcement bars used in RCC construction of buildings, bridges, and other structures.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-16046",
+    "number": "IS 16046",
+    "title": "Pressure Cookers - Specification",
+    "category": "Household Products",
+    "summary": "Specifies safety and performance requirements for household pressure cookers including lid locking mechanism, safety valve, and pressure release systems.",
+    "scope": "Domestic aluminium and stainless steel pressure cookers.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1608",
+    "number": "IS 1608",
+    "title": "Mechanical Testing of Metals - Tensile Testing",
+    "category": "Steel & Metals",
+    "summary": "Describes the method for tensile testing of metallic materials at room temperature to determine yield strength, tensile strength, and elongation.",
+    "scope": "Metallic materials in the form of sheets, bars, wires, and tubes.",
+    "certification_scheme": "Voluntary (used as testing reference)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-9873",
+    "number": "IS 9873",
+    "title": "Toy Safety - General Requirements",
+    "category": "Consumer Products",
+    "summary": "Specifies safety requirements for toys including mechanical and physical properties, flammability, and migration of certain hazardous elements.",
+    "scope": "Toys intended for use by children up to 14 years of age.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-456",
+    "number": "IS 456",
+    "title": "Plain and Reinforced Concrete - Code of Practice",
+    "category": "Construction Materials",
+    "summary": "General code of practice for design, detailing, construction and testing of plain and reinforced concrete structures, widely referenced in civil engineering.",
+    "scope": "Design and construction of concrete structures in buildings and infrastructure.",
+    "certification_scheme": "Voluntary (design/practice code)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-383",
+    "number": "IS 383",
+    "title": "Coarse and Fine Aggregate for Concrete - Specification",
+    "category": "Construction Materials",
+    "summary": "Specifies requirements for natural and manufactured aggregates used in concrete, covering grading, quality, and deleterious material limits.",
+    "scope": "Aggregates used in plain and reinforced cement concrete.",
+    "certification_scheme": "Voluntary (unless region-specific order applies)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-269",
+    "number": "IS 269",
+    "title": "Ordinary Portland Cement - Specification (33 Grade)",
+    "category": "Construction Materials",
+    "summary": "Specifies physical and chemical requirements for 33-grade ordinary Portland cement used in general construction.",
+    "scope": "OPC 33-grade cement manufactured and sold in India.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-8112",
+    "number": "IS 8112",
+    "title": "Ordinary Portland Cement - Specification (43 Grade)",
+    "category": "Construction Materials",
+    "summary": "Specifies physical and chemical requirements for 43-grade ordinary Portland cement, commonly used in RCC work.",
+    "scope": "OPC 43-grade cement manufactured and sold in India.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-12269",
+    "number": "IS 12269",
+    "title": "Ordinary Portland Cement - Specification (53 Grade)",
+    "category": "Construction Materials",
+    "summary": "Specifies physical and chemical requirements for 53-grade ordinary Portland cement, used where higher early strength is required.",
+    "scope": "OPC 53-grade cement manufactured and sold in India.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1077",
+    "number": "IS 1077",
+    "title": "Common Burnt Clay Building Bricks - Specification",
+    "category": "Construction Materials",
+    "summary": "Specifies classification, dimensions, and quality requirements for common burnt clay bricks used in masonry construction.",
+    "scope": "Burnt clay bricks used in general building construction.",
+    "certification_scheme": "Voluntary",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-800",
+    "number": "IS 800",
+    "title": "General Construction in Steel - Code of Practice",
+    "category": "Steel & Metals",
+    "summary": "Provides design principles and practice for general construction using structural steel, covering loads, member design, and connections.",
+    "scope": "Design of steel structures including buildings and industrial structures.",
+    "certification_scheme": "Voluntary (design/practice code)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-513",
+    "number": "IS 513",
+    "title": "Cold Reduced Low Carbon Steel Sheet and Strip - Specification",
+    "category": "Steel & Metals",
+    "summary": "Specifies requirements for cold rolled low carbon steel sheets and strips used in automotive, appliance, and general engineering applications.",
+    "scope": "Cold reduced steel sheet and strip in coil or cut length form.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-277",
+    "number": "IS 277",
+    "title": "Galvanized Steel Sheets (Plain and Corrugated) - Specification",
+    "category": "Steel & Metals",
+    "summary": "Specifies requirements for hot-dip zinc-coated (galvanized) steel sheets used for roofing and general sheet metal work.",
+    "scope": "Plain and corrugated galvanized steel sheets.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-3043",
+    "number": "IS 3043",
+    "title": "Code of Practice for Earthing",
+    "category": "Electrical Appliances",
+    "summary": "Provides guidelines for the earthing of electrical installations to ensure safety against electric shock and equipment damage.",
+    "scope": "Earthing systems for buildings, industrial plants, and electrical installations.",
+    "certification_scheme": "Voluntary (practice code)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-732",
+    "number": "IS 732",
+    "title": "Code of Practice for Electrical Wiring Installations",
+    "category": "Electrical Appliances",
+    "summary": "Covers general principles for design, installation, and testing of electrical wiring systems in buildings up to 650V.",
+    "scope": "Domestic and low-voltage electrical wiring installations.",
+    "certification_scheme": "Voluntary (practice code)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-13947",
+    "number": "IS 13947",
+    "title": "Low-Voltage Switchgear and Controlgear",
+    "category": "Electrical Appliances",
+    "summary": "Specifies requirements for low-voltage switchgear and controlgear assemblies, including circuit breakers and switches.",
+    "scope": "Switchgear and controlgear rated up to 1000V AC.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-15885",
+    "number": "IS 15885",
+    "title": "Self-Ballasted LED Lamps for General Lighting - Safety Specification",
+    "category": "Electrical Appliances",
+    "summary": "Specifies safety requirements for self-ballasted LED lamps used for general household and similar lighting purposes.",
+    "scope": "LED lamps intended for general lighting service.",
+    "certification_scheme": "ISI Mark / CRS (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-374",
+    "number": "IS 374",
+    "title": "Electric Ceiling Type Fans and Regulators - Specification",
+    "category": "Electrical Appliances",
+    "summary": "Specifies performance, safety, and construction requirements for electric ceiling fans and their speed regulators.",
+    "scope": "Domestic and commercial electric ceiling fans.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1885",
+    "number": "IS 1885",
+    "title": "Room Air Conditioners - Specification",
+    "category": "Electrical Appliances",
+    "summary": "Specifies safety, performance, and energy efficiency requirements for room/split air conditioners.",
+    "scope": "Domestic and light commercial room air conditioners.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-7752",
+    "number": "IS 7752",
+    "title": "Household Refrigerators - Specification",
+    "category": "Electrical Appliances",
+    "summary": "Specifies safety and performance requirements for household refrigerators, including insulation, cooling performance, and electrical safety.",
+    "scope": "Domestic single and multi-door refrigerators.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-8544",
+    "number": "IS 8544",
+    "title": "Electric Irons - Specification",
+    "category": "Electrical Appliances",
+    "summary": "Specifies safety and performance requirements for household electric dry and steam irons.",
+    "scope": "Domestic electric flat irons.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-3196",
+    "number": "IS 3196",
+    "title": "Liquefied Petroleum Gas (LPG) Cylinders - Specification",
+    "category": "Gas & Fuel Equipment",
+    "summary": "Specifies design, material, and testing requirements for refillable LPG gas cylinders used for domestic and commercial cooking fuel.",
+    "scope": "Welded steel LPG cylinders for household and commercial use.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-9798",
+    "number": "IS 9798",
+    "title": "LPG Pressure Regulators for Domestic Use - Specification",
+    "category": "Gas & Fuel Equipment",
+    "summary": "Specifies safety and performance requirements for pressure regulators used with domestic LPG cylinders.",
+    "scope": "Single-stage LPG pressure regulators for household cooking use.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-4246",
+    "number": "IS 4246",
+    "title": "LPG Gas Stoves (Domestic) - Specification",
+    "category": "Gas & Fuel Equipment",
+    "summary": "Specifies safety and performance requirements for domestic gas stoves used with LPG, including burner efficiency and leak safety.",
+    "scope": "Domestic LPG cooking stoves with one or more burners.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-14543",
+    "number": "IS 14543",
+    "title": "Packaged Drinking Water (Other Than Mineral Water) - Specification",
+    "category": "Food & Packaging",
+    "summary": "Specifies quality, safety, and packaging requirements for packaged drinking water sold to consumers.",
+    "scope": "Bottled/packaged drinking water for retail sale.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-13428",
+    "number": "IS 13428",
+    "title": "Packaged Natural Mineral Water - Specification",
+    "category": "Food & Packaging",
+    "summary": "Specifies quality and compositional requirements for natural mineral water intended for retail packaging and sale.",
+    "scope": "Bottled natural mineral water for retail sale.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1553",
+    "number": "IS 1553",
+    "title": "Infant Milk Food - Specification",
+    "category": "Food & Packaging",
+    "summary": "Specifies compositional and safety requirements for infant milk food products sold in India.",
+    "scope": "Processed infant milk food for babies.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-89",
+    "number": "IS 89",
+    "title": "Edible Common Salt - Specification",
+    "category": "Food & Packaging",
+    "summary": "Specifies quality requirements for edible common salt, including iodization limits where applicable.",
+    "scope": "Common salt intended for human consumption.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-15158",
+    "number": "IS 15158",
+    "title": "Household and Similar Electrical Appliances - Air Fryers and Similar Cooking Appliances Safety",
+    "category": "Electrical Appliances",
+    "summary": "Covers general and particular safety requirements for small household electric cooking appliances, extending household appliance safety principles to newer product types.",
+    "scope": "Small household electric cooking appliances.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-15298",
+    "number": "IS 15298",
+    "title": "Leather Safety Footwear - Specification",
+    "category": "Textiles & Footwear",
+    "summary": "Specifies design, material, and performance requirements for leather safety footwear used in industrial and occupational settings.",
+    "scope": "Leather safety shoes and boots for industrial workers.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-638",
+    "number": "IS 638",
+    "title": "Industrial Rubber Boots - Specification",
+    "category": "Textiles & Footwear",
+    "summary": "Specifies requirements for rubber boots used in industrial and hazardous work environments, including chemical and puncture resistance.",
+    "scope": "Rubber safety boots for industrial and agricultural use.",
+    "certification_scheme": "Voluntary (unless product-specific order applies)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-4770",
+    "number": "IS 4770",
+    "title": "Rubber Gloves for Electrical Purposes - Specification",
+    "category": "Safety Equipment",
+    "summary": "Specifies requirements for insulating rubber gloves used by electrical workers to protect against electric shock.",
+    "scope": "Rubber gloves used for live-line and electrical maintenance work.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-2925",
+    "number": "IS 2925",
+    "title": "Industrial Safety Helmets - Specification",
+    "category": "Safety Equipment",
+    "summary": "Specifies requirements for protective helmets used in industrial workplaces, covering impact resistance and penetration protection.",
+    "scope": "Industrial hard hats used at construction and factory sites.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-9167",
+    "number": "IS 9167",
+    "title": "Safety Belts and Harnesses for Working at Heights - Specification",
+    "category": "Safety Equipment",
+    "summary": "Specifies design, material, and testing requirements for safety belts and full-body harnesses used during work at height.",
+    "scope": "Fall-protection safety belts and harnesses for industrial use.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-14116",
+    "number": "IS 14116",
+    "title": "Protective Clothing - Protection Against Heat and Flame",
+    "category": "Safety Equipment",
+    "summary": "Specifies performance requirements for protective clothing designed to give limited flame spread protection.",
+    "scope": "Industrial protective garments used near heat and flame hazards.",
+    "certification_scheme": "Voluntary",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-8090",
+    "number": "IS 8090",
+    "title": "Two-Wheeler Bicycles - Safety Requirements",
+    "category": "Consumer Products",
+    "summary": "Specifies safety and construction requirements for pedal bicycles, including braking, structural strength, and reflectors.",
+    "scope": "Bicycles for general use, excluding electric cycles.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-16333",
+    "number": "IS 16333",
+    "title": "Mobile Phone Chargers - Safety Requirements",
+    "category": "Electronics & IT",
+    "summary": "Specifies safety requirements for AC power adapters used to charge mobile phones and similar portable electronic devices.",
+    "scope": "Mobile phone and portable device chargers sold in India.",
+    "certification_scheme": "CRS (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-13252",
+    "number": "IS 13252",
+    "title": "Information Technology Equipment - Safety Requirements",
+    "category": "Electronics & IT",
+    "summary": "Specifies general safety requirements for information technology equipment including laptops, desktops, and related peripherals.",
+    "scope": "IT hardware including computers, monitors, and printers.",
+    "certification_scheme": "CRS (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-616",
+    "number": "IS 616",
+    "title": "Audio, Video and Similar Electronic Apparatus - Safety Requirements",
+    "category": "Electronics & IT",
+    "summary": "Specifies safety requirements for audio, video, and similar electronic entertainment equipment such as speakers and smart devices.",
+    "scope": "Consumer audio/video electronic apparatus.",
+    "certification_scheme": "CRS (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-16101",
+    "number": "IS 16101",
+    "title": "Lithium-Ion Batteries for Portable Applications - Safety Requirements",
+    "category": "Electronics & IT",
+    "summary": "Specifies safety requirements for secondary lithium-ion cells and batteries used in portable electronic devices.",
+    "scope": "Lithium-ion batteries used in mobile phones, laptops, and similar devices.",
+    "certification_scheme": "CRS (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-302-2-24",
+    "number": "IS 302 2 24",
+    "title": "Household Washing Machines - Particular Safety Requirements",
+    "category": "Electrical Appliances",
+    "summary": "Specifies particular safety requirements for household washing machines, building on the general household appliance safety standard.",
+    "scope": "Domestic washing machines, top-load and front-load.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-4159",
+    "number": "IS 4159",
+    "title": "Electric Rice Cookers - Specification",
+    "category": "Electrical Appliances",
+    "summary": "Specifies safety and performance requirements for domestic electric rice cookers.",
+    "scope": "Household electric rice cookers.",
+    "certification_scheme": "ISI Mark (Mandatory)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-2500",
+    "number": "IS 2500",
+    "title": "Sampling Inspection Tables and Procedures",
+    "category": "Quality Systems",
+    "summary": "Provides statistical sampling plans and procedures used for inspection of lots or batches during quality control.",
+    "scope": "Quality inspection and acceptance sampling across manufacturing industries.",
+    "certification_scheme": "Voluntary (reference standard)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-9001",
+    "number": "IS 9001",
+    "title": "Quality Management Systems - Requirements (Indian Adoption of ISO 9001)",
+    "category": "Quality Systems",
+    "summary": "Specifies requirements for a quality management system used by organizations to consistently provide products and services meeting customer and regulatory requirements.",
+    "scope": "Organizations across all sectors seeking systems certification.",
+    "certification_scheme": "Systems Certification (Voluntary)",
+    "keywords": [],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-2347",
+    "number": "IS 2347",
+    "title": "Domestic Pressure Cookers",
+    "category": "Kitchen Appliances",
+    "summary": "Specifies safety and performance requirements for aluminium and stainless steel domestic pressure cookers (1L to 22L capacity), covering pressure relief valves, gaskets, and locking mechanisms.",
+    "scope": "Domestic pressure cookers intended for household cooking up to 22 litres capacity.",
+    "certification_scheme": "ISI Mark (Compulsory)",
+    "keywords": [
+      "pressure cooker",
+      "kitchen",
+      "aluminium",
+      "stainless steel",
+      "cooking",
+      "domestic"
+    ],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-1417",
+    "number": "IS 1417",
+    "title": "Gold and Gold Alloys, Jewellery/Artefacts — Fineness and Marking",
+    "category": "Precious Metals & Hallmarking",
+    "summary": "Prescribes fineness grades (e.g. 24K, 22K/916, 18K/750, 14K/585) and hallmarking requirements with HUID for gold jewellery and artefacts.",
+    "scope": "Gold jewellery, gold coins, and precious artefacts sold in India.",
+    "certification_scheme": "Hallmarking (Compulsory)",
+    "keywords": [
+      "gold",
+      "jewellery",
+      "hallmark",
+      "huid",
+      "fineness",
+      "22k",
+      "916",
+      "purity"
+    ],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  },
+  {
+    "id": "IS-16102",
+    "number": "IS 16102",
+    "title": "Self-Ballasted LED Lamps for General Lighting Services",
+    "category": "Electronics & Lighting",
+    "summary": "Specifies safety and performance requirements for self-ballasted LED lamps for general lighting services in domestic and commercial applications.",
+    "scope": "Mains-voltage tubular and omnidirectional LED bulbs up to 60W.",
+    "certification_scheme": "Compulsory Registration Scheme (CRS)",
+    "keywords": [
+      "led",
+      "lamp",
+      "bulb",
+      "lighting",
+      "electronics",
+      "crs"
+    ],
+    "applicable_to": [
+      "manufacturer",
+      "msme",
+      "consumer",
+      "student"
+    ]
+  }
+]

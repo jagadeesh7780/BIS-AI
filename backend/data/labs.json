@@ -1,0 +1,446 @@
+[
+  {
+    "id": 1,
+    "name": "BIS Central Laboratory (CL)",
+    "city": "Ghaziabad",
+    "state": "Uttar Pradesh",
+    "address": "20/9, Site 4, Sahibabad Industrial Area, Sahibabad, Ghaziabad",
+    "phone": "+91-11-2323-0131",
+    "email": "ghaziabad.lab@bis.gov.in",
+    "specializations": [
+      "Electrical Appliances",
+      "Cables",
+      "General Testing"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 2,
+    "name": "BIS Eastern Regional Laboratory (ERL)",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "address": "1/14, CIT Scheme VII M, VIP Road, Kankurgachi, Kolkata-700054",
+    "phone": "+91-11-2323-0131",
+    "email": "kolkata.lab@bis.gov.in",
+    "specializations": [
+      "Steel & Metals",
+      "Construction Materials"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 3,
+    "name": "BIS Northern Regional Laboratory (NRL)",
+    "city": "Mohali",
+    "state": "Punjab",
+    "address": "B-69, Industrial Focal Point, Phase VII, Mohali",
+    "phone": "+91-11-2323-0131",
+    "email": "mohali.lab@bis.gov.in",
+    "specializations": [
+      "Textiles & Footwear",
+      "Construction Materials"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 4,
+    "name": "BIS Southern Regional Laboratory (SRL)",
+    "city": "Chennai",
+    "state": "Tamil Nadu",
+    "address": "IV Cross Road, CIT Campus, Taramani, Chennai-600113",
+    "phone": "+91-11-2323-0131",
+    "email": "chennai.lab@bis.gov.in",
+    "specializations": [
+      "Plastics & Polymers",
+      "Consumer Products"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 5,
+    "name": "BIS Western Regional Laboratory (WRL)",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "address": "E9 Cross, MIDC, Andheri (East), Mumbai-400093",
+    "phone": "+91-11-2323-0131",
+    "email": "mumbai.lab@bis.gov.in",
+    "specializations": [
+      "Household Products",
+      "Fire Safety",
+      "Safety Equipment"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 6,
+    "name": "BIS Bengaluru Branch Laboratory (BNBL)",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "address": "Peenya Industrial Area, 1st Stage, Tumkur Road, Bengaluru-560058",
+    "phone": "+91-11-2323-0131",
+    "email": "bengaluru.lab@bis.gov.in",
+    "specializations": [
+      "Electronics & IT",
+      "Household Products"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 7,
+    "name": "BIS Patna Branch Laboratory (PBL)",
+    "city": "Patna",
+    "state": "Bihar",
+    "address": "Bureau of Indian Standards, Patliputra Industrial Estate, Patna",
+    "phone": "+91-11-2323-0131",
+    "email": "patna.lab@bis.gov.in",
+    "specializations": [
+      "Food & Packaging",
+      "Construction Materials"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 8,
+    "name": "BIS Guwahati Branch Laboratory (GBL)",
+    "city": "Guwahati",
+    "state": "Assam",
+    "address": "2nd Floor, West End Block, Housefed Building Complex, Last Gate, Dispur, Guwahati-781006",
+    "phone": "+91-11-2323-0131",
+    "email": "guwahati.lab@bis.gov.in",
+    "specializations": [
+      "Steel & Metals",
+      "Construction Materials"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 9,
+    "name": "BIS Hyderabad Branch Office Laboratory",
+    "city": "Hyderabad",
+    "state": "Telangana",
+    "address": "Gachibowli, Hyderabad, Telangana",
+    "phone": "+91-11-2323-0131",
+    "email": "hyderabad.lab@bis.gov.in",
+    "specializations": [
+      "Electrical Appliances",
+      "Steel & Metals"
+    ],
+    "accreditation": "BIS Recognised Lab / NABL Accredited",
+    "lat": 28.6139,
+    "lng": 77.209,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 10,
+    "name": "BIS Western Regional Office Laboratory",
+    "city": "mumbai",
+    "state": "",
+    "address": "Plot No. 5, Marol Maroshi Road, Chakala, Andheri East, Mumbai - 400093",
+    "phone": "+91-22-2835-4521",
+    "email": "wro@bis.gov.in",
+    "specializations": [
+      "Electrical Safety",
+      "Mechanical Testing",
+      "Chemical Analysis",
+      "Food Safety"
+    ],
+    "accreditation": "BIS Official Lab",
+    "lat": 19.1136,
+    "lng": 72.8697,
+    "timings": "Mon-Fri: 9:30 AM - 5:30 PM"
+  },
+  {
+    "id": 11,
+    "name": "CIPET — Central Institute of Plastics Engineering & Technology",
+    "city": "mumbai",
+    "state": "",
+    "address": "T-1/5, MIDC Area, Rabale, Navi Mumbai - 400701",
+    "phone": "+91-22-2769-1151",
+    "email": "cipet.mumbai@cipet.gov.in",
+    "specializations": [
+      "Plastics Testing",
+      "Rubber Testing",
+      "Polymer Analysis",
+      "Packaging Materials"
+    ],
+    "accreditation": "NABL, BIS Recognised",
+    "lat": 19.0825,
+    "lng": 73.0119,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 12,
+    "name": "National Test House — Mumbai",
+    "city": "mumbai",
+    "state": "",
+    "address": "Mankhurd, Mumbai - 400088",
+    "phone": "+91-22-2556-0291",
+    "email": "nth.mumbai@gov.in",
+    "specializations": [
+      "Building Materials",
+      "Electrical Testing",
+      "Textile Testing",
+      "Mechanical Testing"
+    ],
+    "accreditation": "NABL, BIS Recognised",
+    "lat": 19.0483,
+    "lng": 72.9356,
+    "timings": "Mon-Fri: 9:00 AM - 5:00 PM"
+  },
+  {
+    "id": 13,
+    "name": "BIS Headquarters — Manak Bhavan Laboratory",
+    "city": "delhi",
+    "state": "",
+    "address": "Manak Bhavan, 9 Bahadur Shah Zafar Marg, New Delhi - 110002",
+    "phone": "+91-11-2323-7991",
+    "email": "hq@bis.gov.in",
+    "specializations": [
+      "Standards Testing",
+      "Food Products",
+      "Electrical Safety",
+      "Textiles",
+      "Chemicals"
+    ],
+    "accreditation": "BIS Official Lab",
+    "lat": 28.6317,
+    "lng": 77.2442,
+    "timings": "Mon-Fri: 9:30 AM - 5:30 PM"
+  },
+  {
+    "id": 14,
+    "name": "National Test House — Delhi",
+    "city": "delhi",
+    "state": "",
+    "address": "Industrial Estate, Phase III, Okhla, New Delhi - 110020",
+    "phone": "+91-11-2638-5271",
+    "email": "nth.delhi@gov.in",
+    "specializations": [
+      "Mechanical Testing",
+      "Chemical Testing",
+      "Textiles",
+      "Building Materials",
+      "Furniture"
+    ],
+    "accreditation": "NABL, BIS Recognised, ISO 17025",
+    "lat": 28.535,
+    "lng": 77.2735,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 15,
+    "name": "ERTL (North) — Electronics Regional Test Laboratory",
+    "city": "delhi",
+    "state": "",
+    "address": "Plot 4/7, Industrial Area, Phase-I, New Delhi - 110015",
+    "phone": "+91-11-2546-9393",
+    "email": "ertlnorth@cdac.in",
+    "specializations": [
+      "Electronics Testing",
+      "IT Products",
+      "EMC Testing",
+      "CRS Certification"
+    ],
+    "accreditation": "NABL, MeitY Recognised, BIS Approved",
+    "lat": 28.628,
+    "lng": 77.194,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 16,
+    "name": "BIS Southern Regional Office Laboratory",
+    "city": "chennai",
+    "state": "",
+    "address": "C.I.T. Campus, IV Cross Road, Taramani, Chennai - 600113",
+    "phone": "+91-44-2254-3261",
+    "email": "sro@bis.gov.in",
+    "specializations": [
+      "Electrical Products",
+      "Mechanical Products",
+      "Textile Testing",
+      "Chemical Analysis"
+    ],
+    "accreditation": "BIS Official Lab",
+    "lat": 12.9916,
+    "lng": 80.2469,
+    "timings": "Mon-Fri: 9:30 AM - 5:30 PM"
+  },
+  {
+    "id": 17,
+    "name": "ERTL (South) — Electronics Regional Test Laboratory",
+    "city": "chennai",
+    "state": "",
+    "address": "C-Block, Tidel Park, Rajiv Gandhi Salai, Chennai - 600113",
+    "phone": "+91-44-2254-1600",
+    "email": "ertlsouth@cdac.in",
+    "specializations": [
+      "Electronics",
+      "IT Hardware",
+      "Telecom Products",
+      "EMI/EMC Testing"
+    ],
+    "accreditation": "NABL, MeitY Recognised, BIS Approved",
+    "lat": 12.9914,
+    "lng": 80.248,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 18,
+    "name": "Central Power Research Institute (CPRI)",
+    "city": "bangalore",
+    "state": "",
+    "address": "Prof. Sir C.V. Raman Road, Sadashivanagar, Bangalore - 560080",
+    "phone": "+91-80-2360-0122",
+    "email": "info@cpri.in",
+    "specializations": [
+      "Electrical Equipment",
+      "Power Systems",
+      "Transformers",
+      "Switchgear",
+      "Insulation Testing"
+    ],
+    "accreditation": "NABL, CPRI, BIS Recognised, IEC Recognized",
+    "lat": 13.0133,
+    "lng": 77.578,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  },
+  {
+    "id": 19,
+    "name": "BIS South Western Regional Office Laboratory",
+    "city": "bangalore",
+    "state": "",
+    "address": "Kendriya Sadan, 'E' Wing, No. 17, Koramangala, Bangalore - 560034",
+    "phone": "+91-80-2553-3300",
+    "email": "swro@bis.gov.in",
+    "specializations": [
+      "General Product Testing",
+      "Electrical",
+      "Mechanical",
+      "Chemical"
+    ],
+    "accreditation": "BIS Official Lab",
+    "lat": 12.9352,
+    "lng": 77.6245,
+    "timings": "Mon-Fri: 9:30 AM - 5:30 PM"
+  },
+  {
+    "id": 20,
+    "name": "BIS Central Regional Lab Hyderabad",
+    "city": "hyderabad",
+    "state": "",
+    "address": "5-9-27/A, Hill Fort Road, Adarshnagar, Hyderabad - 500004",
+    "phone": "+91-40-2323-0455",
+    "email": "cro-hyd@bis.gov.in",
+    "specializations": [
+      "Chemical Products",
+      "Food Safety",
+      "Pharmaceutical Testing",
+      "Pesticide Analysis"
+    ],
+    "accreditation": "BIS Official Lab",
+    "lat": 17.3912,
+    "lng": 78.4677,
+    "timings": "Mon-Fri: 9:30 AM - 5:30 PM"
+  },
+  {
+    "id": 21,
+    "name": "NABL Lab — Analytical Labs Hyderabad",
+    "city": "hyderabad",
+    "state": "",
+    "address": "Plot 47, IDA Uppal, Hyderabad - 500039",
+    "phone": "+91-40-2711-5678",
+    "email": "info@analyticalhyderabad.in",
+    "specializations": [
+      "Water Testing",
+      "Food Analysis",
+      "Environmental Testing",
+      "Soil Testing"
+    ],
+    "accreditation": "NABL, BIS Recognised",
+    "lat": 17.4063,
+    "lng": 78.556,
+    "timings": "Mon-Fri: 8:30 AM - 6:00 PM"
+  },
+  {
+    "id": 22,
+    "name": "BIS Eastern Regional Office Laboratory",
+    "city": "kolkata",
+    "state": "",
+    "address": "P-5, Darga Road, Near New CIT Road, Kolkata - 700017",
+    "phone": "+91-33-2265-7600",
+    "email": "ero@bis.gov.in",
+    "specializations": [
+      "Jute Products",
+      "Chemical Testing",
+      "Electrical",
+      "Mechanical Testing"
+    ],
+    "accreditation": "BIS Official Lab",
+    "lat": 22.5726,
+    "lng": 88.3639,
+    "timings": "Mon-Fri: 9:30 AM - 5:30 PM"
+  },
+  {
+    "id": 23,
+    "name": "National Test House — Kolkata",
+    "city": "kolkata",
+    "state": "",
+    "address": "Block CN, Sector V, Salt Lake, Kolkata - 700091",
+    "phone": "+91-33-2357-1028",
+    "email": "nth.kolkata@gov.in",
+    "specializations": [
+      "Mechanical Engineering",
+      "Civil Materials",
+      "Chemical",
+      "Electrical Testing"
+    ],
+    "accreditation": "NABL, BIS Recognised",
+    "lat": 22.5744,
+    "lng": 88.4342,
+    "timings": "Mon-Fri: 9:00 AM - 5:00 PM"
+  },
+  {
+    "id": 24,
+    "name": "Automotive Research Association of India (ARAI)",
+    "city": "pune",
+    "state": "",
+    "address": "Survey No. 102, Vetal Hill, Off Paud Road, Kothrud, Pune - 411038",
+    "phone": "+91-20-3023-1111",
+    "email": "director@araiindia.com",
+    "specializations": [
+      "Automotive Testing",
+      "Vehicle Safety",
+      "Emission Testing",
+      "Helmet Testing",
+      "Tyre Testing"
+    ],
+    "accreditation": "NABL, BIS Recognised, MoRTH Approved",
+    "lat": 18.5062,
+    "lng": 73.8014,
+    "timings": "Mon-Fri: 9:00 AM - 5:30 PM"
+  }
+]

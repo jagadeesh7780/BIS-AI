@@ -1,0 +1,198 @@
+[
+  {
+    "id": "CON-001",
+    "role": "consumer",
+    "category": "Verification",
+    "question": "How do I check if the ISI mark on my product is genuine?",
+    "answer": "Look for the ISI mark along with a license number (CM/L number) underneath it. Download the free BIS CARE app (Android/iOS), select 'Verify License Details', enter the license number printed on the product, and it will show the manufacturer's name, address, and license validity."
+  },
+  {
+    "id": "CON-002",
+    "role": "consumer",
+    "category": "App",
+    "question": "What is the BIS CARE app and what can I do with it?",
+    "answer": "BIS CARE is BIS's free official app (available in 12 languages) that lets consumers verify ISI-marked products, hallmarked jewellery, and CRS-registered electronics, lodge complaints, look up 'Know Your Standards' info, and find nearby BIS labs and offices."
+  },
+  {
+    "id": "CON-003",
+    "role": "consumer",
+    "category": "Safety",
+    "question": "Is my pressure cooker safe if it doesn't have an ISI mark?",
+    "answer": "Domestic pressure cookers fall under IS-16046, a mandatory standard covering the lid locking mechanism, safety valve, and pressure release systems. A cooker without an ISI mark hasn't been verified against these safety requirements and may pose a bursting or malfunction risk."
+  },
+  {
+    "id": "CON-004",
+    "role": "consumer",
+    "category": "Complaints",
+    "question": "How do I file a complaint about a defective certified product?",
+    "answer": "Open the BIS CARE app, go to 'Complaints', select the issue type (poor/sub-standard quality, misuse of BIS marks, misleading quality claims, or service issues), and submit details with supporting evidence like photos or receipts. You'll get a complaint number to track its status in the app."
+  },
+  {
+    "id": "CON-005",
+    "role": "consumer",
+    "category": "Jewellery",
+    "question": "How do I know if my gold jewellery is genuinely hallmarked?",
+    "answer": "Genuine hallmarked jewellery carries the BIS hallmark logo, purity grade (like 22K916), the Assaying and Hallmarking Centre's mark, and a 6-character HUID (Hallmark Unique Identification) number. Enter the HUID in the BIS CARE app under 'Verify HUID' to confirm purity and jeweller registration details."
+  },
+  {
+    "id": "CON-006",
+    "role": "consumer",
+    "category": "Jewellery",
+    "question": "Does having a hallmark logo automatically mean my jewellery is genuine?",
+    "answer": "No - having a hallmark logo alone doesn't guarantee authenticity, since counterfeit marks exist. Always verify the specific HUID number through the BIS CARE app; if it doesn't return valid registration details, the item's hallmark should be treated with suspicion."
+  },
+  {
+    "id": "CON-007",
+    "role": "consumer",
+    "category": "Electronics",
+    "question": "Why do some electronics have a BIS registration number instead of an ISI mark?",
+    "answer": "Electronics and IT hardware products - like chargers, laptops, and audio equipment - go through the Compulsory Registration Scheme (CRS) rather than full ISI licensing. Instead of the ISI mark, they display an 8-digit registration number (R-No.) and BIS logo, which you can verify in the CARE app under 'Verify R-No under CRS'."
+  },
+  {
+    "id": "CON-008",
+    "role": "consumer",
+    "category": "Toys",
+    "question": "What should I check before buying toys for my child?",
+    "answer": "Look for the ISI mark on the toy or packaging. Toys are covered under IS-9873, a mandatory standard for children up to 14 years, covering mechanical safety, flammability, and limits on hazardous elements. Avoid unmarked toys, especially ones with small detachable parts."
+  },
+  {
+    "id": "CON-009",
+    "role": "consumer",
+    "category": "Helmets",
+    "question": "How can I be sure the helmet I'm buying is actually safe?",
+    "answer": "Check for the ISI mark, confirming compliance with IS-15410, which covers shock absorption, penetration resistance, retention strap strength, and field of vision. This is mandatory, so genuinely ISI-marked helmets have been independently tested before sale."
+  },
+  {
+    "id": "CON-010",
+    "role": "consumer",
+    "category": "Electrical Safety",
+    "question": "Are the electrical wires used in my home wiring certified?",
+    "answer": "PVC insulated cables for power and lighting should carry an ISI mark under IS-694, mandatory and specifying insulation thickness and voltage grade up to 1100V. Always ask your electrician to confirm the cable brand's ISI certification before installation."
+  },
+  {
+    "id": "CON-011",
+    "role": "consumer",
+    "category": "Household Appliances",
+    "question": "What should I look for before buying a room air conditioner or refrigerator?",
+    "answer": "Check for the ISI mark - room air conditioners fall under IS-1885 and household refrigerators under IS-7752, both mandatory standards covering electrical safety and cooling performance. Also check the BEE star-rating label separately for energy efficiency, since that's a different certification from BIS."
+  },
+  {
+    "id": "CON-012",
+    "role": "consumer",
+    "category": "Finding Help",
+    "question": "Where is my nearest BIS testing lab if I want to get a product independently tested?",
+    "answer": "BIS operates regional and branch laboratories in cities including Ghaziabad, Kolkata, Mohali, Chennai, Mumbai, Bengaluru, Patna, and Guwahati, plus many private BIS-recognized labs nationwide. Use the 'BIS Labs and Offices' feature in the CARE app to find the nearest one and its specialization."
+  },
+  {
+    "id": "CON-013",
+    "role": "consumer",
+    "category": "Fake Products",
+    "question": "I suspect a product I bought has a fake ISI mark. What should I do?",
+    "answer": "Report it through the 'Complaints' section of the BIS CARE app, selecting 'misuse of BIS marks', and attach photos of the mark, packaging, and purchase receipt. Selling products with counterfeit ISI marks is a punishable offence under the BIS Act, 2016."
+  },
+  {
+    "id": "CON-014",
+    "role": "consumer",
+    "category": "Voluntary vs Mandatory",
+    "question": "Does every product need to have BIS certification?",
+    "answer": "No. Only products under a notified Quality Control Order (QCO) require mandatory ISI or CRS certification. Many other products carry certification voluntarily as a quality signal, even though it isn't legally required for that category."
+  },
+  {
+    "id": "CON-015",
+    "role": "consumer",
+    "category": "Fire Safety",
+    "question": "What should I look for when buying a fire extinguisher for my home?",
+    "answer": "Check for the ISI mark confirming compliance with IS-14625, which governs construction, capacity, and performance testing of portable fire extinguishers for residential, commercial, and industrial use."
+  },
+  {
+    "id": "CON-016",
+    "role": "consumer",
+    "category": "Drinking Water",
+    "question": "Is packaged/bottled drinking water required to be BIS certified?",
+    "answer": "Yes. Packaged drinking water (other than mineral water) is covered under IS-14543 and natural mineral water under IS-13428, both mandatory ISI Mark certification. Check the bottle label for the ISI mark and CM/L license number before buying."
+  },
+  {
+    "id": "CON-017",
+    "role": "consumer",
+    "category": "LPG Safety",
+    "question": "How do I know my LPG cylinder or gas stove is safe to use?",
+    "answer": "LPG cylinders fall under IS-3196, regulators under IS-9798, and gas stoves under IS-4246 - all mandatory ISI-certified. Check for the ISI mark on the cylinder valve area, regulator body, and stove, and never use a cylinder with a missing or expired safety check sticker from your distributor."
+  },
+  {
+    "id": "CON-018",
+    "role": "consumer",
+    "category": "Complaint Timelines",
+    "question": "How long does BIS take to resolve a consumer complaint?",
+    "answer": "Resolution time varies by complaint type and complexity - simple verification queries may resolve in days, while quality-defect investigations involving the manufacturer can take longer. You can track status anytime in the BIS CARE app using your complaint number."
+  },
+  {
+    "id": "CON-019",
+    "role": "consumer",
+    "category": "Cement & Construction",
+    "question": "As a homeowner building a house, how do I make sure the cement and steel I'm buying is genuine?",
+    "answer": "Check the ISI mark and CM/L number on cement bags (IS-269/8112/12269 depending on grade) and on TMT steel bar bundles (IS-1786), and verify the license number via the BIS CARE app before large purchases - construction material fraud is a common complaint category."
+  },
+  {
+    "id": "CON-020",
+    "role": "consumer",
+    "category": "Footwear & Safety Gear",
+    "question": "I bought safety shoes for work - how do I know they meet BIS standards?",
+    "answer": "Industrial leather safety footwear should carry the ISI mark under IS-15298, which covers toe protection, sole grip, and material durability requirements. Ask your employer or supplier for the CM/L license number if it's not visible on the product."
+  },
+  {
+    "id": "CON-021",
+    "role": "consumer",
+    "category": "Multilingual Access",
+    "question": "I'm more comfortable in a regional language - can I use BIS services in my language?",
+    "answer": "Yes, the BIS CARE app supports 12 languages, including Hindi, English, and 10 regional languages, so you can verify products and file complaints in your preferred language."
+  },
+  {
+    "id": "CON-022",
+    "role": "consumer",
+    "category": "Product Recalls",
+    "question": "How would I find out if a product I own has been recalled or flagged by BIS?",
+    "answer": "The BIS CARE app includes access to public alerts and product recall information alongside its verification tools, so periodically checking the app or BIS's official announcements is the most direct way to stay informed about flagged products."
+  },
+  {
+    "id": "CON-023",
+    "role": "consumer",
+    "category": "Online Shopping",
+    "question": "How do I check BIS certification for a product before buying it online?",
+    "answer": "Look for the ISI mark, CRS registration number, or CM/L number in the product images or description on the listing. Cross-check that number using the BIS CARE app before purchase, since counterfeit or unverified marks are more common in online marketplace listings than in physical retail."
+  },
+  {
+    "id": "CON-024",
+    "role": "consumer",
+    "category": "Battery & Electronics Safety",
+    "question": "Are power banks and phone chargers required to be certified?",
+    "answer": "Yes. Mobile phone chargers fall under IS-16333 and lithium-ion batteries (including those in power banks) under IS-16101, both mandatory under the CRS scheme, given fire-safety risks from uncertified charging equipment and battery cells."
+  },
+  {
+    "id": "CON-025",
+    "role": "consumer",
+    "category": "Compensation",
+    "question": "Can I get a refund or replacement if my ISI-marked product turns out to be defective?",
+    "answer": "BIS's complaint process investigates whether the product genuinely conforms to its Indian Standard and can act against the manufacturer's license, but refunds/replacements for individual purchases are typically pursued separately through consumer courts or the National Consumer Helpline, alongside your BIS complaint."
+  },
+  {
+    "id": "CON-026",
+    "role": "consumer",
+    "category": "Voluntary Marks",
+    "question": "I saw an 'ECO Mark' on a product next to the ISI mark - what does that mean?",
+    "answer": "The ECO Mark is a voluntary environmental label BIS issues alongside the ISI mark for products like soaps, batteries, paints, and packaging that meet defined environment-friendliness criteria. It doesn't replace the ISI mark - it's an additional green-quality signal."
+  },
+  {
+    "id": "CON-027",
+    "role": "consumer",
+    "category": "Wiring & Electrical Fittings",
+    "question": "What certification should electrical switches and switchgear in my home have?",
+    "answer": "Low-voltage switchgear and controlgear, including domestic circuit breakers and switches, fall under IS-13947 and require mandatory ISI Mark certification given the safety risk of uncertified electrical fittings."
+  },
+  {
+    "id": "CON-028",
+    "role": "consumer",
+    "category": "Food Products",
+    "question": "Is infant milk food or baby formula covered by BIS certification?",
+    "answer": "Yes, infant milk food is covered under IS-1553 with mandatory ISI Mark certification, given the sensitivity of this product category. Always check for the ISI mark and batch details on the packaging."
+  }
+]

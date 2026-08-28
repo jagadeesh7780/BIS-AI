@@ -1,0 +1,430 @@
+{
+  "isi-mark": {
+    "id": "isi-mark",
+    "name": "ISI Mark Scheme (Scheme I)",
+    "short": "ISI-MARK",
+    "description": "The primary BIS certification for domestic manufacturers, covering products under mandatory or voluntary Indian Standards. Certifies that a product conforms to the relevant IS specification.",
+    "applicable_products": "Domestic manufacturers with a notified Indian Standard, over 600 mandatory product types",
+    "typical_duration": "4 to 6 months",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Apply online via the BIS Manak Online portal",
+        "description": "Apply online via the BIS Manak Online portal",
+        "duration": "4 to 6 months",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: Submit test reports from a BIS-recognized lab",
+        "description": "Submit test reports from a BIS-recognized laboratory",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Factory inspection by BIS officers",
+        "description": "Factory inspection by BIS officers",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: Sample testing verification",
+        "description": "Sample testing verification",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Step 5: Grant of license and ISI mark usage rights",
+        "description": "Grant of license and ISI mark usage rights",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  },
+  "crs": {
+    "id": "crs",
+    "name": "Compulsory Registration Scheme (CRS / Scheme II)",
+    "short": "CRS",
+    "description": "A simplified, self-declaration-based registration scheme for electronics and IT products, lighter than full ISI licensing, based on lab test reports rather than factory inspection.",
+    "applicable_products": "Electronics and IT hardware products notified by MeitY, over 70 product categories",
+    "typical_duration": "1 to 2 months",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Product testing at a BIS-recognized lab",
+        "description": "Product testing at a BIS-recognized lab",
+        "duration": "1 to 2 months",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: Application submission on the BIS CRS portal",
+        "description": "Application submission on the BIS CRS portal",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Document and test report verification",
+        "description": "Document and test report verification",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: Registration number granted",
+        "description": "Registration number granted",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Step 5: Product marking with registration number and ",
+        "description": "Product marking with registration number and BIS logo",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  },
+  "hallmarking": {
+    "id": "hallmarking",
+    "name": "Hallmarking Scheme",
+    "short": "HALLMARKING",
+    "description": "Mandatory certification scheme for gold and silver jewellery, verifying purity and fineness of precious metal articles through Assaying and Hallmarking Centres.",
+    "applicable_products": "Gold and silver jewellery and artefacts sold by registered jewellers",
+    "typical_duration": "Few hours to a few days per batch",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Jeweller registers with BIS as a Hallmarking ",
+        "description": "Jeweller registers with BIS as a Hallmarking applicant",
+        "duration": "Few hours to a few days per batch",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: Article submitted to an Assaying and Hallmark",
+        "description": "Article submitted to an Assaying and Hallmarking Centre (AHC)",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Purity testing conducted at the centre",
+        "description": "Purity testing conducted at the centre",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: Hallmark stamped on approved articles",
+        "description": "Hallmark stamped on approved articles",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Step 5: HUID (Hallmark Unique Identification) number ",
+        "description": "HUID (Hallmark Unique Identification) number generated",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  },
+  "fmcs": {
+    "id": "fmcs",
+    "name": "Foreign Manufacturers Certification Scheme (FMCS)",
+    "short": "FMCS",
+    "description": "The ISI Mark route for manufacturing units located outside India that wish to sell mandatorily certified products in the Indian market.",
+    "applicable_products": "Non-Indian manufacturers exporting mandatory-certification products to India",
+    "typical_duration": "4 to 8 months, depending on inspection scheduling",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Appoint an Authorized Indian Representative (",
+        "description": "Appoint an Authorized Indian Representative (AIR)",
+        "duration": "4 to 8 months, depending on inspection scheduling",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: Submit application with technical documentati",
+        "description": "Submit application with technical documentation via Manak Online",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Product testing at a BIS-recognized or approv",
+        "description": "Product testing at a BIS-recognized or approved overseas lab",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: Factory inspection at the overseas manufactur",
+        "description": "Factory inspection at the overseas manufacturing site",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Step 5: Grant of license; certified products carry th",
+        "description": "Grant of license; certified products carry the same ISI mark as domestic ones",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  },
+  "eco-mark": {
+    "id": "eco-mark",
+    "name": "ECO Mark Scheme",
+    "short": "ECO-MARK",
+    "description": "A voluntary eco-labelling scheme, issued alongside the ISI mark, identifying products that meet defined environmental-friendliness criteria across categories like soaps, batteries, and packaging.",
+    "applicable_products": "Environment-friendly products in notified categories (soaps and detergents, batteries, paints, packaging materials, textiles, and others)",
+    "typical_duration": "Varies; generally processed alongside ISI Mark applications",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Manufacturer applies for ECO Mark alongside o",
+        "description": "Manufacturer applies for ECO Mark alongside or after ISI certification",
+        "duration": "Varies; generally processed alongside ISI Mark applications",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: Product assessed against environment-specific",
+        "description": "Product assessed against environment-specific criteria for its category",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Verification of compliance with the relevant ",
+        "description": "Verification of compliance with the relevant Indian Standard",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: ECO Mark granted for display alongside the IS",
+        "description": "ECO Mark granted for display alongside the ISI mark",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  },
+  "scheme-x": {
+    "id": "scheme-x",
+    "name": "Scheme X (Omnibus Technical Regulation)",
+    "short": "SCHEME-X",
+    "description": "Certification scheme for machinery, industrial, and electrical equipment under the Machinery and Electrical Equipment Safety (Omnibus Technical Regulation) Order, covering high-risk industrial equipment.",
+    "applicable_products": "Machinery, industrial, and electrical equipment notified under the Omnibus Technical Regulation Order",
+    "typical_duration": "Certificate of Conformity valid for 3 years",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Technical documentation and conformity assess",
+        "description": "Technical documentation and conformity assessment submitted",
+        "duration": "Certificate of Conformity valid for 3 years",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: Product tested against applicable Type A, B, ",
+        "description": "Product tested against applicable Type A, B, or C safety standards",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Certificate of Conformity (CoC) issued upon c",
+        "description": "Certificate of Conformity (CoC) issued upon compliance",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: Standard Mark applied per Scheme X labelling ",
+        "description": "Standard Mark applied per Scheme X labelling requirements",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Step 5: Ongoing market surveillance by BIS",
+        "description": "Ongoing market surveillance by BIS",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  },
+  "systems-certification": {
+    "id": "systems-certification",
+    "name": "Management Systems Certification",
+    "short": "SYSTEMS-CERTIFICATION",
+    "description": "Voluntary certification of an organization's quality, environmental, food safety, or information security management systems against the relevant Indian Standard (often aligned with ISO equivalents).",
+    "applicable_products": "Organizations across sectors seeking QMS, EMS, FSMS, or ISMS certification",
+    "typical_duration": "3 to 6 months for initial certification",
+    "governing_body": "Bureau of Indian Standards (BIS)",
+    "legal_basis": "BIS Act 2016, Quality Control Orders (QCOs)",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Step 1: Organization applies with system documentatio",
+        "description": "Organization applies with system documentation",
+        "duration": "3 to 6 months for initial certification",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Step 2: BIS auditors conduct an assessment audit of t",
+        "description": "BIS auditors conduct an assessment audit of the management system",
+        "duration": "Varies",
+        "documents": [
+          "Application form",
+          "Test reports",
+          "Quality manual"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Step 3: Non-conformities, if any, are corrected and v",
+        "description": "Non-conformities, if any, are corrected and verified",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Step 4: Certification granted with periodic surveilla",
+        "description": "Certification granted with periodic surveillance audits",
+        "duration": "Varies",
+        "documents": [
+          "Factory audit checklist",
+          "Sample test verification report"
+        ]
+      }
+    ]
+  }
+}

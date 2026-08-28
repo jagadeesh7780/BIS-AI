@@ -1,0 +1,29 @@
+﻿# Environment Variables
+.env
+*/.env
+*.env.local
+
+# Python
+backend/venv/
+venv/
+ENV/
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*.class
+*.so
+backend/chroma_db/
+
+# Node & Frontend
+node_modules/
+*/node_modules/
+dist/
+*/dist/
+.vite/
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
