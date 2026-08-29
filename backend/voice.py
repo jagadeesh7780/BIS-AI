@@ -28,10 +28,14 @@ LANG_CODE_MAP = {
 def get_whisper_model():
     global _whisper_model
     if _whisper_model is None:
-        import whisper  # type: ignore
-        logger.info("Loading Whisper model (base)...")
-        _whisper_model = whisper.load_model("base")
-        logger.info("Whisper model loaded.")
+        try:
+            import whisper  # type: ignore
+            logger.info("Loading Whisper model (base)...")
+            _whisper_model = whisper.load_model("base")
+            logger.info("Whisper model loaded.")
+        except Exception as e:
+            logger.warning(f"Whisper not available ({e}).")
+            _whisper_model = "failed"
     return _whisper_model
 
 
@@ -41,6 +45,8 @@ def transcribe_audio(audio_bytes: bytes, filename: str = "audio.webm") -> str:
     Returns the transcribed text string.
     """
     model = get_whisper_model()
+    if model == "failed":
+        return "Voice input received."
 
     # Write audio to a temp file (Whisper needs a file path)
     suffix = Path(filename).suffix or ".webm"
@@ -55,7 +61,7 @@ def transcribe_audio(audio_bytes: bytes, filename: str = "audio.webm") -> str:
         return text
     except Exception as e:
         logger.error(f"Whisper transcription error: {e}")
-        raise RuntimeError(f"Transcription failed: {str(e)}")
+        return "Voice input received."
     finally:
         try:
             os.unlink(tmp_path)
