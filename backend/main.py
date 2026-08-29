@@ -7,9 +7,17 @@ import os
 import sys
 import json
 import time
+import asyncio
 import logging
 from pathlib import Path
 from typing import Optional, List, Dict, Any
+
+# Ensure backend directory is in sys.path for direct imports (rag, supervisor, voice, etc.)
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+
+# Disable telemetry before importing chromadb to prevent PostHog crashes
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+os.environ["CHROMA_TELEMETRY"] = "false"
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -43,11 +51,37 @@ else:
 # Data directory
 DATA_DIR = Path(__file__).parent / "data"
 
+from contextlib import asynccontextmanager
+
+# ─── Startup: pre-load embeddings & vector DB (non-blocking) ──────────────────
+async def _async_startup_warmup():
+    try:
+        from rag import ingest_all_datasets, get_embedding_model, get_chroma_collection
+        # Run CPU warmup and batch ingestion in thread pool
+        await asyncio.to_thread(get_embedding_model)
+        await asyncio.to_thread(ingest_all_datasets)
+        try:
+            collection = get_chroma_collection()
+            logger.info(f"✅ ChromaDB ready with {collection.count()} knowledge chunks.")
+        except Exception as db_err:
+            logger.info(f"ℹ️ Vector DB note: {db_err}")
+    except Exception as e:
+        logger.error(f"Startup background initialization error: {e}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("BIS Assistant AI server started. Binding to port and warming up services...")
+    asyncio.create_task(_async_startup_warmup())
+    yield
+
+
 # ─── FastAPI App ──────────────────────────────────────────────────────────────
 app = FastAPI(
     title="BIS Assistant AI",
     description="AI-powered API for Bureau of Indian Standards guidance across Standards, FAQs, Schemes, and Labs",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -58,6 +92,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # ─── Request logging middleware ───────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -66,20 +101,6 @@ async def log_requests(request: Request, call_next):
     elapsed = round(time.time() - start, 3)
     logger.info(f"{request.method} {request.url.path} → {response.status_code} ({elapsed}s)")
     return response
-
-
-# ─── Startup: pre-load embeddings & vector DB ─────────────────────────────────
-@app.on_event("startup")
-async def startup_event():
-    logger.info("BIS Assistant AI starting up...")
-    try:
-        from rag import ingest_all_datasets, get_embedding_model, get_chroma_collection
-        get_embedding_model()     # warm up embedding model
-        ingest_all_datasets()     # ingest if not already done
-        collection = get_chroma_collection()
-        logger.info(f"✅ ChromaDB ready with {collection.count()} knowledge chunks.")
-    except Exception as e:
-        logger.error(f"Startup error: {e}")
 
 
 # ─── Pydantic Models ──────────────────────────────────────────────────────────
@@ -792,7 +813,7 @@ async def verify_consumer_product(req: Dict[str, Any]):
         from supervisor import consumer_orchestrator
         query = req.get("query") or "ISI mark verification"
         query_type = req.get("query_type") or "auto"
-        res = consumer_orchestrator.verify_product(query=query, query_type=query_type)
+        res = await consumer_orchestrator.verify_product(query=query, query_type=query_type)
         return res
     except Exception as e:
         logger.error(f"Consumer verification error: {e}", exc_info=True)
@@ -807,7 +828,9 @@ async def orchestrate_agents(req: Dict[str, Any]):
 
 # ─── Run ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    reload = os.environ.get("ENVIRONMENT", "").lower() == "development"
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=reload)
 
 
 

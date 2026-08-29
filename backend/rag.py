@@ -18,7 +18,14 @@ import math
 import logging
 import hashlib
 from pathlib import Path
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, cast
+
+# Ensure backend directory is in sys.path for direct imports (translate, etc.)
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+
+# Disable telemetry before importing chromadb to prevent PostHog crashes
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+os.environ["CHROMA_TELEMETRY"] = "false"
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -69,6 +76,7 @@ _embedding_model = None
 _chroma_client = None
 _collection = None
 _groq_client = None
+_in_memory_corpus: List[Dict[str, Any]] = []
 
 
 def get_embedding_model():
@@ -91,7 +99,7 @@ def get_embedding_model():
 def _simple_embed(text: str, dim: int = 384) -> List[float]:
     """Fast deterministic TF-IDF / subword hash embedding (384-dimensional)."""
     vec = [0.0] * dim
-    words = text.lower().replace("-", " ").replace("_", " ").split()
+    words = str(text).lower().replace("-", " ").replace("_", " ").split()
     for word in words:
         if len(word) < 2:
             continue
@@ -112,11 +120,11 @@ def _simple_embed(text: str, dim: int = 384) -> List[float]:
 def embed(text: str) -> List[float]:
     if not text or not str(text).strip():
         return [0.0] * 384
-    model = get_embedding_model()
-    if model == "tfidf_fallback":
+    model_obj: Any = get_embedding_model()
+    if model_obj == "tfidf_fallback":
         return _simple_embed(text)
     try:
-        encoded = model.encode(str(text))
+        encoded = model_obj.encode(str(text))
         tolist_fn = getattr(encoded, "tolist", None)
         if callable(tolist_fn):
             raw = tolist_fn()
@@ -127,6 +135,29 @@ def embed(text: str) -> List[float]:
         return _simple_embed(text)
     except Exception:
         return _simple_embed(text)
+
+
+def embed_batch(texts: List[str], batch_size: int = 32) -> List[List[float]]:
+    """Embed a list of text strings in fast vectorized batches."""
+    if not texts:
+        return []
+    clean_texts = [str(t) if t and str(t).strip() else " " for t in texts]
+    model_obj: Any = get_embedding_model()
+    if model_obj == "tfidf_fallback":
+        return [_simple_embed(t) for t in clean_texts]
+    try:
+        encoded = model_obj.encode(clean_texts, batch_size=batch_size, show_progress_bar=False)
+        tolist_fn = getattr(encoded, "tolist", None)
+        if callable(tolist_fn):
+            raw = tolist_fn()
+            if isinstance(raw, (list, tuple)):
+                return [[float(x) for x in item] for item in raw]
+        if isinstance(encoded, (list, tuple)):
+            return [[float(x) for x in item] for item in encoded]
+        return [_simple_embed(t) for t in clean_texts]
+    except Exception as e:
+        logger.warning(f"Batch embedding failed ({e}), using TF-IDF fallback.")
+        return [_simple_embed(t) for t in clean_texts]
 
 
 def get_chroma_client():
@@ -187,7 +218,7 @@ def get_groq_client():
 # ─── Dataset Ingestion ────────────────────────────────────────────────────────
 def ingest_all_datasets(force_reingest: bool = False):
     """
-    Ingests all 6 datasets:
+    Ingests all 6 datasets in fast vectorized batches:
     1. Standards (52+ Indian Standards)
     2. Manufacturer FAQs (35 items)
     3. Consumer FAQs (28 items)
@@ -195,14 +226,16 @@ def ingest_all_datasets(force_reingest: bool = False):
     5. Certification Schemes (7 schemes)
     6. BIS 2026 Services (30 services)
     """
-    collection = get_chroma_collection()
+    global _in_memory_corpus
 
-    if not force_reingest and collection.count() >= 130:
-        logger.info(f"ChromaDB already has {collection.count()} knowledge items. Skipping ingestion.")
+    if not force_reingest and len(_in_memory_corpus) >= 130:
+        logger.info(f"Knowledge base already has {len(_in_memory_corpus)} items. Skipping ingestion.")
         return
 
-    logger.info("Ingesting comprehensive BIS datasets into ChromaDB...")
-    ids, docs, embeddings, metadatas = [], [], [], []
+    logger.info("Ingesting comprehensive BIS datasets...")
+    ids: List[str] = []
+    docs: List[str] = []
+    metadatas: List[Dict[str, Any]] = []
 
     # 1. Ingest Standards
     standards_file = DATA_DIR / "standards.json"
@@ -221,7 +254,6 @@ def ingest_all_datasets(force_reingest: bool = False):
             doc_id = f"STD-{std['id']}"
             ids.append(doc_id)
             docs.append(blob)
-            embeddings.append(embed(blob))
             metadatas.append({
                 "id": std["id"],
                 "number": std.get("number", std["id"]),
@@ -247,7 +279,6 @@ def ingest_all_datasets(force_reingest: bool = False):
             doc_id = f"FAQ-MFR-{item['id']}"
             ids.append(doc_id)
             docs.append(blob)
-            embeddings.append(embed(blob))
             metadatas.append({
                 "id": item["id"],
                 "number": item["id"],
@@ -273,7 +304,6 @@ def ingest_all_datasets(force_reingest: bool = False):
             doc_id = f"FAQ-CON-{item['id']}"
             ids.append(doc_id)
             docs.append(blob)
-            embeddings.append(embed(blob))
             metadatas.append({
                 "id": item["id"],
                 "number": item["id"],
@@ -299,7 +329,6 @@ def ingest_all_datasets(force_reingest: bool = False):
             doc_id = f"FAQ-STU-{item['id']}"
             ids.append(doc_id)
             docs.append(blob)
-            embeddings.append(embed(blob))
             metadatas.append({
                 "id": item["id"],
                 "number": item["id"],
@@ -319,7 +348,7 @@ def ingest_all_datasets(force_reingest: bool = False):
         schemes_list = schemes_data.values() if isinstance(schemes_data, dict) else schemes_data
         for s in schemes_list:
             steps_text = " | ".join([
-                st.get("description", st.get("title", "")) if isinstance(st, dict) else str(st)
+                str(st.get("description") or st.get("title") or "") if isinstance(st, dict) else str(st)
                 for st in s.get("steps", [])
             ])
             blob = (
@@ -333,7 +362,6 @@ def ingest_all_datasets(force_reingest: bool = False):
             doc_id = f"SCHEME-{s.get('id', '')}"
             ids.append(doc_id)
             docs.append(blob)
-            embeddings.append(embed(blob))
             metadatas.append({
                 "id": s.get("id", ""),
                 "number": s.get("short", s.get("id", "").upper()),
@@ -365,7 +393,6 @@ def ingest_all_datasets(force_reingest: bool = False):
             doc_id = f"SRV-{srv.get('id', srv.get('service_subcategory', ''))}"
             ids.append(doc_id)
             docs.append(blob)
-            embeddings.append(embed(blob))
             metadatas.append({
                 "id": srv.get("id", ""),
                 "number": srv.get("id", srv.get("service_subcategory", "")),
@@ -378,8 +405,23 @@ def ingest_all_datasets(force_reingest: bool = False):
         logger.info(f"Loaded {len(srv_list)} BIS 2026 services.")
 
     if ids:
-        collection.upsert(ids=ids, documents=docs, embeddings=embeddings, metadatas=metadatas)
-        logger.info(f"✅ Successfully indexed {len(ids)} knowledge chunks into ChromaDB (Total: {collection.count()}).")
+        logger.info(f"Generating batch embeddings for {len(docs)} documents...")
+        embeddings = embed_batch(docs, batch_size=32)
+        _in_memory_corpus = [
+            {"id": ids[i], "doc": docs[i], "metadata": metadatas[i], "embedding": embeddings[i]}
+            for i in range(len(ids))
+        ]
+        try:
+            collection = get_chroma_collection()
+            cast(Any, collection).upsert(
+                ids=ids,
+                documents=docs,
+                embeddings=cast(Any, embeddings),
+                metadatas=cast(Any, metadatas)
+            )
+            logger.info(f"✅ Successfully indexed {len(ids)} knowledge chunks into ChromaDB (Total: {collection.count()}).")
+        except Exception as e:
+            logger.info(f"✅ Indexed {len(_in_memory_corpus)} knowledge chunks into in-memory vector store ({e}).")
 
 
 # Backward compatibility alias
@@ -390,52 +432,87 @@ def ingest_standards():
 # ─── Retrieval ────────────────────────────────────────────────────────────────
 def retrieve(query: str, top_k: int = 5, role_filter: Optional[str] = None) -> List[Dict]:
     """Retrieve the most relevant knowledge items (standards, FAQs, schemes) for a query."""
-    collection = get_chroma_collection()
-    count = collection.count()
-    if count == 0:
-        ingest_all_datasets()
+    q_emb = embed(query)
+
+    # Try ChromaDB first if available
+    try:
+        collection = get_chroma_collection()
         count = collection.count()
         if count == 0:
-            return []
+            ingest_all_datasets()
+            count = collection.count()
 
-    q_emb = embed(query)
-    n_res = max(1, min(top_k, count))
+        if count > 0:
+            n_res = max(1, min(top_k, count))
+            kwargs: Dict[str, Any] = {
+                "query_embeddings": [q_emb],
+                "n_results": n_res,
+                "include": ["documents", "metadatas", "distances"]
+            }
+            results = cast(Any, collection).query(**kwargs)
+            out = []
+            if results and results.get("ids") and len(results["ids"]) > 0:
+                ids_group = results["ids"][0]
+                distances_group = results.get("distances") or [[]]
+                metadatas_group = results.get("metadatas") or [[]]
+                documents_group = results.get("documents") or [[]]
+                for i in range(len(ids_group)):
+                    dist = distances_group[0][i] if len(distances_group[0]) > i else 0.0
+                    confidence = max(0, min(100, round((1.0 - (dist / 2.0)) * 100)))
+                    meta = metadatas_group[0][i] if (len(metadatas_group[0]) > i and metadatas_group[0][i]) else {}
+                    item_role = meta.get("role", "all") if isinstance(meta, dict) else "all"
+                    if role_filter and role_filter != "all" and item_role not in (role_filter, "all"):
+                        continue
+                    doc_text = documents_group[0][i] if len(documents_group[0]) > i else ""
+                    out.append({
+                        "id": meta.get("id", "") if isinstance(meta, dict) else "",
+                        "number": meta.get("number", meta.get("id", "")) if isinstance(meta, dict) else "",
+                        "title": meta.get("title", "") if isinstance(meta, dict) else "",
+                        "category": meta.get("category", "") if isinstance(meta, dict) else "",
+                        "certification_scheme": meta.get("certification_scheme", "") if isinstance(meta, dict) else "",
+                        "type": meta.get("type", "standard") if isinstance(meta, dict) else "standard",
+                        "confidence": confidence,
+                        "text": doc_text,
+                    })
+            if out:
+                return out
+    except Exception:
+        pass
 
-    kwargs: Dict[str, Any] = {
-        "query_embeddings": [q_emb],
-        "n_results": n_res,
-        "include": ["documents", "metadatas", "distances"]
-    }
+    # In-memory vector similarity fallback
+    if not _in_memory_corpus:
+        ingest_all_datasets()
 
-    results = collection.query(**kwargs)
+    scored = []
+    for item in _in_memory_corpus:
+        meta = item["metadata"]
+        item_role = meta.get("role", "all") if isinstance(meta, dict) else "all"
+        if role_filter and role_filter != "all" and item_role not in (role_filter, "all"):
+            continue
+        v1 = q_emb
+        v2 = item["embedding"]
+        dot = sum(a * b for a, b in zip(v1, v2))
+        norm1 = math.sqrt(sum(a * a for a in v1)) or 1.0
+        norm2 = math.sqrt(sum(b * b for b in v2)) or 1.0
+        sim = dot / (norm1 * norm2)
+        confidence = max(0, min(100, round(sim * 100)))
+        scored.append((confidence, item))
 
-    out = []
-    if results and results.get("ids") and len(results["ids"]) > 0:
-        ids_group = results["ids"][0]
-        distances_group = results.get("distances") or [[]]
-        metadatas_group = results.get("metadatas") or [[]]
-        documents_group = results.get("documents") or [[]]
-
-        for i in range(len(ids_group)):
-            dist = distances_group[0][i] if len(distances_group[0]) > i else 0.0
-            # Convert cosine distance to 0-100 confidence score
-            confidence = max(0, min(100, round((1.0 - (dist / 2.0)) * 100)))
-            meta = metadatas_group[0][i] if (len(metadatas_group[0]) > i and metadatas_group[0][i]) else {}
-            item_role = meta.get("role", "all") if isinstance(meta, dict) else "all"
-            if role_filter and role_filter != "all" and item_role not in (role_filter, "all"):
-                continue
-            doc_text = documents_group[0][i] if len(documents_group[0]) > i else ""
-            out.append({
-                "id": meta.get("id", "") if isinstance(meta, dict) else "",
-                "number": meta.get("number", meta.get("id", "")) if isinstance(meta, dict) else "",
-                "title": meta.get("title", "") if isinstance(meta, dict) else "",
-                "category": meta.get("category", "") if isinstance(meta, dict) else "",
-                "certification_scheme": meta.get("certification_scheme", "") if isinstance(meta, dict) else "",
-                "type": meta.get("type", "standard") if isinstance(meta, dict) else "standard",
-                "confidence": confidence,
-                "text": doc_text,
-            })
-    return out
+    scored.sort(key=lambda x: x[0], reverse=True)
+    top_items = scored[:top_k]
+    return [
+        {
+            "id": it["metadata"].get("id", ""),
+            "number": it["metadata"].get("number", it["metadata"].get("id", "")),
+            "title": it["metadata"].get("title", ""),
+            "category": it["metadata"].get("category", ""),
+            "certification_scheme": it["metadata"].get("certification_scheme", ""),
+            "type": it["metadata"].get("type", "standard"),
+            "confidence": conf,
+            "text": it["doc"],
+        }
+        for conf, it in top_items
+    ]
 
 
 # Aliases for different components
@@ -573,48 +650,64 @@ async def generate_rag_answer(query: str, language: str = "en", role: Optional[s
         context = "No specific match found in database."
 
     # 4. Generate answer using Groq
-    groq = get_groq_client()
-    candidate_models = [
-        "qwen/qwen3.8-27b",
-        "openai/gpt-oss-120b",
-        "qwen/qwen3.6-27b",
-        "openai/gpt-oss-20b",
-    ]
-
     answer_en = None
     last_err = None
+    try:
+        groq = get_groq_client()
+    except Exception as g_err:
+        groq = None
+        last_err = g_err
 
-    sys_prompt = SYSTEM_PROMPT
-    if role_instruction:
-        sys_prompt = f"{SYSTEM_PROMPT}\n\nSPECIALIZED AGENT DIRECTIVE:\n{role_instruction}"
+    if groq:
+        groq_any: Any = groq
+        candidate_models = [
+            "qwen/qwen3.8-27b",
+            "openai/gpt-oss-120b",
+            "qwen/qwen3.6-27b",
+            "openai/gpt-oss-20b",
+        ]
 
-    for model_name in candidate_models:
-        try:
-            completion = groq.chat.completions.create(
-                model=model_name,
-                messages=[
-                    {"role": "system", "content": sys_prompt},
-                    {"role": "user", "content": (
-                        f"Official BIS Knowledge Context:\n{context}\n\n"
-                        f"User Question: {en_query}\n\n"
-                        f"Provide a clear, accurate, and structured answer directly citing specific IS standards, portal steps, and verification procedures where applicable. Do NOT output thinking steps:"
-                    )}
-                ],
-                temperature=0.2,
-                max_tokens=2048,
-            )
-            raw_text = completion.choices[0].message.content or ""
-            cleaned = _clean_llm_response(raw_text)
-            answer_en = cleaned or raw_text.strip()
-            if answer_en:
-                break
-        except Exception as e:
-            logger.warning(f"Model {model_name} failed: {e}. Trying next model...")
-            last_err = e
+        sys_prompt = SYSTEM_PROMPT
+        if role_instruction:
+            sys_prompt = f"{SYSTEM_PROMPT}\n\nSPECIALIZED AGENT DIRECTIVE:\n{role_instruction}"
+
+        for model_name in candidate_models:
+            try:
+                completion = groq_any.chat.completions.create(
+                    model=model_name,
+                    messages=[
+                        {"role": "system", "content": sys_prompt},
+                        {"role": "user", "content": (
+                            f"Official BIS Knowledge Context:\n{context}\n\n"
+                            f"User Question: {en_query}\n\n"
+                            f"Provide a clear, accurate, and structured answer directly citing specific IS standards, portal steps, and verification procedures where applicable. Do NOT output thinking steps:"
+                        )}
+                    ],
+                    temperature=0.2,
+                    max_tokens=2048,
+                )
+                raw_text = completion.choices[0].message.content or ""
+                cleaned = _clean_llm_response(raw_text)
+                answer_en = cleaned or raw_text.strip()
+                if answer_en:
+                    break
+            except Exception as e:
+                logger.warning(f"Model {model_name} failed: {e}. Trying next model...")
+                last_err = e
 
     if not answer_en:
-        logger.error(f"All Groq models failed: {last_err}")
-        raise RuntimeError(f"AI service unavailable: {last_err}")
+        if retrieved:
+            top = retrieved[0]
+            answer_en = (
+                f"Based on official BIS records:\n\n"
+                f"**Standard / Reference**: {top.get('number', '')} — {top.get('title', '')}\n"
+                f"**Category / Scheme**: {top.get('category', '')} ({top.get('certification_scheme', 'ISI Mark')})\n\n"
+                f"{top.get('text', '')}\n\n"
+                f"For official verification and application submission, visit the BIS Manak Online portal (https://www.manakonline.in) or call the National Toll-Free Helpline (1800-11-4070)."
+            )
+        else:
+            logger.error(f"All Groq models failed: {last_err}")
+            raise RuntimeError(f"AI service unavailable: {last_err}")
 
     # 5. Translate back to requested language
     final_answer = translate_from_english(answer_en, language)
@@ -645,7 +738,17 @@ async def generate_rag_answer(query: str, language: str = "en", role: Optional[s
 def answer_query(query: str, top_k: int = 5, role: Optional[str] = None) -> Dict:
     """Synchronous helper for standalone scripts."""
     import asyncio
-    return asyncio.run(generate_rag_answer(query, "en", role=role))
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            return pool.submit(asyncio.run, generate_rag_answer(query, "en", role=role)).result()
+    else:
+        return asyncio.run(generate_rag_answer(query, "en", role=role))
 
 
 if __name__ == "__main__":

@@ -68,6 +68,7 @@ def get_clip_model():
     global _clip_model
     if _clip_model is None:
         try:
+            # pyrefly: ignore [missing-import]
             from sentence_transformers import SentenceTransformer
             logger.info("Loading CLIP model (clip-ViT-B-32)...")
             _clip_model = SentenceTransformer("clip-ViT-B-32")
@@ -101,6 +102,7 @@ def classify_image_clip(image_bytes: bytes) -> Tuple[str, float]:
         text_embeddings = model.encode(CLIP_LABELS)  # type: ignore
 
         # Compute cosine similarities
+        # pyrefly: ignore [missing-import]
         from sentence_transformers import util
         similarities = util.cos_sim(img_embedding, text_embeddings)[0].numpy()  # type: ignore
 

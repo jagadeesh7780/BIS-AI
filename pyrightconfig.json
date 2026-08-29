@@ -1,6 +1,6 @@
 {
-  "include": ["."],
-  "extraPaths": [".", "backend"],
+  "include": ["backend"],
+  "extraPaths": ["backend", "."],
   "reportMissingImports": "none",
   "reportMissingTypeStubs": "none",
   "reportUnknownMemberType": "none"

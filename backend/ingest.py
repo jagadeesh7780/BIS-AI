@@ -12,9 +12,14 @@ Usage:
     python ingest.py
 """
 
+import os
 import sys
 import logging
 from dotenv import load_dotenv
+
+# Disable telemetry before importing chromadb to prevent PostHog crashes
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+os.environ["CHROMA_TELEMETRY"] = "false"
 
 if hasattr(sys.stdout, "reconfigure"):
     try:

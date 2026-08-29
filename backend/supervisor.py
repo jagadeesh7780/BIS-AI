@@ -728,12 +728,12 @@ class ConsumerSupervisorOrchestrator:
     def __init__(self):
         pass
 
-    def verify_product(self, query: str, query_type: str = "auto") -> Dict[str, Any]:
+    async def verify_product(self, query: str, query_type: str = "auto") -> Dict[str, Any]:
         t0 = time.time()
-        from rag import retrieve, answer_query
+        from rag import retrieve, generate_rag_answer
 
         retrieved = retrieve(f"Verification of {query} {query_type}", top_k=3)
-        res = answer_query(f"How do I verify {query} for consumer protection and authenticity?")
+        res = await generate_rag_answer(f"How do I verify {query} for consumer protection and authenticity?")
         answer = res.get("answer", "")
 
         elapsed_ms = int((time.time() - t0) * 1000)
