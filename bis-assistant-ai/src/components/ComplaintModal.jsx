@@ -7,9 +7,16 @@ import {
 import { useLang } from '../context/LanguageContext'
 import { submitComplaint, triageConsumerComplaint } from '../api/client'
 
+const COMPLAINT_CATEGORIES = [
+  { id: 'isi', label: 'ISI Mark Violation', badge: 'Scheme I (ISI)', icon: ShieldAlert, desc: 'Fake ISI marks, missing CM/L number, substandard product quality' },
+  { id: 'hallmarking', label: 'Gold Hallmarking Violation', badge: 'Hallmark & HUID', icon: Sparkles, desc: 'Fake hallmark logo, missing 6-digit HUID, gold purity mismatch' },
+  { id: 'crs', label: 'CRS Electronics Scheme', badge: 'Compulsory Reg (CRS)', icon: AlertTriangle, desc: 'Unregistered IT goods, invalid R-number, electrical safety hazards' },
+]
+
 export default function ComplaintModal({ onClose, onSubmitted, initialData = {} }) {
   const { t } = useLang()
   const [mode, setMode] = useState('camera') // 'camera' or 'upload'
+  const [category, setCategory] = useState(initialData.category || 'isi')
   const [form, setForm] = useState({
     contactNumber: initialData.contactNumber || '',
     isiNumber: initialData.isiNumber || '',
@@ -23,6 +30,8 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
   const [cameraError, setCameraError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [successData, setSuccessData] = useState(null)
+
+  const activeCategory = COMPLAINT_CATEGORIES.find(c => c.id === category) || COMPLAINT_CATEGORIES[0]
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -110,6 +119,8 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
         description: form.description,
         isi_number: form.isiNumber,
         product_name: form.productName,
+        category: category,
+        category_name: activeCategory.label,
         photo_type: mode,
         photo_data: form.photoData
       })
@@ -122,7 +133,7 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
         success: true,
         complaint_id: fallbackId,
         status: 'Registered & Assigned to Enforcement Cell',
-        details: { ...form, complaint_id: fallbackId }
+        details: { ...form, category, category_name: activeCategory.label, complaint_id: fallbackId }
       }
       setSuccessData(fallbackRes)
       if (onSubmitted) onSubmitted(fallbackRes)
@@ -200,7 +211,7 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
-            {/* Two Photo Options: Camera vs Upload */}
+            {/* Photo Evidence (2 Options) */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
                 Photo Evidence (2 Options)
@@ -209,24 +220,24 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
                 <button
                   type="button"
                   onClick={() => { setMode('camera'); setForm(f => ({ ...f, photoPreview: null })) }}
-                  className={`py-2.5 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 border transition-all ${
+                  className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
                     mode === 'camera'
-                      ? 'bg-navy-900 text-white border-navy-900 shadow-sm'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-[#0f4bb4] hover:bg-[#0c3d94] text-white border-[#0f4bb4] shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                   }`}
                 >
-                  <Camera size={14} /> {t('comp_option_camera')}
+                  <Camera size={15} /> 📷 Take Camera Photo
                 </button>
                 <button
                   type="button"
                   onClick={() => { setMode('upload'); stopCamera(); setForm(f => ({ ...f, photoPreview: null })) }}
-                  className={`py-2.5 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 border transition-all ${
+                  className={`py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
                     mode === 'upload'
-                      ? 'bg-navy-900 text-white border-navy-900 shadow-sm'
-                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-[#0f4bb4] hover:bg-[#0c3d94] text-white border-[#0f4bb4] shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                   }`}
                 >
-                  <Upload size={14} /> {t('comp_option_upload')}
+                  <Upload size={15} /> 📁 Upload Photo from File
                 </button>
               </div>
 
@@ -238,7 +249,7 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
                     <button
                       type="button"
                       onClick={retakePhoto}
-                      className="absolute bottom-3 right-3 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow hover:bg-red-700 flex items-center gap-1.5"
+                      className="absolute bottom-3 right-3 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow hover:bg-red-700 flex items-center gap-1.5 cursor-pointer"
                     >
                       <RefreshCw size={12} /> {t('comp_retake_btn')}
                     </button>
@@ -256,9 +267,9 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
                       <button
                         type="button"
                         onClick={captureSnapshot}
-                        className="absolute bottom-3 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border-2 border-white transition-all transform hover:scale-105"
+                        className="absolute bottom-3 bg-[#e84133] hover:bg-[#d03528] text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border-2 border-white transition-all transform hover:scale-105 cursor-pointer"
                       >
-                        <Camera size={14} /> {t('comp_capture_btn')}
+                        <Camera size={14} /> Capture Snapshot
                       </button>
                     )}
                   </div>
@@ -284,10 +295,10 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
               </div>
             </div>
 
-            {/* Contact Number */}
+            {/* Contact / Mobile Number */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                {t('comp_phone_label')} <span className="text-red-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Contact / Mobile Number <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -296,28 +307,28 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
                   type="tel"
                   value={form.contactNumber}
                   onChange={e => setForm(f => ({ ...f, contactNumber: e.target.value }))}
-                  placeholder={t('comp_phone_placeholder')}
+                  placeholder="Enter 10-digit mobile number"
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-400 text-sm bg-slate-50 font-medium"
                 />
               </div>
             </div>
 
-            {/* ISI Number or Product Name */}
+            {/* ISI CM/L Number or Standard and Product Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  {t('comp_isi_label')}
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  ISI CM/L Number or Standard (if visible)
                 </label>
                 <input
                   type="text"
                   value={form.isiNumber}
                   onChange={e => setForm(f => ({ ...f, isiNumber: e.target.value }))}
-                  placeholder={t('comp_isi_placeholder')}
+                  placeholder="e.g. CM/L-1234567 or IS 2347"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-400 text-sm bg-slate-50"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                   Product Name / Brand
                 </label>
                 <input
@@ -332,15 +343,15 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
 
             {/* Problem Description */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                {t('comp_desc_label')} <span className="text-red-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Describe the Problem / Issue <span className="text-red-500">*</span>
               </label>
               <textarea
                 required
                 rows={3}
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                placeholder={t('comp_desc_placeholder')}
+                placeholder="Describe what is wrong (e.g. ISI mark missing, product melted, fake logo, purity mismatch)..."
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-400 text-sm bg-slate-50 resize-none leading-relaxed"
               />
             </div>
@@ -350,17 +361,17 @@ export default function ComplaintModal({ onClose, onSubmitted, initialData = {} 
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors"
+                className="flex-1 py-3 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-colors"
               >
-                {t('back')}
+                Back
               </button>
               <button
                 type="submit"
                 disabled={!form.contactNumber.trim() || !form.description.trim() || loading}
-                className="flex-[2] py-3 rounded-xl bg-red-500 hover:bg-red-600 disabled:opacity-40 text-white text-sm font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+                className="flex-[2] py-3 rounded-xl bg-[#fa7070] hover:bg-[#f05c5c] disabled:opacity-40 text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2"
               >
                 {loading ? <RefreshCw size={16} className="animate-spin" /> : <ShieldAlert size={16} />}
-                {loading ? t('comp_submitting') : t('comp_submit_btn')}
+                {loading ? t('comp_submitting') : 'Send Complaint'}
               </button>
             </div>
           </form>

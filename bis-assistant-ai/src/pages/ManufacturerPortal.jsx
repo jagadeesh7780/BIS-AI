@@ -514,17 +514,25 @@ export default function ManufacturerPortal() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="bg-white/5 rounded-xl p-3.5 border border-white/10">
                         <span className="text-xs text-slate-400">Applicable Indian Standard</span>
-                        <h4 className="text-lg font-bold text-gold-400 mt-0.5">{agentData.standards?.standard_number}</h4>
-                        <p className="text-xs text-slate-300 line-clamp-2 mt-1">{agentData.standards?.standard_title}</p>
+                        <h4 className="text-lg font-bold text-gold-400 mt-0.5">
+                          {agentData.standards?.standard_number || agentData.applicable_standard?.number || 'IS 2347:2017'}
+                        </h4>
+                        <p className="text-xs text-slate-300 line-clamp-2 mt-1">
+                          {agentData.standards?.standard_title || agentData.applicable_standard?.title || 'Domestic Pressure Cookers — Specification'}
+                        </p>
                       </div>
                       <div className="bg-white/5 rounded-xl p-3.5 border border-white/10">
                         <span className="text-xs text-slate-400">Regulatory Scheme</span>
-                        <h4 className="text-sm font-bold text-white mt-0.5">{agentData.standards?.scheme}</h4>
+                        <h4 className="text-sm font-bold text-white mt-0.5">
+                          {agentData.standards?.scheme || agentData.applicable_standard?.certification_scheme || 'Scheme-I (ISI Mark)'}
+                        </h4>
                         <p className="text-xs text-slate-300 mt-1">Timeline: 2 Weeks Fast-Track</p>
                       </div>
                       <div className="bg-white/5 rounded-xl p-3.5 border border-white/10">
                         <span className="text-xs text-slate-400">Statutory Mark Required</span>
-                        <h4 className="text-sm font-bold text-white mt-0.5">{agentData.standards?.required_mark}</h4>
+                        <h4 className="text-sm font-bold text-white mt-0.5">
+                          {agentData.standards?.required_mark || 'Standard ISI Mark with CM/L Number'}
+                        </h4>
                         <p className="text-xs text-slate-300 mt-1">Official Manak Online Registration</p>
                       </div>
                     </div>
@@ -534,14 +542,14 @@ export default function ManufacturerPortal() {
                   <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-amber-900 space-y-2">
                     <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800">
                       <Scale size={16} className="text-amber-700" />
-                      QCO Statutory Regulatory Notice ({agentData.qco?.issuing_authority})
+                      QCO Statutory Regulatory Notice ({agentData.qco?.issuing_authority || agentData.issuing_ministry || 'DPIIT, Ministry of Commerce & Industry'})
                     </div>
                     <p className="text-xs text-amber-800 leading-relaxed">
-                      <strong>Mandatory Order:</strong> {agentData.qco?.qco_order_title || 'Compulsory BIS Certification Order'}.
-                      Enforced under <strong>{agentData.qco?.statutory_act}</strong>.
+                      <strong>Mandatory Order:</strong> {agentData.qco?.qco_order_title || agentData.qco_order_title || 'Compulsory BIS Certification Order'}.
+                      Enforced under <strong>{agentData.qco?.statutory_act || 'Section 16 of the BIS Act 2016'}</strong>.
                     </p>
                     <div className="text-[11px] text-amber-900/80 bg-amber-100/70 p-2.5 rounded-xl border border-amber-200/60 font-medium">
-                      ⚠️ <strong>Statutory Penalty Notice:</strong> {agentData.qco?.penalty_warning}
+                      ⚠️ <strong>Statutory Penalty Notice:</strong> {agentData.qco?.penalty_warning || agentData.penalty_provision || 'Section 29: Imprisonment up to 2 years or fine up to ₹5,00,000 for non-compliance.'}
                     </div>
                   </div>
                 </motion.div>

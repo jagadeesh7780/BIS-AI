@@ -140,7 +140,10 @@ export const translations = {
     "standards_view_details": "View Standard Details",
     "standards_no_results": "No Indian Standards found matching your search. Try another product name or keyword.",
     "about_title": "About BIS Assistant AI Platform",
-    "about_subtitle": "Next-generation Bureau of Indian Standards intelligence system powered by multi-agent workflows, ChromaDB semantic vector search, and official 2026 BIS datasets"
+    "about_subtitle": "Next-generation Bureau of Indian Standards intelligence system powered by multi-agent workflows, ChromaDB semantic vector search, and official 2026 BIS datasets",
+    "cert_title": "BIS Certification Schemes & Process",
+    "cert_subtitle": "Comprehensive guidance on BIS certification schemes, application processes, fees, and requirements.",
+    "cert_tracker_btn": "Track Application"
   },
   "hi": {
     "nav_home": "होम",
@@ -282,7 +285,10 @@ export const translations = {
     "standards_view_details": "मानक विवरण देखें",
     "standards_no_results": "आपकी खोज से मेल खाने वाला कोई भारतीय मानक नहीं मिला। कृपया दूसरा उत्पाद नाम दर्ज करें।",
     "about_title": "BIS Assistant AI मंच के बारे में",
-    "about_subtitle": "भारतीय मानक ब्यूरो का अगली पीढ़ी का AI प्लेटफ़ॉर्म — मल्टी-एजेंट आर्किटेक्चर, क्रोमाडीबी वेक्टर सर्च और आधिकारिक BIS डेटासेट द्वारा संचालित"
+    "about_subtitle": "भारतीय मानक ब्यूरो का अगली पीढ़ी का AI प्लेटफ़ॉर्म — मल्टी-एजेंट आर्किटेक्चर, क्रोमाडीबी वेक्टर सर्च और आधिकारिक BIS डेटासेट द्वारा संचालित",
+    "cert_title": "BIS प्रमाणन योजनाएं और प्रक्रिया",
+    "cert_subtitle": "BIS प्रमाणन योजनाओं, आवेदन प्रक्रियाओं, शुल्क और आवश्यकताओं पर व्यापक मार्गदर्शन।",
+    "cert_tracker_btn": "आवेदन ट्रैक करें"
   },
   "te": {
     "nav_home": "హోమ్",
@@ -426,7 +432,10 @@ export const translations = {
     "standards_view_details": "వివరాలను వీక్షించండి",
     "standards_no_results": "మీ శోధనకు సరిపోలే భారతీయ ప్రమాణాలు ఏవీ కనుగొనబడలేదు.",
     "about_title": "BIS Assistant AI వేదిక గురించి",
-    "about_subtitle": "మల్టీ-ఏజెంట్ వర్క్‌ఫ్లోలు, క్రోమాడీబీ వెక్టర్ సెర్చ్ మరియు అధికారిక 2026 BIS డేటాసెట్‌లతో రూపొందించబడిన ఆధునిక ఇంటెలిజెన్స్ వ్యవస్థ"
+    "about_subtitle": "మల్టీ-ఏజెంట్ వర్క్‌ఫ్లోలు, క్రోమాడీబీ వెక్టర్ సెర్చ్ మరియు అధికారిక 2026 BIS డేటాసెట్‌లతో రూపొందించబడిన ఆధునిక ఇంటెలిజెన్స్ వ్యవస్థ",
+    "cert_title": "BIS ధృవీకరణ పథకాలు & ప్రక్రియ",
+    "cert_subtitle": "BIS ధృవీకరణ పథకాలు, దరఖాస్తు ప్రక్రియలు, రుసుములు మరియు అవసరాలపై సమగ్ర మార్గదర్శకత్వం.",
+    "cert_tracker_btn": "దరఖాస్తును ట్రాక్ చేయండి"
   },
   "ta": {
     "nav_home": "முகப்பு",
@@ -568,7 +577,10 @@ export const translations = {
     "standards_view_details": "விவரங்களைக் காண்க",
     "standards_no_results": "பொருந்தக்கூடிய இந்திய தரநிலைகள் எதுவும் கிடைக்கவில்லை.",
     "about_title": "BIS Assistant AI தளம் பற்றி",
-    "about_subtitle": "மல்டி-ஏஜென்ட் பணிப்பாய்வுகள் மற்றும் அதிகாரப்பூர்வ 2026 BIS தரவுத்தொகுப்புகளால் இயங்கும் அடுத்த தலைமுறை இந்திய தரநிலைகள் நுண்ணறிவு தளம்"
+    "about_subtitle": "மல்டி-ஏஜென்ட் பணிப்பாய்வுகள் மற்றும் அதிகாரப்பூர்வ 2026 BIS தரவுத்தொகுப்புகளால் இயங்கும் அடுத்த தலைமுறை இந்திய தரநிலைகள் நுண்ணறிவு தளம்",
+    "cert_title": "BIS சான்றிதழ் திட்டங்கள் & செயல்முறை",
+    "cert_subtitle": "BIS சான்றிதழ் திட்டங்கள், விண்ணப்ப செயல்முறைகள், கட்டணங்கள் மற்றும் தேவைகள் குறித்த விரிவான வழிகாட்டுதல்.",
+    "cert_tracker_btn": "விண்ணப்பத்தைக் கண்காணிக்கவும்"
   },
   "kn": {
     "nav_home": "ಮುಖಪುಟ",
@@ -710,7 +722,10 @@ export const translations = {
     "standards_view_details": "ವಿವರಗಳನ್ನು ನೋಡಿ",
     "standards_no_results": "ಯಾವುದೇ ಭಾರತೀಯ ಮಾನದಂಡಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
     "about_title": "BIS Assistant AI ವೇದಿಕೆಯ ಬಗ್ಗೆ",
-    "about_subtitle": "ಮಲ್ಟಿ-ಏಜೆಂಟ್ ವರ್ಕ್‌ಫ್ಲೋಗಳು ಮತ್ತು ಅಧಿಕೃತ 2026 BIS ಡೇಟಾಸೆಟ್‌ಗಳಿಂದ ಚಾಲಿತವಾಗಿರುವ ಮುಂದುವರಿದ ಗುಪ್ತಚರ ವೇದಿಕೆ"
+    "about_subtitle": "ಮಲ್ಟಿ-ಏಜೆಂಟ್ ವರ್ಕ್‌ಫ್ಲೋಗಳು ಮತ್ತು ಅಧಿಕೃತ 2026 BIS ಡೇಟಾಸೆಟ್‌ಗಳಿಂದ ಚಾಲಿತವಾಗಿರುವ ಮುಂದುವರಿದ ಗುಪ್ತಚರ ವೇದಿಕೆ",
+    "cert_title": "BIS ಪ್ರಮಾಣೀಕರಣ ಯೋಜನೆಗಳು ಮತ್ತು ಪ್ರಕ್ರಿಯೆ",
+    "cert_subtitle": "BIS ಪ್ರಮಾಣೀಕರಣ ಯೋಜನೆಗಳು, ಅರ್ಜಿ ಪ್ರಕ್ರಿಯೆಗಳು, ಶುಲ್ಕಗಳು ಮತ್ತು ಅವಶ್ಯಕತೆಗಳ ಕುರಿತು ಸಮಗ್ರ ಮಾರ್ಗದರ್ಶನ.",
+    "cert_tracker_btn": "ಅರ್ಜಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ"
   },
   "mr": {
     "nav_home": "मुख्यपृष्ठ",
@@ -852,8 +867,17 @@ export const translations = {
     "standards_view_details": "तपशील पहा",
     "standards_no_results": "कोणतेही भारतीय मानक आढळले नाही.",
     "about_title": "BIS Assistant AI मंचाबद्दल",
-    "about_subtitle": "मल्टी-एजंट वर्कफ्लो आणि अधिकृत 2026 BIS डेटासेटद्वारे समर्थित पुढच्या पिढीची भारतीय मानक बुद्धिमत्ता प्रणाली"
+    "about_subtitle": "मल्टी-एजंट वर्कफ्लो आणि अधिकृत 2026 BIS डेटासेटद्वारे समर्थित पुढच्या पिढीची भारतीय मानक बुद्धिमत्ता प्रणाली",
+    "cert_title": "BIS प्रमाणीकरण योजना आणि प्रक्रिया",
+    "cert_subtitle": "BIS प्रमाणीकरण योजना, अर्ज प्रक्रिया, शुल्क आणि आवश्यकता यावर सर्वसमावेशक मार्गदर्शन.",
+    "cert_tracker_btn": "अर्जाचा मागोवा घ्या"
   }
+}
+
+const GLOBAL_FALLBACK_TITLES = {
+  cert_title: "BIS Certification Schemes & Process",
+  cert_subtitle: "Comprehensive guidance on BIS certification schemes, application processes, fees, and requirements.",
+  cert_tracker_btn: "Track Application",
 }
 
 export function useTranslation(lang = 'en') {
@@ -861,7 +885,9 @@ export function useTranslation(lang = 'en') {
   const t = (key) => {
     if (current && current[key]) return current[key]
     if (translations.en && translations.en[key]) return translations.en[key]
-    return key
+    if (GLOBAL_FALLBACK_TITLES[key]) return GLOBAL_FALLBACK_TITLES[key]
+    // Clean snake_case keys if missing
+    return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
   }
   return { t, language: lang }
 }

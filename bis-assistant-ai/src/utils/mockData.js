@@ -1,4 +1,9 @@
-// Mock data for demo fallbacks when backend is offline or starting up
+/**
+ * ⚠️  DEVELOPMENT DEMO DATA — NOT OFFICIAL BIS DATA
+ * This file contains fallback mock data used ONLY when the backend is unavailable.
+ * It is NOT authoritative BIS information. Always verify with bis.gov.in.
+ * In production, all data comes from the backend RAG pipeline.
+ */
 
 export const mockStandards = [
   {

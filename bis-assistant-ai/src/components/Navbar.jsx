@@ -22,7 +22,8 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: t('nav_home') },
     { to: '/chat', label: t('nav_chat') },
-    { to: '/manufacturer', label: t('nav_manufacturer') },
+    { to: '/compliance', label: 'Compliance' },
+    { to: '/ml-risk', label: 'ML Risk Engine' },
     { to: '/standards', label: t('nav_standards') },
     { to: '/certification', label: t('nav_certification') },
     { to: '/labs', label: t('nav_labs') },
@@ -117,7 +118,7 @@ export default function Navbar() {
 
             {/* Hamburger */}
             <button
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
@@ -155,12 +156,14 @@ export default function Navbar() {
                   {link.label}
                 </NavLink>
               ))}
-              <button
-                onClick={() => { navigate('/chat'); setMenuOpen(false) }}
-                className="w-full btn-primary text-sm py-2.5 mt-2"
-              >
-                {t('hero_cta')}
-              </button>
+              <div className="pt-2">
+                <button
+                  onClick={() => { navigate('/chat'); setMenuOpen(false) }}
+                  className="w-full btn-primary text-sm py-2.5"
+                >
+                  {t('hero_cta')}
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

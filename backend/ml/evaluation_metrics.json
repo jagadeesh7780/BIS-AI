@@ -1,0 +1,48 @@
+{
+  "model_name": "BIS Product Risk Classifier (PyTorch MLP)",
+  "algorithm": "PyTorch Deep Neural Network (MLP 6x32x16x3)",
+  "dataset_sample_count": 250,
+  "train_test_split": "80% Train (200) / 20% Test (50)",
+  "accuracy": 0.96,
+  "precision_macro": 0.9394,
+  "recall_macro": 0.9077,
+  "f1_macro": 0.9145,
+  "confusion_matrix": [
+    [
+      3,
+      1,
+      0
+    ],
+    [
+      0,
+      9,
+      0
+    ],
+    [
+      0,
+      1,
+      36
+    ]
+  ],
+  "classes": [
+    "Class-III (Standard Risk)",
+    "Class-II (High Assurance)",
+    "Class-I (Critical Life Safety)"
+  ],
+  "features_used": [
+    "Material Domain",
+    "Operating Voltage (V)",
+    "Operating Pressure (bar)",
+    "Target User Group",
+    "Mandatory QCO",
+    "Standard Clauses Count"
+  ],
+  "feature_importances": {
+    "Material Domain": 0.23,
+    "Operating Voltage (V)": 0.22,
+    "Operating Pressure (bar)": 0.21,
+    "Target User Group": 0.18,
+    "Mandatory QCO": 0.1,
+    "Standard Clauses Count": 0.06
+  }
+}

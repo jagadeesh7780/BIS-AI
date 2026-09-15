@@ -1,39 +1,42 @@
+/**
+ * BIS AI V2 — Axios API Client
+ * STEP 16: Frontend connected to real backend APIs
+ * STEP 13: No API keys in frontend code
+ * STEP 8 fix: Standards search uses correct /api/standards GET endpoint
+ */
 import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://bis-assistant-backend.onrender.com'
 
 const apiClient = axios.create({
   baseURL: API_URL,
-  timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  timeout: 45000,
+  headers: { 'Content-Type': 'application/json' },
 })
 
-// Request interceptor
-apiClient.interceptors.request.use(
-  (config) => config,
+apiClient.interceptors.response.use(
+  (response) => response.data,
   (error) => Promise.reject(error)
 )
 
-// Response interceptor
-apiClient.interceptors.response.use(
-  (response) => response.data,
-  (error) => {
-    // Silently fail — pages use mock fallback data
-    return Promise.reject(error)
-  }
-)
+// ── Chat ──────────────────────────────────────────────────────────────────────
+export const sendChatMessage = async (query, language = 'en', role = 'all') =>
+  apiClient.post('/api/chat', { query, language, role })
 
-// ─── Chat API ───────────────────────────────────────────────────────────────
-export const sendChatMessage = async (query, language = 'en', role = 'all') => {
-  return apiClient.post('/api/chat', { query, language, role })
+// ── Standards ─────────────────────────────────────────────────────────────────
+// STEP 8 FIX: Use dedicated GET /api/standards endpoint (not /api/chat)
+export const searchStandards = async (query, category = null, limit = 20) => {
+  const params = new URLSearchParams()
+  if (query)    params.append('search', query)
+  if (category) params.append('category', category)
+  params.append('limit', String(limit))
+  return apiClient.get(`/api/standards?${params.toString()}`)
 }
 
-// ─── Standards API ───────────────────────────────────────────────────────────
-export const searchStandards = async (query, language = 'en') => {
-  return apiClient.post('/api/chat', { query, language })
-}
+export const getStandardById   = async (id) => apiClient.get(`/api/standards/${id}`)
+
+export const compareStandards  = async (id1, id2) =>
+  apiClient.post('/api/standards/compare', { standard1: id1, standard2: id2 })
 
 export const detectStandardFromImage = async (imageFile) => {
   const formData = new FormData()
@@ -43,29 +46,18 @@ export const detectStandardFromImage = async (imageFile) => {
   })
 }
 
-export const getStandardById = async (id) => {
-  return apiClient.get(`/api/standards/${id}`)
-}
+// ── Certification ─────────────────────────────────────────────────────────────
+export const getCertificationSchemes = async () =>
+  apiClient.get('/api/certification/schemes')
 
-export const compareStandards = async (id1, id2) => {
-  return apiClient.post('/api/standards/compare', { standard1: id1, standard2: id2 })
-}
+export const getApplicationStatus = async (applicationId) =>
+  apiClient.get(`/api/certification/tracker/${applicationId}`)
 
-// ─── Certification API ────────────────────────────────────────────────────────
-export const getCertificationSchemes = async () => {
-  return apiClient.get('/api/certification/schemes')
-}
+// ── Labs ──────────────────────────────────────────────────────────────────────
+export const getNearbyLabs = async (city) =>
+  apiClient.get(`/api/labs/nearby?city=${encodeURIComponent(city)}`)
 
-export const getApplicationStatus = async (applicationId) => {
-  return apiClient.get(`/api/certification/status/${applicationId}`)
-}
-
-// ─── Labs API ─────────────────────────────────────────────────────────────────
-export const getNearbyLabs = async (city) => {
-  return apiClient.get(`/api/labs/nearby?city=${encodeURIComponent(city)}`)
-}
-
-// ─── Voice API ────────────────────────────────────────────────────────────────
+// ── Voice ─────────────────────────────────────────────────────────────────────
 export const transcribeVoice = async (audioBlob) => {
   const formData = new FormData()
   formData.append('audio', audioBlob, 'recording.webm')
@@ -74,54 +66,50 @@ export const transcribeVoice = async (audioBlob) => {
   })
 }
 
-// ─── Complaints API ──────────────────────────────────────────────────────────
-export const submitComplaint = async (complaintData) => {
-  return apiClient.post('/api/complaints', complaintData)
-}
+// ── Complaints ────────────────────────────────────────────────────────────────
+export const submitComplaint   = async (data) => apiClient.post('/api/complaints', data)
+export const getComplaintStatus = async (id)  => apiClient.get(`/api/complaints/${id}`)
 
-export const getComplaintStatus = async (complaintId) => {
-  return apiClient.get(`/api/complaints/${complaintId}`)
-}
+// ── Manufacturer ──────────────────────────────────────────────────────────────
+export const detectManufacturerStandard = async (productName) =>
+  apiClient.post('/api/v1/compliance/analyze', { product_name: productName, city: 'Mumbai', scale: 'MSME' })
 
-// ─── Manufacturer Process API ────────────────────────────────────────────────
-export const detectManufacturerStandard = async (productName) => {
-  return apiClient.post('/api/manufacturer/detect', { product_name: productName })
-}
+export const processManufacturerApp = async (data) =>
+  apiClient.post('/api/manufacturer/process', data)
 
-export const processManufacturerApp = async (applicationData) => {
-  return apiClient.post('/api/manufacturer/process', applicationData)
-}
+export const orchestrateManufacturer = async (payload) =>
+  apiClient.post('/api/agents/manufacturer/orchestrate', payload)
 
-// ─── BIS Services API ────────────────────────────────────────────────────────
+export const orchestrateManufacturerAgents = async (payload) =>
+  apiClient.post('/api/agents/manufacturer/orchestrate', payload)
+
+export const approveAndSubmitManufacturer = async (payload) =>
+  apiClient.post('/api/agents/manufacturer/approve-and-submit', payload)
+
+// ── Consumer Agents ───────────────────────────────────────────────────────────
+export const triageConsumerComplaint = async (payload) =>
+  apiClient.post('/api/agents/consumer/triage', payload)
+
+export const verifyConsumerProduct = async (payload) =>
+  apiClient.post('/api/agents/consumer/verify', payload)
+
+// ── BIS Services ─────────────────────────────────────────────────────────────
 export const getBisServices = async (category = null, search = null) => {
-  let url = '/api/services'
-  const params = []
-  if (category) params.push(`category=${encodeURIComponent(category)}`)
-  if (search) params.push(`search=${encodeURIComponent(search)}`)
-  if (params.length) url += `?${params.join('&')}`
-  return apiClient.get(url)
+  const params = new URLSearchParams()
+  if (category) params.append('category', category)
+  if (search)   params.append('search', search)
+  const qs = params.toString()
+  return apiClient.get(`/api/services${qs ? `?${qs}` : ''}`)
 }
 
-// ─── Multi-Agent Supervisor API ──────────────────────────────────────────────
-export const orchestrateManufacturer = async (payload) => {
-  return apiClient.post('/api/agents/manufacturer/orchestrate', payload)
-}
+// ── Evaluation ────────────────────────────────────────────────────────────────
+export const runEvaluation = async () => apiClient.get('/api/v1/evaluation/run')
 
-export const approveAndSubmitManufacturer = async (payload) => {
-  return apiClient.post('/api/agents/manufacturer/approve-and-submit', payload)
-}
+// ── ML Risk Engine ────────────────────────────────────────────────────────────
+export const predictMLRisk = async (payload) =>
+  apiClient.post('/api/ml/predict', payload)
 
-export const triageConsumerComplaint = async (payload) => {
-  return apiClient.post('/api/agents/consumer/triage', payload)
-}
-
-export const verifyConsumerProduct = async (payload) => {
-  return apiClient.post('/api/agents/consumer/verify', payload)
-}
-
-export const orchestrateManufacturerAgents = async (payload) => {
-  return apiClient.post('/api/agents/manufacturer/orchestrate', payload)
-}
+export const getMLMetrics = async () =>
+  apiClient.get('/api/ml/metrics')
 
 export default apiClient
-

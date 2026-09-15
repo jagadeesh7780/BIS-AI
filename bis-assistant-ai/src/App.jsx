@@ -13,6 +13,7 @@ import Tracker from './pages/Tracker'
 import Labs from './pages/Labs'
 import About from './pages/About'
 import ManufacturerPortal from './pages/ManufacturerPortal'
+import MLRiskAnalysis from './pages/MLRiskAnalysis'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -73,7 +74,9 @@ function AppRoutes() {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
             <Route path="/chat" element={<Chat />} />
-            <Route path="/manufacturer" element={<PageWrapper><ManufacturerPortal /></PageWrapper>} />
+            <Route path="/compliance" element={<PageWrapper><ManufacturerPortal /></PageWrapper>} />
+            <Route path="/manufacturer" element={<Navigate to="/compliance" replace />} />
+            <Route path="/ml-risk" element={<PageWrapper><MLRiskAnalysis /></PageWrapper>} />
             <Route path="/standards" element={<PageWrapper><Standards /></PageWrapper>} />
             <Route path="/standards/:id" element={<PageWrapper><StandardDetail /></PageWrapper>} />
             <Route path="/certification" element={<PageWrapper><Certification /></PageWrapper>} />

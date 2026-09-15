@@ -9,6 +9,7 @@ import io
 import logging
 import tempfile
 from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +45,8 @@ def transcribe_audio(audio_bytes: bytes, filename: str = "audio.webm") -> str:
     Transcribe audio bytes using local Whisper model.
     Returns the transcribed text string.
     """
-    model = get_whisper_model()
-    if model == "failed":
+    model: Any = get_whisper_model()
+    if model == "failed" or model is None:
         return "Voice input received."
 
     # Write audio to a temp file (Whisper needs a file path)
@@ -55,7 +56,7 @@ def transcribe_audio(audio_bytes: bytes, filename: str = "audio.webm") -> str:
         tmp_path = tmp.name
 
     try:
-        result = model.transcribe(tmp_path, fp16=False)
+        result: Any = model.transcribe(tmp_path, fp16=False)
         text = result.get("text", "").strip()
         logger.info(f"Whisper transcription: '{text[:80]}...' " if len(text) > 80 else f"Whisper transcription: '{text}'")
         return text

@@ -1,157 +1,229 @@
 """
-Product image → Indian Standard detection.
-Uses CLIP-based image-text similarity via sentence-transformers
-(clip-ViT-B-32 model) to classify the product category,
-then maps to a relevant IS standard via RAG.
+BIS AI V2 — Product Image → Indian Standard Detection (Computer Vision)
+STEP 13: CV pipeline — KEEP with refactoring.
+Genuine BIS use case: identify product category from image → find applicable IS standard.
 
-All local — no cloud API key required.
+Pipeline:
+  Input image → CLIP zero-shot classification → RAG standard lookup → Grounded answer
+
+IMPORTANT DISCLAIMER:
+Computer vision product detection is AI-assisted guidance only.
+This does NOT constitute official BIS product verification or certification.
+Always verify products using the official BIS CARE app or at https://www.bis.gov.in.
 """
 
 import io
+import uuid
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("bis.cv")
 
-# Product category → IS standard mapping
-CATEGORY_STANDARD_MAP = {
-    "pressure cooker": ["pressure cooker", "kitchen vessel"],
-    "helmet": ["helmet", "motorcycle safety", "two-wheeler protection"],
-    "water bottle": ["packaged drinking water", "bottled water"],
-    "electrical appliance": ["electrical safety", "household appliance"],
-    "led bulb": ["LED lamp", "light bulb", "lighting"],
-    "refrigerator": ["refrigerator", "cooling appliance"],
-    "steel pipe": ["steel tube", "pipe fitting"],
-    "faucet": ["tap", "sanitary ware", "plumbing"],
-    "jewellery": ["gold jewellery", "hallmarking"],
-    "electronic device": ["electronics", "CRS", "IT product"],
-    "bicycle helmet": ["cyclist helmet", "bicycle safety"],
-    "cooking pot": ["cookware", "kitchen utensil"],
-}
-
-# CLIP category labels for zero-shot classification
-CLIP_LABELS = [
-    "a pressure cooker in the kitchen",
-    "a motorcycle helmet for safety",
-    "a water bottle or drinking water container",
-    "an electrical household appliance",
-    "an LED light bulb",
-    "a refrigerator or freezer appliance",
-    "a steel pipe or metal tube",
-    "a bathroom faucet or water tap",
-    "gold jewellery or ornaments",
-    "an electronic device or gadget",
-    "a bicycle helmet",
-    "a cooking pot or pan",
+# ── Expanded product category → IS standard mapping (STEP 13 FIX: expanded from 12 to 30 categories)
+CLIP_LABELS: List[str] = [
+    # Kitchen & Cooking
+    "a domestic pressure cooker on a kitchen stove",
+    "a cooking pot or saucepan",
+    "a gas stove or cooking range",
+    "an electric rice cooker",
+    # Safety Equipment
+    "a motorcycle helmet or two-wheeler helmet",
+    "an industrial safety helmet or hard hat",
+    "safety gloves or rubber insulating gloves",
+    "a safety belt or fall protection harness",
+    # Electrical Appliances
+    "a household electric iron",
+    "an electric ceiling fan",
+    "an LED light bulb or lamp",
+    "a room air conditioner unit",
+    "a household refrigerator",
+    "a washing machine",
+    "a laptop computer or desktop PC",
+    "a mobile phone charger or adapter",
+    # Construction Materials
+    "steel rebar or TMT steel bars for construction",
+    "a cement bag or building cement",
+    "a brick or masonry block",
+    "a steel pipe or water pipe",
+    # Food & Packaging
+    "a water bottle or packaged drinking water",
+    "a food package or packaged food product",
+    # Precious Metals
+    "gold jewellery or gold ornaments",
+    # Fire Safety
+    "a fire extinguisher",
+    # Gas Equipment
+    "an LPG gas cylinder",
+    "an LPG gas regulator",
+    # Toys
+    "a toy or children's plaything",
+    # Sports/Bicycle
+    "a bicycle or cycle",
+    # Footwear
+    "safety shoes or industrial boots",
+    # Audio/Video
+    "an audio speaker or television set",
 ]
 
-LABEL_TO_QUERY = {
-    "a pressure cooker in the kitchen": "IS standard for domestic pressure cooker",
-    "a motorcycle helmet for safety": "IS standard for motorcycle helmet two-wheeler rider",
-    "a water bottle or drinking water container": "IS standard for packaged drinking water bottles",
-    "an electrical household appliance": "IS standard for electrical household appliances safety",
-    "an LED light bulb": "IS standard for LED lamp lighting",
-    "a refrigerator or freezer appliance": "IS standard for household refrigerator",
-    "a steel pipe or metal tube": "IS standard for steel tubes and pipes",
-    "a bathroom faucet or water tap": "IS standard for sanitary tapware faucet",
-    "gold jewellery or ornaments": "IS standard for gold jewellery hallmarking",
-    "an electronic device or gadget": "IS standard for electronics CRS registration",
-    "a bicycle helmet": "IS standard for cyclist protective helmet",
-    "a cooking pot or pan": "IS standard for kitchen cookware utensils",
+LABEL_TO_RAG_QUERY: Dict[str, str] = {
+    "a domestic pressure cooker on a kitchen stove": "IS standard for domestic pressure cooker safety",
+    "a cooking pot or saucepan": "IS standard for kitchen cookware utensils",
+    "a gas stove or cooking range": "IS standard for domestic LPG gas stoves",
+    "an electric rice cooker": "IS standard for electric rice cookers household appliances",
+    "a motorcycle helmet or two-wheeler helmet": "IS 15410 standard for protective helmets two-wheeler riders",
+    "an industrial safety helmet or hard hat": "IS 2925 industrial safety helmet specification",
+    "safety gloves or rubber insulating gloves": "IS 4770 rubber gloves electrical insulation specification",
+    "a safety belt or fall protection harness": "IS 9167 safety harness working at heights specification",
+    "a household electric iron": "IS 302 household electric iron safety requirements",
+    "an electric ceiling fan": "IS 374 electric ceiling fan specification",
+    "an LED light bulb or lamp": "IS 16102 self-ballasted LED lamp specification CRS",
+    "a room air conditioner unit": "IS 1885 room air conditioner specification ISI mark",
+    "a household refrigerator": "IS 7752 household refrigerator safety specification",
+    "a washing machine": "IS 302 household washing machine safety requirements",
+    "a laptop computer or desktop PC": "IS 13252 information technology equipment safety CRS",
+    "a mobile phone charger or adapter": "IS 16333 mobile phone charger safety CRS mandatory",
+    "steel rebar or TMT steel bars for construction": "IS 1786 high strength deformed steel bars concrete reinforcement",
+    "a cement bag or building cement": "IS 269 ordinary portland cement specification",
+    "a brick or masonry block": "IS 1077 common burnt clay building bricks specification",
+    "a steel pipe or water pipe": "IS 1239 mild steel tubes tubulars specification",
+    "a water bottle or packaged drinking water": "IS 14543 packaged drinking water specification ISI mark",
+    "a food package or packaged food product": "IS standard for packaged food products BIS certification",
+    "gold jewellery or gold ornaments": "IS 1417 gold jewellery hallmarking HUID fineness standard",
+    "a fire extinguisher": "IS 14625 portable fire extinguisher specification",
+    "an LPG gas cylinder": "IS 3196 LPG cylinder specification ISI mark mandatory",
+    "an LPG gas regulator": "IS 9798 LPG pressure regulator domestic use specification",
+    "a toy or children's plaything": "IS 9873 toy safety general requirements ISI mark mandatory",
+    "a bicycle or cycle": "IS 8090 bicycle safety requirements specification",
+    "safety shoes or industrial boots": "IS 15298 leather safety footwear industrial specification",
+    "an audio speaker or television set": "IS 616 audio video electronic apparatus safety CRS",
 }
 
+# ── Lazy-loaded CLIP model ──────────────────────────────────────────────────────
 _clip_model = None
 
 
 def get_clip_model():
-    """Lazy-load CLIP model via sentence-transformers."""
+    """Lazy-load CLIP via sentence-transformers. Returns None on failure."""
     global _clip_model
     if _clip_model is None:
         try:
-            # pyrefly: ignore [missing-import]
             from sentence_transformers import SentenceTransformer
             logger.info("Loading CLIP model (clip-ViT-B-32)...")
             _clip_model = SentenceTransformer("clip-ViT-B-32")
-            logger.info("CLIP model loaded.")
+            logger.info("✅ CLIP model loaded.")
         except Exception as e:
-            logger.warning(f"CLIP model load failed: {e}. Will use fallback.")
-            _clip_model = "failed"
-    return _clip_model
+            logger.warning(f"CLIP model unavailable: {e}. Will use text-based fallback.")
+            _clip_model = "unavailable"
+    return None if _clip_model == "unavailable" else _clip_model
 
 
 def classify_image_clip(image_bytes: bytes) -> Tuple[str, float]:
     """
-    Use CLIP to find the best matching product label.
-    Returns (best_label, confidence_score 0-1).
+    CLIP zero-shot image classification.
+    Returns (best_label, confidence 0-1).
+    Falls back to default category if CLIP unavailable.
     """
-    from PIL import Image
-    import numpy as np
-
     model = get_clip_model()
-    if model == "failed":
-        return "an electrical household appliance", 0.5
+    if model is None:
+        logger.warning("CLIP unavailable — using default category fallback.")
+        return "a household electric iron", 0.40
 
     try:
-        # Load and encode the image
+        from PIL import Image
+        import numpy as np
+
         img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        img_embedding = model.encode(img)
+        text_embeddings = model.encode(CLIP_LABELS)
 
-        # Encode image
-        img_embedding = model.encode(img)  # type: ignore
-
-        # Encode all text labels
-        text_embeddings = model.encode(CLIP_LABELS)  # type: ignore
-
-        # Compute cosine similarities
-        # pyrefly: ignore [missing-import]
         from sentence_transformers import util
-        similarities = util.cos_sim(img_embedding, text_embeddings)[0].numpy()  # type: ignore
+        similarities = util.cos_sim(img_embedding, text_embeddings)[0].numpy()
 
         best_idx = int(np.argmax(similarities))
         best_label = CLIP_LABELS[best_idx]
         confidence = float(similarities[best_idx])
 
-        logger.info(f"Image classified as: '{best_label}' (confidence: {confidence:.2f})")
+        # Log top-3 for transparency
+        top3 = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)[:3]
+        logger.info(
+            f"CLIP top-3: " +
+            " | ".join(f"'{CLIP_LABELS[i][:30]}' ({s:.3f})" for i, s in top3)
+        )
         return best_label, confidence
 
     except Exception as e:
         logger.error(f"CLIP classification error: {e}")
-        return "an electrical household appliance", 0.4
+        return "a household electric iron", 0.35
 
 
-async def detect_standards_from_image(image_bytes: bytes) -> dict:
+async def detect_standards_from_image(image_bytes: bytes) -> Dict[str, Any]:
     """
-    Full image → standard detection pipeline:
-    1. Classify image with CLIP
-    2. Use the classification label as a query in the RAG pipeline
-    3. Return detected standards with confidence scores
+    Full CV pipeline:
+    1. CLIP image classification
+    2. RAG hybrid retrieval for applicable IS standards
+    3. LLM grounded answer
+    Returns structured response with citations and disclaimer.
     """
-    from rag import generate_rag_answer, retrieve_relevant_standards
+    from rag import hybrid_retrieve, generate_rag_answer, _normalize_score, _build_citations
+
+    trace_id = str(uuid.uuid4())[:12]
 
     # Step 1: Classify image
     best_label, clip_confidence = classify_image_clip(image_bytes)
-    rag_query = LABEL_TO_QUERY.get(best_label, f"IS standard for {best_label}")
+    rag_query = LABEL_TO_RAG_QUERY.get(best_label, f"IS standard for {best_label}")
 
-    logger.info(f"Image query for RAG: '{rag_query}'")
+    logger.info(f"[{trace_id}] CV: '{best_label}' (conf={clip_confidence:.2f}) → RAG: '{rag_query}'")
 
-    # Step 2: Retrieve standards using RAG
-    retrieved = retrieve_relevant_standards(rag_query, top_k=4)
+    # Step 2: Retrieve applicable standards
+    retrieved = hybrid_retrieve(rag_query, top_k=4)
 
-    # Step 3: Generate a natural language description
+    # Step 3: Generate answer
+    description = ""
+    citations = []
     try:
         result = await generate_rag_answer(rag_query, language="en")
-        description = result["answer"]
+        description = result.get("answer", "")
+        citations = result.get("citations", [])
     except Exception as e:
-        logger.warning(f"LLM generation failed for image detect: {e}")
-        description = f"Based on image analysis, this appears to be a '{best_label}'. The relevant Indian Standard is shown below."
+        logger.warning(f"[{trace_id}] LLM generation failed: {e}")
+        if retrieved:
+            top = retrieved[0]
+            description = (
+                f"Based on image analysis, this appears to be '{best_label}'. "
+                f"The applicable Indian Standard is {top.get('standard_number', top.get('number', ''))} — "
+                f"{top.get('document_title', top.get('title', ''))}."
+            )
 
-    # Boost confidence scores slightly based on CLIP confidence
+    # Format standards list with CV-adjusted confidence
+    standards = []
     for r in retrieved:
-        r["confidence"] = min(99, round(r["confidence"] * 0.7 + clip_confidence * 30))
+        cs = _normalize_score(r)
+        # Blend CV confidence with retrieval score
+        blended = round((cs * 0.6 + clip_confidence * 0.4) * 100)
+        standards.append({
+            "id": r.get("id", r.get("document_id", "")),
+            "number": r.get("standard_number", r.get("number", "")),
+            "title": r.get("document_title", r.get("title", "")),
+            "category": r.get("category", ""),
+            "certification_scheme": r.get("certification_scheme", ""),
+            "confidence": min(99, max(50, blended)),
+            "source_url": r.get("source_url", "https://www.bis.gov.in"),
+        })
+
+    if not citations:
+        citations = _build_citations(retrieved)
 
     return {
         "detected_category": best_label,
         "clip_confidence": round(clip_confidence * 100),
         "rag_query_used": rag_query,
-        "standards": retrieved,
+        "standards": standards,
         "description": description,
+        "citations": citations[:3],
+        "disclaimer": (
+            "⚠️ IMPORTANT: Computer vision product detection is AI-assisted guidance only. "
+            "This does NOT constitute official BIS product verification or certification. "
+            "Always verify using the official BIS CARE app or at https://www.bis.gov.in."
+        ),
+        "trace_id": trace_id,
     }

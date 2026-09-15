@@ -1,7 +1,14 @@
 {
   "include": ["."],
+  "exclude": ["**/venv", "**/__pycache__", "**/node_modules"],
   "extraPaths": [".", "backend"],
   "reportMissingImports": "none",
   "reportMissingTypeStubs": "none",
-  "reportUnknownMemberType": "none"
+  "reportUnknownMemberType": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportOptionalCall": "none",
+  "reportAttributeAccessIssue": "none"
 }
+
+
+

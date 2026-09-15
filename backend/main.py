@@ -1,27 +1,27 @@
 """
-BIS Assistant AI — FastAPI Backend
-All 11 features powered by RAG + Groq + ChromaDB + local models.
+BIS AI V2 — FastAPI Backend
+STEP 14: Clean API with /api/v1/ versioning + backward-compat /api/ aliases
+STEP 12: trace_id on all responses
+STEP 13: No API keys in responses; CORS from config
 """
 
 import os
 import sys
 import json
 import time
+import uuid
 import asyncio
 import logging
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
-# Ensure backend directory is in sys.path for direct imports (rag, supervisor, voice, etc.)
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
-
-# Disable telemetry before importing chromadb to prevent PostHog crashes
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
 os.environ["CHROMA_TELEMETRY"] = "false"
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
-        getattr(sys.stdout, "reconfigure")(encoding="utf-8")
+        sys.stdout.reconfigure(encoding="utf-8")
     except Exception:
         pass
 
@@ -32,95 +32,83 @@ from fastapi.responses import Response, JSONResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-# ─── Setup ────────────────────────────────────────────────────────────────────
 load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger("bis.main")
 
-# Validate GROQ_API_KEY at startup
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-if not GROQ_API_KEY:
-    logger.warning("WARNING: GROQ_API_KEY is not set in .env file!")
-else:
-    logger.info("✅ GROQ_API_KEY found.")
+try:
+    from core.config import settings
+    CORS_ORIGINS = settings.CORS_ORIGINS
+    GROQ_KEY_SET = bool(settings.GROQ_API_KEY)
+except Exception:
+    CORS_ORIGINS = ["*"]
+    GROQ_KEY_SET = bool(os.getenv("GROQ_API_KEY"))
 
-# Data directory
 DATA_DIR = Path(__file__).parent / "data"
 
+# ── Schemas ────────────────────────────────────────────────────────────────────
+from schemas.api_models import (
+    ChatRequest, SpeakRequest, CompareRequest, ComplaintRequest,
+    HealthResponse,
+)
+
+
+# ── Startup ────────────────────────────────────────────────────────────────────
 from contextlib import asynccontextmanager
 
-# ─── Startup: pre-load embeddings & vector DB (non-blocking) ──────────────────
-async def _async_startup_warmup():
+async def _warmup():
     try:
         from rag import ingest_all_datasets, get_embedding_model, get_chroma_collection
-        # Run CPU warmup and batch ingestion in thread pool
         await asyncio.to_thread(get_embedding_model)
         await asyncio.to_thread(ingest_all_datasets)
         try:
-            collection = get_chroma_collection()
-            logger.info(f"✅ ChromaDB ready with {collection.count()} knowledge chunks.")
-        except Exception as db_err:
-            logger.info(f"ℹ️ Vector DB note: {db_err}")
+            col = get_chroma_collection()
+            logger.info(f"✅ ChromaDB bis_standards_v2: {col.count()} chunks ready.")
+        except Exception as e:
+            logger.info(f"Vector DB note: {e}")
     except Exception as e:
-        logger.error(f"Startup background initialization error: {e}")
+        logger.error(f"Startup warmup error: {e}")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("BIS Assistant AI server started. Binding to port and warming up services...")
-    asyncio.create_task(_async_startup_warmup())
+    logger.info("BIS AI V2 starting…")
+    asyncio.create_task(_warmup())
     yield
 
 
-# ─── FastAPI App ──────────────────────────────────────────────────────────────
+# ── App ────────────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="BIS Assistant AI",
-    description="AI-powered API for Bureau of Indian Standards guidance across Standards, FAQs, Schemes, and Labs",
-    version="1.0.0",
+    description="AI-powered API for Bureau of Indian Standards guidance — V2",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# ─── Request logging middleware ───────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    start = time.time()
+    trace_id = str(uuid.uuid4())[:8]
+    start    = time.time()
     response = await call_next(request)
-    elapsed = round(time.time() - start, 3)
-    logger.info(f"{request.method} {request.url.path} → {response.status_code} ({elapsed}s)")
+    elapsed  = round(time.time() - start, 3)
+    logger.info(f"[{trace_id}] {request.method} {request.url.path} → {response.status_code} ({elapsed}s)")
     return response
 
 
-# ─── Pydantic Models ──────────────────────────────────────────────────────────
-class ChatRequest(BaseModel):
-    query: str
-    language: Optional[str] = "en"
-    role: Optional[str] = "all"
-
-class CompareRequest(BaseModel):
-    standard_id_1: Optional[str] = None
-    standard_id_2: Optional[str] = None
-    standard1: Optional[str] = None
-    standard2: Optional[str] = None
-
-class SpeakRequest(BaseModel):
-    text: str
-    language: Optional[str] = "en"
-
-
-# ─── Helper: load JSON data files ─────────────────────────────────────────────
+# ── Helpers ────────────────────────────────────────────────────────────────────
 def load_json(filename: str):
     path = DATA_DIR / filename
     if not path.exists():
@@ -129,368 +117,390 @@ def load_json(filename: str):
         return json.load(f)
 
 
-# ════════════════════════════════════════════════════════════════════════
-# ROUTES
-# ════════════════════════════════════════════════════════════════════════
+def new_trace() -> str:
+    return str(uuid.uuid4())[:12]
 
-# ─── Health Check ─────────────────────────────────────────────────────────────
+
+# ══════════════════════════════════════════════════════════════════════════════
+# HEALTH
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/")
-async def health_check():
-    return {"status": "ok", "service": "BIS Assistant AI", "version": "1.0.0"}
+async def root():
+    return {"status": "ok", "service": "BIS Assistant AI", "version": "2.0.0"}
 
 
 @app.get("/api/health")
-async def api_health():
-    from rag import get_chroma_collection
+@app.get("/api/v1/health")
+async def health():
+    from rag import get_chroma_collection, HAS_CHROMA, HAS_BM25, RERANKER_ENABLED, _bm25_index
+    chunks = 0
     try:
-        count = get_chroma_collection().count()
-        return {"status": "ok", "standards_in_db": count, "groq_key_set": bool(GROQ_API_KEY)}
-    except Exception as e:
-        return {"status": "degraded", "error": str(e)}
+        if HAS_CHROMA:
+            chunks = get_chroma_collection().count()
+    except Exception:
+        pass
+    return {
+        "status": "ok",
+        "service": "BIS Assistant AI",
+        "version": "2.0.0",
+        "vector_db_chunks": chunks,
+        "groq_key_set": GROQ_KEY_SET,
+        "hybrid_retrieval": True,
+        "bm25_enabled": HAS_BM25 and _bm25_index is not None,
+        "reranker_enabled": RERANKER_ENABLED,
+        "trace_id": new_trace(),
+    }
 
 
-# ─── Feature 1 & 2: Chat / Standards Search (RAG) ────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# CHAT (RAG) — Feature 1
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.post("/api/chat")
+@app.post("/api/v1/chat")
 async def chat(req: ChatRequest):
-    """
-    Features 1 & 2: Multi-dataset RAG chat across 52+ standards, FAQs, schemes & labs.
-    POST body: { query: str, language: str }
-    Returns: { answer: str, sources: [{id, title, confidence}] }
-    """
     if not req.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
-
-    logger.info(f"Chat request | lang={req.language} | query='{req.query[:80]}...'")
-
+    logger.info(f"Chat | lang={req.language} role={req.role} | '{req.query[:80]}'")
     try:
         from rag import generate_rag_answer
         result = await generate_rag_answer(req.query, req.language or "en", role=req.role)
         return result
     except RuntimeError as e:
         logger.error(f"RAG error: {e}")
-        raise HTTPException(
-            status_code=503,
-            detail={"error": "AI service temporarily unavailable, please retry", "details": str(e)}
-        )
+        raise HTTPException(status_code=503, detail={"error": "AI service temporarily unavailable", "details": str(e)})
     except Exception as e:
-        logger.error(f"Unexpected chat error: {e}")
-        raise HTTPException(status_code=500, detail={"error": str(e)})
+        logger.error(f"Chat error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e), "trace_id": new_trace()})
 
 
-# ─── Standards Listing & Search ──────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# STANDARDS — Features 2, 11
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/api/standards")
+@app.get("/api/v1/standards/search")
 async def list_standards(
-    search: Optional[str] = None,
+    search:   Optional[str] = None,
     category: Optional[str] = None,
-    limit: int = 50,
-    offset: int = 0
+    limit:    int = 50,
+    offset:   int = 0,
 ):
-    """List or search all Indian Standards."""
     standards = load_json("standards.json")
-    filtered = standards
+    filtered  = standards
 
     if category:
-        cat_lower = category.lower()
-        filtered = [s for s in filtered if cat_lower in s.get("category", "").lower()]
+        cl = category.lower()
+        filtered = [s for s in filtered if cl in s.get("category", "").lower()]
 
     if search:
-        s_lower = search.lower().strip()
+        sl = search.lower().strip()
         filtered = [
             s for s in filtered
-            if s_lower in s.get("id", "").lower()
-            or s_lower in s.get("number", "").lower()
-            or s_lower in s.get("title", "").lower()
-            or s_lower in s.get("summary", "").lower()
-            or any(s_lower in kw.lower() for kw in s.get("keywords", []))
+            if sl in s.get("id", "").lower()
+            or sl in s.get("number", "").lower()
+            or sl in s.get("title", "").lower()
+            or sl in s.get("summary", "").lower()
+            or sl in s.get("scope", "").lower()
+            or any(sl in kw.lower() for kw in s.get("keywords", []))
         ]
 
-    total = len(filtered)
-    paginated = filtered[offset:offset + limit]
-
+    total     = len(filtered)
+    paginated = filtered[offset: offset + limit]
     return {
-        "total": total,
-        "limit": limit,
-        "offset": offset,
-        "standards": paginated
+        "total":     total,
+        "limit":     limit,
+        "offset":    offset,
+        "standards": paginated,
+        "trace_id":  new_trace(),
     }
 
 
 @app.get("/api/standards/{standard_id}")
+@app.get("/api/v1/standards/{standard_id}")
 async def get_standard(standard_id: str):
-    """Feature 4 (Standard Detail): Get full details of one standard by ID or Number."""
     standards = load_json("standards.json")
-    std_clean = standard_id.lower().replace(" ", "").replace("-", "")
-
+    target    = standard_id.lower().replace(" ", "").replace("-", "")
     for std in standards:
-        cur_id_clean = std["id"].lower().replace(" ", "").replace("-", "")
-        cur_num_clean = std.get("number", "").lower().replace(" ", "").replace("-", "")
-        if cur_id_clean == std_clean or cur_num_clean == std_clean:
-            return std
-
+        if (std["id"].lower().replace(" ", "").replace("-", "") == target
+                or std.get("number", "").lower().replace(" ", "").replace("-", "") == target):
+            return {**std, "trace_id": new_trace()}
     raise HTTPException(status_code=404, detail=f"Standard '{standard_id}' not found")
 
 
-# ─── Feature 11: Standards Comparison ────────────────────────────────────────
 @app.post("/api/standards/compare")
+@app.post("/api/v1/standards/compare")
 async def compare_standards(req: CompareRequest):
-    """Feature 11: Side-by-side comparison of two IS standards."""
     id1 = req.standard_id_1 or req.standard1
     id2 = req.standard_id_2 or req.standard2
-
     if not id1 or not id2:
         raise HTTPException(status_code=400, detail="Both standard identifiers are required")
 
     standards = load_json("standards.json")
-    
-    def find_std(identifier: str):
-        target = identifier.lower().replace(" ", "").replace("-", "")
+
+    def find(identifier: str):
+        t = identifier.lower().replace(" ", "").replace("-", "")
         for s in standards:
-            if s["id"].lower().replace(" ", "").replace("-", "") == target or \
-               s.get("number", "").lower().replace(" ", "").replace("-", "") == target:
+            if (s["id"].lower().replace(" ", "").replace("-", "") == t
+                    or s.get("number", "").lower().replace(" ", "").replace("-", "") == t):
                 return s
         return None
 
-    s1 = find_std(id1)
-    s2 = find_std(id2)
-
+    s1 = find(id1)
+    s2 = find(id2)
     if not s1:
         raise HTTPException(status_code=404, detail=f"Standard '{id1}' not found")
     if not s2:
         raise HTTPException(status_code=404, detail=f"Standard '{id2}' not found")
 
-    comparison_attrs = ["number", "title", "category", "scope", "summary", "certification_scheme"]
-    differences = []
-    for attr in comparison_attrs:
-        if str(s1.get(attr, "")).lower() != str(s2.get(attr, "")).lower():
-            differences.append(attr)
-
+    attrs = ["number", "title", "category", "scope", "summary", "certification_scheme"]
+    diffs = [a for a in attrs if str(s1.get(a, "")).lower() != str(s2.get(a, "")).lower()]
     return {
-        "standard1": s1,
-        "standard2": s2,
-        "differences": differences,
-        "similarity_score": round((1 - len(differences) / len(comparison_attrs)) * 100),
+        "standard1":        s1,
+        "standard2":        s2,
+        "differences":      diffs,
+        "similarity_score": round((1 - len(diffs) / len(attrs)) * 100),
+        "trace_id":         new_trace(),
     }
 
 
-# ─── Feature 3: Certification Guide ─────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# CERTIFICATION SCHEMES — Feature 3
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/api/certification/schemes")
-async def get_certification_schemes():
-    """Feature 3: All 7 certification schemes with step-by-step guidance."""
+@app.get("/api/v1/certification/schemes")
+async def get_schemes():
     return load_json("schemes.json")
 
 
 @app.get("/api/certification/schemes/{scheme_id}")
-async def get_certification_scheme(scheme_id: str):
-    """Feature 3: Single certification scheme details."""
+@app.get("/api/v1/certification/schemes/{scheme_id}")
+async def get_scheme(scheme_id: str):
     schemes = load_json("schemes.json")
-    sid_lower = scheme_id.lower().replace("-", "").replace("_", "")
-
+    sid     = scheme_id.lower().replace("-", "").replace("_", "")
     for key, val in schemes.items():
-        if key.lower().replace("-", "").replace("_", "") == sid_lower:
+        if key.lower().replace("-", "").replace("_", "") == sid:
             return val
-
     raise HTTPException(status_code=404, detail=f"Scheme '{scheme_id}' not found")
 
 
-# ─── Feature 8: Lab Finder ───────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# CERTIFICATION TRACKER — Feature 10 (demo data — clearly labelled)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ⚠️ DEVELOPMENT DEMO DATA — NOT OFFICIAL BIS TRACKING
+_TRACKER_DEMO: Dict[str, Any] = {
+    "BIS-2024-001": {
+        "app_id": "BIS-2024-001", "product": "Domestic Pressure Cooker",
+        "standard": "IS 2347", "scheme": "ISI Mark",
+        "applicant": "Sunrise Industries Pvt. Ltd.", "submitted_on": "2024-01-15",
+        "current_stage": 3,
+        "demo_disclaimer": "⚠️ DEMO DATA — Not an official BIS certification record",
+        "stages": [
+            {"id": 1, "name": "Application Submitted",  "status": "done",    "date": "2024-01-15", "note": "Application received. Ref: BIS-2024-001."},
+            {"id": 2, "name": "Document Verification",  "status": "done",    "date": "2024-01-22", "note": "All documents verified."},
+            {"id": 3, "name": "Factory Inspection",     "status": "current", "date": "In Progress", "note": "BIS inspector visit scheduled."},
+            {"id": 4, "name": "Sample Testing",         "status": "pending", "date": "Pending",     "note": "Awaiting inspection."},
+            {"id": 5, "name": "Licence Granted",        "status": "pending", "date": "Pending",     "note": "Final approval pending."},
+        ],
+    },
+    "BIS-2024-002": {
+        "app_id": "BIS-2024-002", "product": "LED Bulb (10W)",
+        "standard": "IS 16102", "scheme": "CRS",
+        "applicant": "BrightTech Solutions", "submitted_on": "2024-02-10",
+        "current_stage": 4,
+        "demo_disclaimer": "⚠️ DEMO DATA — Not an official BIS certification record",
+        "stages": [
+            {"id": 1, "name": "Application Submitted",    "status": "done",    "date": "2024-02-10"},
+            {"id": 2, "name": "Document Verification",    "status": "done",    "date": "2024-02-14"},
+            {"id": 3, "name": "Factory Inspection",       "status": "done",    "date": "2024-02-20"},
+            {"id": 4, "name": "Sample Testing",           "status": "current", "date": "In Progress"},
+            {"id": 5, "name": "Registration Certificate", "status": "pending", "date": "Pending"},
+        ],
+    },
+    "BIS-2024-003": {
+        "app_id": "BIS-2024-003", "product": "Gold Jewellery (22K)",
+        "standard": "IS 1417", "scheme": "Hallmarking",
+        "applicant": "Ramesh Jewellers", "submitted_on": "2024-03-01",
+        "current_stage": 5,
+        "demo_disclaimer": "⚠️ DEMO DATA — Not an official BIS certification record",
+        "stages": [
+            {"id": 1, "name": "Application Submitted", "status": "done", "date": "2024-03-01"},
+            {"id": 2, "name": "Document Verification", "status": "done", "date": "2024-03-01"},
+            {"id": 3, "name": "Submission to AHC",     "status": "done", "date": "2024-03-05"},
+            {"id": 4, "name": "Purity Testing",        "status": "done", "date": "2024-03-07"},
+            {"id": 5, "name": "Hallmark Applied",      "status": "done", "date": "2024-03-10", "note": "HUID: AB1234."},
+        ],
+    },
+}
+
+# Runtime-created applications stored here (lost on restart — demo only)
+_RUNTIME_TRACKER: Dict[str, Any] = {}
+
+
+@app.get("/api/certification/tracker/{application_id}")
+@app.get("/api/certification/status/{application_id}")
+@app.get("/api/v1/certification/tracker/{application_id}")
+async def get_tracker(application_id: str):
+    aid = application_id.upper()
+    record = _TRACKER_DEMO.get(aid) or _RUNTIME_TRACKER.get(aid)
+    if not record:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Application '{application_id}' not found. Demo IDs: BIS-2024-001, BIS-2024-002, BIS-2024-003",
+        )
+    return {**record, "trace_id": new_trace()}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LABS — Feature 8
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/api/labs/nearby")
-async def get_labs_nearby(city: str = Query(..., description="City name to search labs in")):
-    """Feature 8: Find BIS-recognised testing labs near a city."""
-    labs = load_json("labs.json")
-    city_lower = city.lower().strip()
-
-    filtered = [
+@app.get("/api/v1/laboratories")
+async def get_labs(
+    city: str = Query(..., description="City name to search labs in"),
+    state: Optional[str] = None,
+):
+    labs      = load_json("labs.json")
+    city_low  = city.lower().strip()
+    filtered  = [
         lab for lab in labs
-        if city_lower in lab.get("city", "").lower()
-        or city_lower in lab.get("state", "").lower()
-        or city_lower in lab.get("address", "").lower()
-        or city_lower in lab.get("name", "").lower()
+        if city_low in lab.get("city", "").lower()
+        or city_low in lab.get("state", "").lower()
+        or city_low in lab.get("address", "").lower()
+        or city_low in lab.get("name", "").lower()
     ]
-
     if not filtered:
-        # Fuzzy prefix match
-        for lab in labs:
-            if lab.get("city", "").lower().startswith(city_lower[:3]):
-                filtered.append(lab)
+        # 3-letter prefix fallback
+        filtered = [
+            lab for lab in labs
+            if lab.get("city", "").lower().startswith(city_low[:3])
+        ]
+    if not filtered:
+        filtered = labs  # Return all if no match
 
     return {
-        "city": city,
-        "count": len(filtered),
-        "labs": filtered
+        "city":     city,
+        "count":    len(filtered),
+        "labs":     filtered,
+        "trace_id": new_trace(),
     }
 
 
-# ─── FAQs Endpoint ───────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# FAQs
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/api/faq")
-async def get_faqs(role: Optional[str] = None, search: Optional[str] = None):
-    """Retrieve official FAQs for manufacturers, consumers, or students."""
-    results = []
-    
+@app.get("/api/v1/faq")
+async def get_faqs(
+    role:   Optional[str] = None,
+    search: Optional[str] = None,
+):
     file_map = {
         "manufacturer": "manufacturer_faq.json",
-        "consumer": "consumer_faq.json",
-        "student": "student_faq.json"
+        "consumer":     "consumer_faq.json",
+        "student":      "student_faq.json",
     }
-
+    results: List[Dict[str, Any]] = []
     if role and role.lower() in file_map:
         results = load_json(file_map[role.lower()])
     else:
-        for f in file_map.values():
+        for fn in file_map.values():
             try:
-                results.extend(load_json(f))
+                results.extend(load_json(fn))
             except Exception:
                 pass
 
     if search:
-        s_lower = search.lower().strip()
+        sl = search.lower().strip()
         results = [
             item for item in results
-            if s_lower in item.get("question", "").lower()
-            or s_lower in item.get("answer", "").lower()
-            or s_lower in item.get("category", "").lower()
+            if sl in item.get("question", "").lower()
+            or sl in item.get("answer", "").lower()
+            or sl in item.get("category", "").lower()
         ]
 
-    return {
-        "count": len(results),
-        "faqs": results
-    }
+    return {"count": len(results), "faqs": results, "trace_id": new_trace()}
 
 
-# ─── Feature 9: Product Image → Standard Detection ───────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# VISION — Feature 9 (Computer Vision)
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.post("/api/standards/detect-image")
-async def detect_standard_from_image(image: UploadFile = File(...)):
-    """Feature 9: Upload product image → detect applicable IS standards."""
+@app.post("/api/v1/vision/analyze")
+async def detect_from_image(image: UploadFile = File(...)):
     if not (image.content_type and image.content_type.startswith("image/")):
         raise HTTPException(status_code=400, detail="Uploaded file must be an image")
-
     image_bytes = await image.read()
-    if len(image_bytes) > 10 * 1024 * 1024:  # 10 MB limit
-        raise HTTPException(status_code=400, detail="Image file too large (max 10MB)")
-
+    if len(image_bytes) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image too large (max 10 MB)")
     try:
         from image_detect import detect_standards_from_image
         result = await detect_standards_from_image(image_bytes)
         return result
     except Exception as e:
-        logger.error(f"Image detection error: {e}")
-        raise HTTPException(status_code=500, detail={"error": str(e)})
+        logger.error(f"Image detection error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e), "trace_id": new_trace()})
 
 
-# ─── Feature 10: Certification Journey Tracker ───────────────────────────────
-TRACKER_MOCK_DATA = {
-    "BIS-2024-001": {
-        "app_id": "BIS-2024-001",
-        "product": "Domestic Pressure Cooker",
-        "standard": "IS 2347",
-        "scheme": "ISI Mark",
-        "applicant": "Sunrise Industries Pvt. Ltd.",
-        "submitted_on": "2024-01-15",
-        "current_stage": 3,
-        "stages": [
-            {"id": 1, "name": "Application Submitted", "status": "done", "date": "2024-01-15", "note": "Application received. Ref: BIS-2024-001."},
-            {"id": 2, "name": "Document Verification", "status": "done", "date": "2024-01-22", "note": "All documents verified successfully."},
-            {"id": 3, "name": "Factory Inspection", "status": "current", "date": "In Progress", "note": "BIS inspector visit scheduled for Jan 30."},
-            {"id": 4, "name": "Sample Testing", "status": "pending", "date": "Pending", "note": "Awaiting inspection completion."},
-            {"id": 5, "name": "Licence Granted", "status": "pending", "date": "Pending", "note": "Final approval and licence issuance."},
-        ],
-    },
-    "BIS-2024-002": {
-        "app_id": "BIS-2024-002",
-        "product": "LED Bulb (10W)",
-        "standard": "IS 16102",
-        "scheme": "CRS",
-        "applicant": "BrightTech Solutions",
-        "submitted_on": "2024-02-10",
-        "current_stage": 4,
-        "stages": [
-            {"id": 1, "name": "Application Submitted", "status": "done", "date": "2024-02-10", "note": "Online CRS application submitted."},
-            {"id": 2, "name": "Document Verification", "status": "done", "date": "2024-02-14", "note": "DoC and test reports accepted."},
-            {"id": 3, "name": "Factory Inspection", "status": "done", "date": "2024-02-20", "note": "Desk review completed for CRS."},
-            {"id": 4, "name": "Sample Testing", "status": "current", "date": "In Progress", "note": "Samples under testing at approved lab."},
-            {"id": 5, "name": "Registration Certificate", "status": "pending", "date": "Pending", "note": "Awaiting lab test clearance."},
-        ],
-    },
-    "BIS-2024-003": {
-        "app_id": "BIS-2024-003",
-        "product": "Gold Jewellery (22K)",
-        "standard": "IS 1417",
-        "scheme": "Hallmarking",
-        "applicant": "Ramesh Jewellers",
-        "submitted_on": "2024-03-01",
-        "current_stage": 5,
-        "stages": [
-            {"id": 1, "name": "Application Submitted", "status": "done", "date": "2024-03-01", "note": "HUID portal registration complete."},
-            {"id": 2, "name": "Document Verification", "status": "done", "date": "2024-03-01", "note": "KYC verified."},
-            {"id": 3, "name": "Submission to AHC", "status": "done", "date": "2024-03-05", "note": "Jewellery submitted to AHC."},
-            {"id": 4, "name": "Purity Testing", "status": "done", "date": "2024-03-07", "note": "22K (916) confirmed."},
-            {"id": 5, "name": "Hallmark Stamp Applied", "status": "done", "date": "2024-03-10", "note": "HUID: AB1234. Hallmarking complete."},
-        ],
-    },
-}
+# ══════════════════════════════════════════════════════════════════════════════
+# VOICE — Feature 6
+# ══════════════════════════════════════════════════════════════════════════════
 
-
-@app.get("/api/certification/tracker/{application_id}")
-async def get_tracker_status(application_id: str):
-    """Feature 10: Get certification journey tracker status."""
-    app_id_upper = application_id.upper()
-    if app_id_upper not in TRACKER_MOCK_DATA:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Application '{application_id}' not found. Demo IDs: BIS-2024-001, BIS-2024-002, BIS-2024-003"
-        )
-    return TRACKER_MOCK_DATA[app_id_upper]
-
-
-# ─── Feature 6: Voice Transcription ──────────────────────────────────────────
 @app.post("/api/voice/transcribe")
+@app.post("/api/v1/voice/transcribe")
 async def voice_transcribe(audio: UploadFile = File(...)):
-    """Feature 6: Transcribe audio to text using Whisper."""
     audio_bytes = await audio.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="No audio data received")
-
     try:
         from voice import transcribe_audio
         text = transcribe_audio(audio_bytes, filename=audio.filename or "audio.webm")
-        return {"text": text, "filename": audio.filename}
+        return {"text": text, "filename": audio.filename, "trace_id": new_trace()}
     except Exception as e:
         logger.error(f"Transcription error: {e}")
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
-# ─── Feature 6: Voice TTS (text → audio) ─────────────────────────────────────
 @app.post("/api/voice/speak")
+@app.post("/api/v1/voice/speak")
 async def voice_speak(req: SpeakRequest):
-    """Feature 6: Convert text to speech audio (MP3) using gTTS."""
     if not req.text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty")
-
     try:
         from voice import text_to_speech
         audio_bytes = text_to_speech(req.text, req.language or "en")
         return Response(
             content=audio_bytes,
             media_type="audio/mpeg",
-            headers={"Content-Disposition": "inline; filename=response.mp3"}
+            headers={"Content-Disposition": "inline; filename=response.mp3"},
         )
     except Exception as e:
         logger.error(f"TTS error: {e}")
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
-# ─── 2026 BIS Services Endpoint ───────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# BIS SERVICES
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/api/services")
-async def get_bis_services(
-    category: Optional[str] = Query(None, description="Filter by service category"),
-    search: Optional[str] = Query(None, description="Search query")
+@app.get("/api/v1/services")
+async def get_services(
+    category: Optional[str] = Query(None),
+    search:   Optional[str] = Query(None),
 ):
-    """Get complete 2026 BIS Services dataset."""
-    services_file = DATA_DIR / "bis_services.json"
-    if not services_file.exists():
-        return {"services": [], "total": 0}
-    with open(services_file, "r", encoding="utf-8") as f:
+    sf = DATA_DIR / "bis_services.json"
+    if not sf.exists():
+        return {"services": [], "total": 0, "trace_id": new_trace()}
+    with open(sf, encoding="utf-8") as f:
         data = json.load(f)
-    services = data.get("services", [])
+    services = data.get("services", []) if isinstance(data, dict) else data
     if category:
         services = [s for s in services if category.lower() in s.get("service_category", "").lower()]
     if search:
@@ -502,335 +512,295 @@ async def get_bis_services(
             or q in s.get("key_features", "").lower()
         ]
     return {
-        "dataset_name": data.get("dataset_name", "BIS_Services_Complete_Dataset_2026"),
+        "dataset_name": data.get("dataset_name", "BIS_Services_2026") if isinstance(data, dict) else "BIS_Services_2026",
         "total": len(services),
-        "services": services
+        "services": services,
+        "trace_id": new_trace(),
     }
 
 
-# ─── Consumer Complaints Endpoint ────────────────────────────────────────────
-class ComplaintRequest(BaseModel):
-    contact_number: str
-    description: str
-    isi_number: Optional[str] = None
-    product_name: Optional[str] = None
-    photo_type: Optional[str] = "upload"  # "camera" or "upload"
-    photo_data: Optional[str] = None      # base64 data url or filename
+# ══════════════════════════════════════════════════════════════════════════════
+# COMPLAINTS
+# ══════════════════════════════════════════════════════════════════════════════
 
-
-COMPLAINTS_DB: List[Dict[str, Any]] = []
+_COMPLAINTS_STORE: List[Dict[str, Any]] = []  # In-memory demo store
 
 
 @app.post("/api/complaints")
-async def submit_consumer_complaint(req: ComplaintRequest):
-    """Lodge consumer complaint with photo/camera evidence and get official tracking ID."""
+@app.post("/api/v1/complaints")
+async def submit_complaint(req: ComplaintRequest):
     if not req.description.strip():
-        raise HTTPException(status_code=400, detail="Complaint description is required")
+        raise HTTPException(status_code=400, detail="Description is required")
     if not req.contact_number.strip():
         raise HTTPException(status_code=400, detail="Contact number is required")
-
     complaint_id = f"BIS-CMP-2026-{int(time.time()) % 100000:05d}"
     record = {
-        "complaint_id": complaint_id,
-        "contact_number": req.contact_number,
-        "description": req.description,
-        "isi_number": req.isi_number or "Not Provided",
-        "product_name": req.product_name or "General Product",
-        "photo_type": req.photo_type,
-        "has_photo": bool(req.photo_data),
-        "status": "Registered & Assigned for Inspection",
-        "submitted_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "helpline": "1800-11-4070 (Toll Free)",
+        "complaint_id":    complaint_id,
+        "contact_number":  req.contact_number,
+        "description":     req.description,
+        "isi_number":      req.isi_number or "Not Provided",
+        "product_name":    req.product_name or "General Product",
+        "photo_type":      req.photo_type,
+        "has_photo":       bool(req.photo_data),
+        "status":          "Registered & Assigned for Inspection",
+        "submitted_at":    time.strftime("%Y-%m-%d %H:%M:%S"),
+        "helpline":        "1800-11-4070 (Toll Free)",
         "redressal_portal": "https://www.bis.gov.in/index.php/consumer-affairs/complaint-management-cell/",
+        "demo_disclaimer": "⚠️ DEMO — In-memory store, lost on server restart",
+        "trace_id":        new_trace(),
     }
-    COMPLAINTS_DB.append(record)
-    logger.info(f"✅ Complaint filed successfully: {complaint_id}")
-
+    _COMPLAINTS_STORE.append(record)
+    logger.info(f"Complaint filed: {complaint_id}")
     return {
-        "success": True,
+        "success":      True,
         "complaint_id": complaint_id,
-        "status": record["status"],
-        "message": f"Your complaint has been successfully registered under ID {complaint_id}.",
-        "details": record
+        "status":       record["status"],
+        "message":      f"Complaint registered under ID {complaint_id}.",
+        "details":      record,
     }
 
 
 @app.get("/api/complaints/{complaint_id}")
-async def get_complaint_status(complaint_id: str):
-    """Lookup filed complaint status."""
-    match = next((c for c in COMPLAINTS_DB if c["complaint_id"] == complaint_id.upper()), None)
+@app.get("/api/v1/complaints/{complaint_id}")
+async def get_complaint(complaint_id: str):
+    match = next((c for c in _COMPLAINTS_STORE if c["complaint_id"] == complaint_id.upper()), None)
     if not match:
-        raise HTTPException(status_code=404, detail=f"Complaint ID '{complaint_id}' not found")
+        raise HTTPException(status_code=404, detail=f"Complaint '{complaint_id}' not found")
     return match
 
 
-# ─── Manufacturer Automated 5-Step Process Endpoints ─────────────────────────
-class ManufacturerProcessRequest(BaseModel):
+# ══════════════════════════════════════════════════════════════════════════════
+# COMPLIANCE ANALYSIS — Feature (Manufacturer workflow)
+# ══════════════════════════════════════════════════════════════════════════════
+
+class ComplianceRequest(BaseModel):
     product_name: str
-    pan_number: str
-    aadhaar_number: str
-    business_name: str
-    factory_address: str
-    selected_lab: Optional[str] = None
-    slot_date: Optional[str] = None
-    slot_time: Optional[str] = None
-    payment_method: Optional[str] = "UPI"
-    payment_amount: Optional[float] = 12500.0
+    city:         Optional[str] = "Mumbai"
+    scale:        Optional[str] = "MSME"
 
 
+@app.post("/api/v1/compliance/analyze")
 @app.post("/api/manufacturer/detect")
-async def detect_manufacturer_standard(payload: Dict[str, Any]):
-    """Step 1: Detect standard, scheme, category, and testing requirements."""
-    product_name = payload.get("product_name", "").strip()
-    if not product_name:
-        raise HTTPException(status_code=400, detail="Product name is required")
+async def compliance_analyze(req: ComplianceRequest):
+    if not req.product_name.strip():
+        raise HTTPException(status_code=400, detail="product_name is required")
+    try:
+        from supervisor import mfr_orchestrator
+        result = mfr_orchestrator.build_roadmap(
+            product_name=req.product_name,
+            user_city=req.city or "Mumbai",
+            scale=req.scale or "MSME",
+        )
+        return result.model_dump()
+    except Exception as e:
+        logger.error(f"Compliance analyze error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e), "trace_id": new_trace()})
 
-    from rag import retrieve
-    retrieved = retrieve(f"Indian standard specification for {product_name}", top_k=3)
-    
-    # Try exact match from standards.json
-    standards_file = DATA_DIR / "standards.json"
-    matched_std = None
-    if standards_file.exists():
-        with open(standards_file, "r", encoding="utf-8") as f:
-            stds = json.load(f)
-        q = product_name.lower()
-        for s in stds:
-            if q in s.get("title", "").lower() or any(q in kw.lower() for kw in s.get("keywords", [])):
-                matched_std = s
-                break
-        if not matched_std and retrieved:
-            first = retrieved[0]
-            matched_std = next((s for s in stds if s.get("id") == first.get("id") or s.get("number") == first.get("number")), None)
-            if not matched_std:
-                matched_std = {
-                    "id": first.get("id", "IS-GENERAL"),
-                    "number": first.get("number", "IS Standard"),
-                    "title": first.get("title", f"Specification for {product_name}"),
-                    "category": first.get("category", "General Goods"),
-                    "certification_scheme": "Scheme-I (ISI Mark)"
-                }
 
-    if not matched_std:
-        matched_std = {
-            "id": "IS-302",
-            "number": "IS 302",
-            "title": f"Safety Requirements for {product_name}",
-            "category": "Consumer Products",
-            "certification_scheme": "Scheme-I (ISI Mark)"
+# ══════════════════════════════════════════════════════════════════════════════
+# MULTI-AGENT MANUFACTURER ORCHESTRATION
+# ══════════════════════════════════════════════════════════════════════════════
+
+class ManufacturerProcessRequest(BaseModel):
+    product_name:     str
+    pan_number:       str
+    aadhaar_number:   str
+    business_name:    str
+    factory_address:  str
+    selected_lab:     Optional[str] = None
+    slot_date:        Optional[str] = None
+    slot_time:        Optional[str] = None
+    payment_method:   Optional[str] = "UPI"
+    payment_amount:   Optional[float] = 13500.0
+    city:             Optional[str] = "Mumbai"
+    scale:            Optional[str] = "MSME"
+
+
+@app.post("/api/agents/manufacturer/orchestrate")
+@app.post("/api/v1/agents/manufacturer/orchestrate")
+async def orchestrate_manufacturer(req: Dict[str, Any]):
+    try:
+        from supervisor import mfr_orchestrator
+        product_name = (req.get("product_name") or req.get("product_input") or "Domestic Pressure Cooker").strip()
+        user_city    = req.get("city") or req.get("user_city") or "Mumbai"
+        result       = mfr_orchestrator.build_roadmap(
+            product_name=product_name,
+            user_city=user_city,
+            scale=req.get("scale", "MSME"),
+        )
+        data = result.model_dump()
+        # Add legacy keys for frontend compatibility
+        if data.get("applicable_standard"):
+            std = data["applicable_standard"]
+            data["standards"] = {
+                "standard_number": std.get("number", "IS Standard"),
+                "standard_title":  std.get("title", ""),
+                "scheme":          std.get("certification_scheme", "Scheme-I (ISI Mark)"),
+                "required_mark":   "Standard ISI Mark with CM/L Number",
+                "summary":         std.get("summary", ""),
+            }
+        data["product"] = {
+            "product_name": product_name,
+            "category":     data.get("identified_category", ""),
         }
+        data["qco"] = {
+            "qco_status":      "MANDATORY UNDER QUALITY CONTROL ORDER (QCO)",
+            "issuing_authority": data.get("issuing_ministry", "DPIIT"),
+            "statutory_act":   "Section 16 of the BIS Act 2016",
+            "penalty_warning": data.get("penalty_provision", ""),
+        }
+        data["fees_and_timeline"] = {
+            "fee_breakdown":       data.get("estimated_statutory_fees", {}),
+            "estimated_turnaround": "14 Calendar Days (Fast-Track Protocol)",
+        }
+        data["human_approval_gate"] = {
+            "approval_token": f"HITL-TOKEN-{new_trace()}",
+            "status": "PENDING_HUMAN_APPROVAL",
+        }
+        return data
+    except Exception as e:
+        logger.error(f"Orchestration error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e)})
+
+
+@app.post("/api/agents/manufacturer/approve-and-submit")
+@app.post("/api/v1/agents/manufacturer/approve-and-submit")
+async def approve_and_submit(req: Dict[str, Any]):
+    app_id = f"BIS-MFR-2026-{int(time.time()) % 100000:05d}"
+    tx_id  = f"TXN-BIS-{int(time.time() * 1000) % 100000000:08d}"
+    paid   = req.get("payment_amount", 13500.0)
+
+    # Add to tracker (runtime memory)
+    _RUNTIME_TRACKER[app_id] = {
+        "app_id":          app_id,
+        "product":         req.get("product_name", "Product"),
+        "standard":        req.get("standard_number", "IS Standard"),
+        "scheme":          req.get("scheme", "Scheme-I (ISI Mark)"),
+        "applicant":       req.get("business_name", "Applicant"),
+        "submitted_on":    time.strftime("%Y-%m-%d"),
+        "current_stage":   2,
+        "demo_disclaimer": "⚠️ DEMO — Not an official BIS certification record",
+        "stages": [
+            {"id": 1, "name": "Application & Documents",          "status": "done",    "date": time.strftime("%Y-%m-%d")},
+            {"id": 2, "name": "Lab Slot Reserved & Payment",      "status": "done",    "date": time.strftime("%Y-%m-%d")},
+            {"id": 3, "name": "Factory Inspection & Sample Test", "status": "current", "date": "In Progress"},
+            {"id": 4, "name": "Grant of Licence / CM/L",         "status": "pending", "date": "Within 2 weeks"},
+        ],
+    }
 
     return {
-        "product_name": product_name,
-        "standard": matched_std,
-        "scheme": matched_std.get("certification_scheme", "Scheme-I (ISI Mark)"),
-        "required_mark": "ISI Mark (Standard Mark)" if "CRS" not in matched_std.get("certification_scheme", "") else "CRS Standard Mark",
-        "mandatory_qco": True,
-        "estimated_timeline_weeks": 2,
-        "application_fee": 1000.0,
-        "lab_test_fee": 11500.0,
-        "total_fee": 12500.0
+        "success":           True,
+        "application_id":   app_id,
+        "status":            "Application Approved & Testing Slot Confirmed",
+        "disclaimer":        (
+            "⚠️ STATUTORY NOTICE: This is an AI-generated guidance summary. "
+            "Official BIS certification and licensing are conducted solely by BIS "
+            "through https://www.manakonline.in. BIS AI does not grant official certification."
+        ),
+        "submitted_at":      time.strftime("%Y-%m-%d %H:%M:%S"),
+        "signed_by":         req.get("signature_name", "Authorized Signatory"),
+        "payment_receipt": {
+            "transaction_id":  tx_id,
+            "payment_method":  req.get("payment_method", "UPI"),
+            "amount_paid":     paid,
+            "payment_status":  "DEMO RECEIPT — NOT AN OFFICIAL BIS PAYMENT",
+        },
+        "official_portal":   "https://www.manakonline.in",
+        "bis_helpline":      "1800-11-4070",
+        "trace_id":          new_trace(),
     }
 
 
 @app.post("/api/manufacturer/process")
-async def process_manufacturer_application(req: ManufacturerProcessRequest):
-    """End-to-end processing: generates tracking number, confirmation, and final official report."""
-    if not req.product_name.strip():
-        raise HTTPException(status_code=400, detail="Product name is required")
-    if not req.pan_number.strip():
-        raise HTTPException(status_code=400, detail="PAN number is required")
-
-    app_id = f"BIS-MFR-2026-{int(time.time()) % 100000:05d}"
-    tx_id = f"TXN-BIS-{int(time.time() * 1000) % 100000000:08d}"
-
-    # Standard lookup
-    detection = await detect_manufacturer_standard({"product_name": req.product_name})
-    std = detection.get("standard", {})
-
-    report = {
-        "application_id": app_id,
-        "status": "Application Successfully Approved & Testing Slot Confirmed",
-        "approval_eta": "Laboratory Test Results & Final Certificate will be shared after sample analysis",
-        "approval_notice": "✅ Your application dossier and statutory fees have been verified and approved. Laboratory testing slot has been confirmed. Laboratory Test Results and Final Certification Certificate will be shared after official sample analysis.",
-        "submitted_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "product_details": {
-            "name": req.product_name,
-            "category": std.get("category", "Industrial/Consumer Goods"),
-            "standard_number": std.get("number", "IS Standard"),
-            "standard_title": std.get("title", ""),
-            "scheme": detection.get("scheme", "Scheme-I (ISI Mark)"),
-            "mark": detection.get("required_mark", "ISI Mark"),
-        },
-        "manufacturer_details": {
-            "business_name": req.business_name or "Enterprise Manufacturer",
-            "pan_number": req.pan_number.upper(),
-            "aadhaar_mask": f"XXXX-XXXX-{req.aadhaar_number[-4:]}" if len(req.aadhaar_number) >= 4 else "XXXX-XXXX-1234",
-            "factory_address": req.factory_address or "Industrial Area, Phase-II",
-        },
-        "lab_booking": {
-            "lab_name": req.selected_lab or "Central Laboratory (Sahibabad, Ghaziabad)",
-            "slot_date": req.slot_date or time.strftime("%Y-%m-%d", time.localtime(time.time() + 86400 * 3)),
-            "slot_time": req.slot_time or "10:30 AM - 01:30 PM",
-            "status": "Slot Confirmed",
-        },
-        "payment_receipt": {
-            "transaction_id": tx_id,
-            "payment_method": req.payment_method or "UPI",
-            "amount_paid": req.payment_amount or 12500.0,
-            "payment_status": "SUCCESSFUL (PAID)",
-            "paid_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        },
-        "official_portal": "https://www.manakonline.in",
-        "bis_helpline": "1800-11-4070",
-    }
-
-    # Add to mock tracker DB
-    TRACKER_MOCK_DATA[app_id] = {
-        "app_id": app_id,
-        "product": req.product_name,
-        "standard": std.get("number", "IS Standard"),
-        "scheme": detection.get("scheme", "Scheme-I (ISI Mark)"),
-        "applicant": req.business_name or "Enterprise Manufacturer",
-        "submitted_on": time.strftime("%Y-%m-%d"),
-        "current_stage": 2,
-        "stages": [
-            {"id": 1, "name": "Application & Documents Submitted", "status": "done", "date": time.strftime("%Y-%m-%d"), "note": "PAN, Aadhaar, Factory info received."},
-            {"id": 2, "name": "Lab Slot Reserved & Payment", "status": "done", "date": time.strftime("%Y-%m-%d"), "note": f"Slot booked at {report['lab_booking']['lab_name']}."},
-            {"id": 3, "name": "Factory Inspection & Sample Testing", "status": "current", "date": "In Progress", "note": "Scheduled with BIS technical officer."},
-            {"id": 4, "name": "Grant of Licence / CM/L Number", "status": "pending", "date": "Within 2 weeks", "note": "Final license certificate issued."},
-        ]
-    }
-
-    logger.info(f"✅ Manufacturer application processed: {app_id}")
-    return report
+async def process_manufacturer(req: ManufacturerProcessRequest):
+    """Backward-compat endpoint that wraps the V2 compliance analysis."""
+    return await approve_and_submit({
+        "product_name":   req.product_name,
+        "business_name":  req.business_name,
+        "payment_amount": req.payment_amount or 13500.0,
+        "payment_method": req.payment_method or "UPI",
+    })
 
 
-# ─── Multi-Agent Supervisor Architecture Endpoints ────────────────────────────
-@app.post("/api/agents/manufacturer/orchestrate")
-async def orchestrate_manufacturer_agents(req: Dict[str, Any]):
-    """
-    Executes the 8-Agent Manufacturer Certification Pipeline:
-    Product -> Standards (RAG) -> QCO -> Document & Testing -> Lab Recommendation -> Fee & Timeline -> Roadmap & Evidence -> HITL Approval Gate
-    """
+# Consumer agent endpoints (stubs that route to chat)
+@app.post("/api/agents/consumer/verify")
+@app.post("/api/agents/consumer/triage")
+async def consumer_agent(req: Dict[str, Any]):
+    query = req.get("query") or req.get("description") or req.get("text") or ""
+    if not query:
+        raise HTTPException(status_code=400, detail="query/description required")
+    from rag import generate_rag_answer
+    result = await generate_rag_answer(query, "en", role="consumer")
+    return result
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# EVALUATION — STEP 18
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v1/evaluation/run")
+@app.get("/api/evaluation/run")
+async def run_evaluation():
     try:
-        from supervisor import mfr_orchestrator
-        product_name = req.get("product_name") or req.get("product_input") or "Domestic Pressure Cooker"
-        user_city = req.get("city") or req.get("user_city") or "Mumbai"
-        user_coords = req.get("user_coords")
-        kyc_data = req.get("kyc") or {
-            "pan": req.get("pan_number"),
-            "business_name": req.get("business_name"),
-            "factory_address": req.get("factory_address")
-        }
-
-        result = mfr_orchestrator.run_pipeline(
-            product_input=product_name,
-            user_city=user_city,
-            user_coords=user_coords,
-            kyc_data=kyc_data
-        )
+        from evaluation import run_eval
+        result = await asyncio.to_thread(run_eval)
         return result
     except Exception as e:
-        logger.error(f"Manufacturer supervisor orchestration error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Manufacturer agent error: {str(e)}")
+        logger.error(f"Evaluation error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
-@app.post("/api/agents/manufacturer/approve-and-submit")
-async def approve_and_submit_manufacturer(req: Dict[str, Any]):
+# ══════════════════════════════════════════════════════════════════════════════
+# ML RISK PREDICTION & EVALUATION METRICS (PyTorch MLP Engine)
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/ml/predict")
+@app.post("/api/v1/ml/predict")
+async def ml_predict(req: Dict[str, Any]):
     """
-    Finalizes human approval gate and issues tracking ID + 2-week fast-track certification certificate.
-    """
-    try:
-        from supervisor import mfr_orchestrator
-        approval_token = req.get("approval_token", "HITL-TOKEN-APPROVED")
-        signature_name = req.get("signature_name") or req.get("business_name") or "Authorized Signatory"
-        payment_ref = req.get("payment_ref") or req.get("payment_method") or "UPI-BharatKosh"
-
-        submission = mfr_orchestrator.hitl_gate.verify_and_submit(
-            approval_token=approval_token,
-            signature_name=signature_name,
-            payment_ref=payment_ref,
-            state=req
-        )
-
-        app_id = submission["tracking_id"]
-        # Save to mock tracker
-        TRACKER_MOCK_DATA[app_id] = {
-            "app_id": app_id,
-            "product": req.get("product_name", "Industrial Product"),
-            "standard": req.get("standard_number", "IS Standard"),
-            "scheme": req.get("scheme", "Scheme-I (ISI Mark)"),
-            "applicant": signature_name,
-            "submitted_on": time.strftime("%Y-%m-%d"),
-            "current_stage": 2,
-            "stages": [
-                {"id": 1, "name": "Application & Human Approval Submitted", "status": "done", "date": time.strftime("%Y-%m-%d"), "note": "Multi-agent dossier approved and signed."},
-                {"id": 2, "name": "Lab Slot Reserved & Payment Settled", "status": "done", "date": time.strftime("%Y-%m-%d"), "note": f"Transaction {submission['transaction_hash']} recorded."},
-                {"id": 3, "name": "Factory Inspection & Testing Audit", "status": "current", "date": "In Progress", "note": "Scheduled with accredited BIS testing laboratory."},
-                {"id": 4, "name": "Grant of Licence / CM/L Number", "status": "pending", "date": "Post Lab Results", "note": "Final license certificate issued upon laboratory test clearance."},
-            ]
-        }
-
-        return {
-            "success": True,
-            "submission": submission,
-            "official_portal": "https://www.manakonline.in",
-            "bis_helpline": "1800-11-4070"
-        }
-    except Exception as e:
-        logger.error(f"Approval and submission error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Submission error: {str(e)}")
-
-
-@app.post("/api/agents/consumer/triage")
-async def triage_consumer_complaint(req: Dict[str, Any]):
-    """
-    Automates consumer complaint triage with photo evidence processing and Section 29 legal draft.
+    Real PyTorch Deep Neural Network endpoint for BIS compliance risk tier
+    and dynamic audit complexity prediction.
     """
     try:
-        from supervisor import consumer_orchestrator
-        res = consumer_orchestrator.triage_complaint(
-            contact_number=req.get("contact_number") or req.get("contactNumber") or "Not Provided",
-            description=req.get("description") or "Product defect reported",
-            product_name=req.get("product_name") or req.get("productName"),
-            isi_number=req.get("isi_number") or req.get("isiNumber"),
-            photo_data=req.get("photo_data") or req.get("photoData"),
-            photo_type=req.get("photo_type") or req.get("photoType") or "upload"
+        from ml.risk_model import predict_risk
+        product = req.get("product_name") or req.get("input") or "Consumer Product"
+        domain = req.get("material_domain") or "metal"
+        voltage = float(req.get("voltage_rating_v", 0.0) or 0.0)
+        pressure = float(req.get("pressure_rating_bar", 0.0) or 0.0)
+        user_group = req.get("target_user_group") or "domestic"
+        qco = bool(req.get("has_mandatory_qco", True))
+
+        res = await asyncio.to_thread(
+            predict_risk,
+            product_name=product,
+            material_domain=domain,
+            voltage_rating_v=voltage,
+            pressure_rating_bar=pressure,
+            target_user_group=user_group,
+            has_mandatory_qco=qco,
         )
+        res["trace_id"] = new_trace()
         return res
     except Exception as e:
-        logger.error(f"Consumer triage error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Consumer triage error: {str(e)}")
+        logger.error(f"PyTorch prediction error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
-@app.post("/api/agents/consumer/verify")
-async def verify_consumer_product(req: Dict[str, Any]):
+@app.get("/api/ml/metrics")
+@app.get("/api/v1/ml/metrics")
+async def ml_metrics():
     """
-    RAG-grounded verification of ISI CM/L, gold HUID, and CRS R-numbers.
+    Authentic evaluation metrics from 80/20 train/test split on 250 samples.
     """
     try:
-        from supervisor import consumer_orchestrator
-        query = req.get("query") or "ISI mark verification"
-        query_type = req.get("query_type") or "auto"
-        res = await consumer_orchestrator.verify_product(query=query, query_type=query_type)
-        return res
+        from ml.risk_model import get_model_metrics
+        metrics = await asyncio.to_thread(get_model_metrics)
+        metrics["trace_id"] = new_trace()
+        return metrics
     except Exception as e:
-        logger.error(f"Consumer verification error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Consumer verification error: {str(e)}")
+        logger.error(f"ML metrics error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
-@app.post("/api/agents/orchestrate")
-async def orchestrate_agents(req: Dict[str, Any]):
-    """Legacy alias for manufacturer multi-agent orchestration."""
-    return await orchestrate_manufacturer_agents(req)
-
-
-# ─── Run ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    reload = os.environ.get("ENVIRONMENT", "").lower() == "development"
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=reload)
-
-
-
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

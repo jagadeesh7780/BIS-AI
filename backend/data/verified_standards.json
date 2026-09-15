@@ -1,0 +1,370 @@
+[
+  {
+    "id": "IS-2347",
+    "number": "IS 2347:2017",
+    "title": "Domestic Pressure Cookers — Specification (Fourth Revision)",
+    "category": "Consumer Products & Kitchenware",
+    "reaffirmation_year": 2022,
+    "scope": "Specifies design, construction, safety devices, and testing requirements for domestic pressure cookers manufactured from aluminium alloys, stainless steel, or composite materials with capacities from 1 to 22 litres.",
+    "summary": "Mandatory safety standard for domestic pressure cookers. Requires spring-loaded or weight-loaded safety valves, fusible plugs, gasket release systems, and mandatory hydrostatic pressure testing at 2.5 times operating pressure.",
+    "certification_scheme": "Scheme-I (ISI Mark - Product Certification)",
+    "mandatory_qco": true,
+    "qco_notification": "Domestic Pressure Cooker (Quality Control) Order, 2020 issued by DPIIT, Ministry of Commerce and Industry under Section 16 of BIS Act 2016.",
+    "penalty_clause": "Section 29 of BIS Act 2016: Imprisonment up to two years or fine up to ₹5,00,000 or both for non-certified manufacture or sale.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/2347",
+    "authority": "Bureau of Indian Standards (Mechanical Engineering Division MED-32)",
+    "clauses": [
+      {
+        "clause_number": "Clause 4.1",
+        "title": "Material Specifications",
+        "page": 4,
+        "content": "Body and lid shall be fabricated from food-grade aluminium conforming to IS 21 or austenitic stainless steel grade 304 (04Cr18Ni10) conforming to IS 6911. Gasket must be non-toxic food-grade nitrile or silicone rubber conforming to IS 7466."
+      },
+      {
+        "clause_number": "Clause 5.3",
+        "title": "Safety Devices & Relief Mechanisms",
+        "page": 7,
+        "content": "Every cooker shall be equipped with at least two independent safety relief mechanisms: (a) a weight or spring loaded operating pressure valve regulating nominal pressure between 0.9 to 1.1 bar, and (b) a fusible plug or gasket release mechanism activating before pressure exceeds 2.0 bar."
+      },
+      {
+        "clause_number": "Clause 7.2",
+        "title": "Hydrostatic Proof Pressure Test",
+        "page": 11,
+        "content": "The assembled cooker body shall withstand an internal hydrostatic pressure test of not less than 250 kPa (2.5 bar) for a minimum duration of 2 minutes without leakage, structural distortion, or permanent deformation."
+      },
+      {
+        "clause_number": "Clause 8.1",
+        "title": "Mandatory Marking & Packaging",
+        "page": 14,
+        "content": "Each pressure cooker shall be legibly marked on body and lid with: (a) Manufacturer's name or trademark, (b) Rated capacity in litres, (c) Standard Mark (ISI) with CM/L license number, and (d) Year/batch of manufacture."
+      }
+    ]
+  },
+  {
+    "id": "IS-15410",
+    "number": "IS 15410:2003 / IS 4151:2015",
+    "title": "Protective Helmets for Two-Wheeler Riders — Specification",
+    "category": "Personal Protective Equipment (PPE) & Life Safety",
+    "reaffirmation_year": 2021,
+    "scope": "Specifies constructional, dimensional, retention, and impact absorption criteria for protective helmets for riders and pillion passengers of two-wheeled motor vehicles.",
+    "summary": "Mandatory life safety standard enforcing high-velocity impact attenuation, penetration resistance against conical drop weights, dynamic retention harness strength, and peripheral field of vision exceeding 105 degrees.",
+    "certification_scheme": "Scheme-I (ISI Mark - Product Certification)",
+    "mandatory_qco": true,
+    "qco_notification": "Helmet for Two-Wheeler Riders (Quality Control) Order enforced nationwide by Ministry of Road Transport and Highways (MoRTH).",
+    "penalty_clause": "Motor Vehicles Act Section 129 read with BIS Act 2016 Section 29: Seizure of goods, criminal prosecution, and manufacturer fine up to ₹5,00,000.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/4151",
+    "authority": "Bureau of Indian Standards (Transport Engineering Division TED-07)",
+    "clauses": [
+      {
+        "clause_number": "Clause 5.1",
+        "title": "Shell & Impact Liner Construction",
+        "page": 5,
+        "content": "Outer shell shall be moulded from high-impact polycarbonate, ABS, or fiberglass reinforced resin with minimum thickness of 2.8 mm. Energy-absorbing liner must be expanded polystyrene (EPS) with minimum density of 35 g/L."
+      },
+      {
+        "clause_number": "Clause 6.3",
+        "title": "Impact Absorption Test Protocol",
+        "page": 9,
+        "content": "Helmet mounted on a tri-axial headform shall be dropped from a height of 2.8 meters onto flat and hemispherical steel anvils at ambient, high (+50°C), and low (-20°C) temperatures. Peak acceleration transmitted to headform shall not exceed 300 g."
+      },
+      {
+        "clause_number": "Clause 6.4",
+        "title": "Penetration Resistance",
+        "page": 12,
+        "content": "A metal striker weighing 3 kg with a sharp conical point shall drop from a height of 1.0 meter onto any point of the outer shell. The tip of the striker must not make electrical contact with the headform."
+      },
+      {
+        "clause_number": "Clause 7.1",
+        "title": "Dynamic Retention Harness Strength",
+        "page": 15,
+        "content": "Chin strap retention system shall be subjected to dynamic tensile shock loading. Total elongation shall not exceed 25 mm, and residual slippage must not exceed 10 mm."
+      }
+    ]
+  },
+  {
+    "id": "IS-14543",
+    "number": "IS 14543:2016",
+    "title": "Packaged Drinking Water (Other than Natural Mineral Water) — Specification",
+    "category": "Food & Packaged Beverages",
+    "reaffirmation_year": 2023,
+    "scope": "Prescribes microbiological, physical, chemical, and heavy metal parameters for purified water filled in sealed hermetic containers for direct human consumption.",
+    "summary": "Mandatory food safety standard under FSSAI and BIS QCO. Demands multi-barrier treatment including filtration, reverse osmosis / demineralization, UV disinfection, and ozonation. Zero tolerance for pathogens and total coliform.",
+    "certification_scheme": "Scheme-I (ISI Mark - Product Certification)",
+    "mandatory_qco": true,
+    "qco_notification": "Packaged Drinking Water Compulsory Certification Order issued jointly by Ministry of Consumer Affairs and Food Safety and Standards Authority of India (FSSAI).",
+    "penalty_clause": "Section 29 of BIS Act 2016 & FSSAI Section 58: Immediate plant sealing, cancellation of trade license, and criminal complaint.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/14543",
+    "authority": "Bureau of Indian Standards (Food & Agriculture Division FAD-14)",
+    "clauses": [
+      {
+        "clause_number": "Clause 4.1",
+        "title": "Hygienic Source & Multi-Barrier Treatment",
+        "page": 3,
+        "content": "Water shall be derived from potable municipal or groundwater sources and treated by aeration, coagulation, sand filtration, activated carbon absorption, reverse osmosis or demineralization, UV irradiation, and ozonation."
+      },
+      {
+        "clause_number": "Clause 5.2",
+        "title": "Microbiological Criteria (Pathogen Absolutes)",
+        "page": 6,
+        "content": "Escherichia coli, coliform bacteria, fecal streptococci, Pseudomonas aeruginosa, and yeast/mould must be absent in 250 ml of sample. Aerobic microbial count at 37°C shall not exceed 20 CFU/ml."
+      },
+      {
+        "clause_number": "Clause 5.3",
+        "title": "Toxic Heavy Metals & Chemical Tolerances",
+        "page": 8,
+        "content": "Total dissolved solids (TDS) must be between 75 and 500 mg/l. Heavy metal limits: Lead maximum 0.01 mg/l, Arsenic 0.01 mg/l, Cadmium 0.003 mg/l, Mercury 0.001 mg/l, and Pesticide residues non-detectable."
+      },
+      {
+        "clause_number": "Clause 6.1",
+        "title": "Packaging in Food-Grade Polymers",
+        "page": 12,
+        "content": "Containers must be manufactured from virgin, food-grade PET (IS 12252) or Polycarbonate (IS 14971), tamper-evident, and clearly labelled with batch number, processing date, and ISI mark with CM/L number."
+      }
+    ]
+  },
+  {
+    "id": "IS-2062",
+    "number": "IS 2062:2011",
+    "title": "Hot Rolled Medium and High Tensile Structural Steel — Specification",
+    "category": "Civil Engineering & Structural Materials",
+    "reaffirmation_year": 2021,
+    "scope": "Covers requirements for steel plates, sections, strips, and bars for use in structural steel fabrications, bridges, pressure vessels, transmission towers, and high-rise buildings.",
+    "summary": "Mandatory civil engineering standard categorizing steel across yield strength grades (E250, E300, E350, E410, E450). Mandates chemical limits on carbon, sulfur, phosphorus, and Charpy V-notch impact toughness.",
+    "certification_scheme": "Scheme-I (ISI Mark - Product Certification)",
+    "mandatory_qco": true,
+    "qco_notification": "Steel and Steel Products (Quality Control) Order, 2020 issued by Ministry of Steel, Government of India.",
+    "penalty_clause": "Section 29 of BIS Act 2016: Confiscation of imported or domestic consignment and maximum statutory penalty.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/2062",
+    "authority": "Bureau of Indian Standards (Metallurgical Engineering Division MTD-04)",
+    "clauses": [
+      {
+        "clause_number": "Clause 6.1",
+        "title": "Chemical Composition Limits",
+        "page": 4,
+        "content": "Grade E250 quality A: Carbon max 0.23%, Manganese max 1.50%, Sulfur max 0.045%, Phosphorus max 0.045%, Silicon max 0.40%. Carbon equivalent (CE) based on ladle analysis shall not exceed 0.42%."
+      },
+      {
+        "clause_number": "Clause 7.1",
+        "title": "Mechanical Tensile & Yield Properties",
+        "page": 7,
+        "content": "For thickness < 20 mm: Minimum Yield Strength 250 MPa, Tensile Strength 410 to 540 MPa, and minimum elongation of 23% measured on gauge length 5.65√So."
+      },
+      {
+        "clause_number": "Clause 9.1",
+        "title": "Bend & Impact Toughness Test",
+        "page": 10,
+        "content": "Bend test pieces shall withstand 180° cold bend around mandrel diameter equal to 2t without fracture. Grade C/D requires Charpy V-notch impact absorption of min 27 Joules at 0°C / -20°C."
+      }
+    ]
+  },
+  {
+    "id": "IS-16102-1",
+    "number": "IS 16102 (Part 1):2012",
+    "title": "Self-Ballasted LED Lamps for General Lighting Services — Part 1: Safety Requirements",
+    "category": "Electronics & Lighting Systems",
+    "reaffirmation_year": 2022,
+    "scope": "Specifies safety and interchangeability requirements, together with test methods, for self-ballasted LED lamps having a rated wattage up to 60W and rated voltage up to 250V AC.",
+    "summary": "Mandatory standard under MeitY Compulsory Registration Scheme (CRS). Governs dielectric insulation resistance, resistance to heat and fire (glow wire test at 650°C), fault condition safety, and creepage distances.",
+    "certification_scheme": "Scheme-II (CRS - Compulsory Registration Scheme)",
+    "mandatory_qco": true,
+    "qco_notification": "Electronics and Information Technology Goods (Requirement for Compulsory Registration) Order by MeitY.",
+    "penalty_clause": "Electronics QCO Section 16 & 29: Ban on commercial distribution, port customs seizure of imported electronics, and criminal liability.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/16102",
+    "authority": "Bureau of Indian Standards (Electrotechnical Division ETD-23)",
+    "clauses": [
+      {
+        "clause_number": "Clause 4.1",
+        "title": "Marking Requirements for CRS",
+        "page": 3,
+        "content": "Lamps must be legibly marked with: (a) Mark of origin, (b) Rated voltage, (c) Rated wattage, (d) Rated frequency, and (e) BIS CRS Registration Symbol with valid R-number (R-XXXXXXXX)."
+      },
+      {
+        "clause_number": "Clause 8.1",
+        "title": "Insulation Resistance & Electric Strength",
+        "page": 6,
+        "content": "Insulation resistance between live parts and accessible external metal parts shall not be less than 4 Megohms at 500V DC. Dielectric strength must withstand 2U + 1000V AC without flashover."
+      },
+      {
+        "clause_number": "Clause 13.1",
+        "title": "Resistance to Heat and Fire (Glow Wire)",
+        "page": 10,
+        "content": "External parts of insulating material providing protection against electric shock shall withstand the glow wire test at 650°C in accordance with IS 11000 (Part 2/Sec 1)."
+      }
+    ]
+  },
+  {
+    "id": "IS-13252-1",
+    "number": "IS 13252 (Part 1):2010",
+    "title": "Information Technology Equipment — Safety — Part 1: General Requirements",
+    "category": "Electronics & IT Goods",
+    "reaffirmation_year": 2020,
+    "scope": "Applies to mains-powered or battery-powered information technology equipment including laptops, personal computers, mobile phones, tablet computers, POS terminals, and power supplies.",
+    "summary": "Core safety standard under Scheme-II (CRS) addressing hazard protection: electric shock, energy hazards, fire propagation, mechanical and heat hazards, radiation, and chemical emission.",
+    "certification_scheme": "Scheme-II (CRS - Compulsory Registration Scheme)",
+    "mandatory_qco": true,
+    "qco_notification": "MeitY Compulsory Registration Order Schedule Phase I & II.",
+    "penalty_clause": "Immediate blocking of BIS CRS registration certificate, custom hold at Indian ports of entry, and market recall.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/13252",
+    "authority": "Bureau of Indian Standards (Electronics & IT Division LITD-07)",
+    "clauses": [
+      {
+        "clause_number": "Clause 1.5",
+        "title": "Components & Flammability Classification",
+        "page": 5,
+        "content": "Polymeric enclosures and internal insulation materials must have a minimum flammability classification of V-1 or V-0 when tested in accordance with IS 11731 / IEC 60695-11-10."
+      },
+      {
+        "clause_number": "Clause 2.1",
+        "title": "Protection Against Electric Shock",
+        "page": 9,
+        "content": "Operator accessible areas shall be isolated from primary hazardous live voltages by double or reinforced insulation with clearance distances exceeding 4.0 mm and creepage distances exceeding 5.0 mm."
+      },
+      {
+        "clause_number": "Clause 4.3",
+        "title": "Mechanical Drop and Impact Strength",
+        "page": 15,
+        "content": "Handheld equipment such as mobile phones and tablets must withstand 3 successive drop impacts from a height of 1000 mm onto a rigid horizontal hardwood surface without creating safety hazards."
+      }
+    ]
+  },
+  {
+    "id": "IS-1417",
+    "number": "IS 1417:2016",
+    "title": "Gold and Gold Alloys, Bullion and Artefacts — Fineness and Marking",
+    "category": "Precious Metals & Jewellery",
+    "reaffirmation_year": 2022,
+    "scope": "Specifies 6 recognized purity fineness grades for gold jewellery, artefacts, and bullion, along with mandatory hallmark laser marking protocols.",
+    "summary": "Statutory Hallmarking standard enforcing mandatory hallmarking across 288+ notified districts in India. Each gold article must carry: (1) BIS Hallmark logo, (2) Purity grade (e.g., 22K916), and (3) Unique 6-digit alphanumeric HUID (Hallmark Unique Identification).",
+    "certification_scheme": "Scheme-IV (Hallmarking Scheme)",
+    "mandatory_qco": true,
+    "qco_notification": "Hallmarking of Gold Jewellery and Gold Artefacts Order enforced by Department of Consumer Affairs.",
+    "penalty_clause": "Section 29 of BIS Act 2016: Fine of minimum ₹1,00,000 or up to 5 times the market value of the gold article, plus suspension of jeweller portal license.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/1417",
+    "authority": "Bureau of Indian Standards (Assaying and Hallmarking Division MTD-10)",
+    "clauses": [
+      {
+        "clause_number": "Clause 4.1",
+        "title": "Official Recognized Fineness Grades",
+        "page": 3,
+        "content": "Gold jewellery shall be assayed and certified strictly into one of 6 fineness grades: 24K (999 parts per thousand), 23K (958), 22K (916), 20K (833), 18K (750), and 14K (585)."
+      },
+      {
+        "clause_number": "Clause 5.1",
+        "title": "Three-Symbol Mandatory Hallmark Composition",
+        "page": 6,
+        "content": "Every hallmarked gold article must bear three laser-engraved symbols: (a) The official triangular BIS Standard Mark, (b) Purity and Fineness notation (e.g., 22K916), and (c) 6-character alphanumeric Hallmark Unique Identification (HUID) assigned by a BIS-recognized Assaying & Hallmarking Centre (AHC)."
+      },
+      {
+        "clause_number": "Clause 6.2",
+        "title": "Fire Assay Verification Protocol",
+        "page": 9,
+        "content": "Purity must be verified using the standard lead fire assay method (cupellation) in accordance with IS 1418, ensuring precision within ± 0.5 parts per thousand."
+      }
+    ]
+  },
+  {
+    "id": "IS-1786",
+    "number": "IS 1786:2008",
+    "title": "High Strength Deformed Steel Bars and Wires for Concrete Reinforcement (TMT Rebars)",
+    "category": "Civil Engineering & Structural Materials",
+    "reaffirmation_year": 2023,
+    "scope": "Specifies mechanical properties, nominal cross-sectional areas, and rib geometries for thermo-mechanically treated (TMT) steel reinforcement bars used in reinforced cement concrete (RCC) structures.",
+    "summary": "Essential construction safety standard covering grades Fe 415, Fe 415D, Fe 500, Fe 500D, Fe 550, Fe 550D, and Fe 600. 'D' grades mandate high ductility for earthquake-resistant construction.",
+    "certification_scheme": "Scheme-I (ISI Mark - Product Certification)",
+    "mandatory_qco": true,
+    "qco_notification": "Steel and Steel Products QCO by Ministry of Steel.",
+    "penalty_clause": "BIS Act 2016 Section 29: Immediate shutdown of re-rolling mills operating without active CM/L license.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/1786",
+    "authority": "Bureau of Indian Standards (Civil Engineering Division CED-54)",
+    "clauses": [
+      {
+        "clause_number": "Clause 4.2",
+        "title": "Thermo-Mechanical Treatment (TMT) Quenching",
+        "page": 4,
+        "content": "Steel bars must be hot-rolled from certified prime billets and subjected to in-line controlled water quenching and self-tempering to yield a composite structure consisting of a tempered martensitic outer rim and a ductile ferrite-pearlite core."
+      },
+      {
+        "clause_number": "Clause 8.1",
+        "title": "Strength & High Ductility Tolerances",
+        "page": 7,
+        "content": "For Fe 500D grade: 0.2% Proof Stress min 500.0 MPa, Tensile to Proof stress ratio (UTS/YS) not less than 1.10, and Total Elongation at fracture min 16.0% with Uniform Elongation min 5.0%."
+      },
+      {
+        "clause_number": "Clause 9.2",
+        "title": "Rebend Test for Earthquake Resistance",
+        "page": 11,
+        "content": "Test pieces shall be bent through an angle of 135°, placed in boiling water at 100°C for 30 minutes, cooled, and reverse-bent through 157.5° without displaying cracks or fissures."
+      }
+    ]
+  },
+  {
+    "id": "IS-302-1",
+    "number": "IS 302 (Part 1):2008",
+    "title": "Safety of Household and Similar Electrical Appliances — Part 1: General Requirements",
+    "category": "Electrical Appliances & Home Safety",
+    "reaffirmation_year": 2021,
+    "scope": "Governs safety of electrical appliances for household, commercial, and similar purposes whose rated voltage is not more than 250V single-phase or 480V for other appliances.",
+    "summary": "Umbrella standard covering general electrical safety across kitchen mixers, geysers, irons, toasters, refrigerators, and washing machines. Governs earthing, protection against live contact, moisture resistance, and insulation.",
+    "certification_scheme": "Scheme-I (ISI Mark - Product Certification)",
+    "mandatory_qco": true,
+    "qco_notification": "Electrical Appliances (Quality Control) Order by DPIIT.",
+    "penalty_clause": "BIS Act 2016 Section 29: Up to 2 years imprisonment or fine up to ₹5,00,000.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/302",
+    "authority": "Bureau of Indian Standards (Electrotechnical Division ETD-32)",
+    "clauses": [
+      {
+        "clause_number": "Clause 8.1",
+        "title": "Protection Against Access to Live Parts",
+        "page": 6,
+        "content": "Appliances shall be so constructed that there is adequate protection against accidental contact with live parts when tested with standard test probe B of IS 1401."
+      },
+      {
+        "clause_number": "Clause 13.2",
+        "title": "Electric Leakage Current & Dielectric Strength",
+        "page": 12,
+        "content": "Leakage current under operating temperature shall not exceed 0.75 mA for portable Class I appliances. Dielectric withstand test requires 1250V AC applied across live parts and accessible chassis for 60 seconds."
+      },
+      {
+        "clause_number": "Clause 27.1",
+        "title": "Earthing Continuity & Provision",
+        "page": 19,
+        "content": "Accessible metal parts of Class I appliances must be permanently and reliably connected to an earthing terminal. Earthing circuit resistance must not exceed 0.1 ohm when tested with a 25A current."
+      }
+    ]
+  },
+  {
+    "id": "IS-10500",
+    "number": "IS 10500:2012",
+    "title": "Drinking Water — Specification (Second Revision)",
+    "category": "Public Health & Municipal Water Supply",
+    "reaffirmation_year": 2023,
+    "scope": "Prescribes quality standards for drinking water supplied for human consumption by municipal corporations, piped water schemes (Jal Jeevan Mission), and community suppliers.",
+    "summary": "Benchmark national water purity standard defining acceptable and permissible limits in the absence of an alternate source for 48 physical, chemical, pesticide, and bacteriological characteristics.",
+    "certification_scheme": "Voluntary for Municipal / Mandatory for Public Supply Schemes",
+    "mandatory_qco": true,
+    "qco_notification": "Mandatory standard under Jal Jeevan Mission and Central Public Health Environmental Engineering Organization (CPHEEO).",
+    "penalty_clause": "Consumer Protection Act 2019 read with Environment Protection Act 1986.",
+    "source_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails/10500",
+    "authority": "Bureau of Indian Standards (Food & Agriculture Division FAD-14)",
+    "clauses": [
+      {
+        "clause_number": "Clause 3.1",
+        "title": "Physical & Organoleptic Parameters",
+        "page": 3,
+        "content": "Turbidity: Acceptable limit 1 NTU (max 5 NTU in absence of alternate source); pH: 6.5 to 8.5; Total Dissolved Solids (TDS): Acceptable limit 500 mg/l (max 2000 mg/l); Total Hardness: Acceptable 200 mg/l (max 600 mg/l)."
+      },
+      {
+        "clause_number": "Clause 3.2",
+        "title": "Bacteriological Quality Standards",
+        "page": 5,
+        "content": "All water intended for drinking must have zero E. coli or thermo-tolerant coliform bacteria in any 100 ml sample. For treated piped water, total coliform must be zero in 95% of samples collected throughout the year."
+      },
+      {
+        "clause_number": "Clause 3.3",
+        "title": "Toxic Substances & Heavy Metal Thresholds",
+        "page": 8,
+        "content": "Arsenic max 0.01 mg/l (no relaxation); Lead max 0.01 mg/l; Fluoride acceptable 1.0 mg/l (max 1.5 mg/l); Nitrate max 45 mg/l; Chromium (hexavalent) max 0.05 mg/l."
+      }
+    ]
+  }
+]

@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Award, CheckCircle, Clock, FileText, ChevronRight,
   ChevronDown, ChevronUp, Zap, ArrowRight, Building2,
-  Shield, BookOpen, BarChart2
+  Shield, BookOpen, BarChart2, ShieldAlert, AlertTriangle
 } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 import { getCertificationSchemes } from '../api/client'
 import { mockCertificationSchemes } from '../utils/mockData'
+import ComplaintModal from '../components/ComplaintModal'
 
 function StepCard({ step, isLast }) {
   const [expanded, setExpanded] = useState(false)
@@ -117,6 +118,8 @@ export default function Certification() {
   const [schemes, setSchemes] = useState(null)
   const [activeSchemeId, setActiveSchemeId] = useState('isi')
   const [loading, setLoading] = useState(true)
+  const [showComplaintModal, setShowComplaintModal] = useState(false)
+  const [complaintCategory, setComplaintCategory] = useState('isi')
 
   useEffect(() => {
     const load = async () => {
@@ -147,15 +150,27 @@ export default function Certification() {
             </div>
             <div className="flex items-start justify-between flex-wrap gap-4">
               <div>
-                <h1 className="section-heading mb-2">{t('cert_title')}</h1>
-                <p className="section-subheading">{t('cert_subtitle')}</p>
+                <h1 className="section-heading mb-2">{t('cert_title') || 'BIS Certification Schemes & Process'}</h1>
+                <p className="section-subheading">{t('cert_subtitle') || 'Comprehensive guidance on BIS certification schemes, application processes, fees, and requirements.'}</p>
               </div>
-              <button
-                onClick={() => navigate('/certification/tracker')}
-                className="btn-gold flex items-center gap-2"
-              >
-                <BarChart2 size={15} /> {t('cert_tracker_btn')}
-              </button>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <button
+                  onClick={() => {
+                    setComplaintCategory(activeSchemeId)
+                    setShowComplaintModal(true)
+                  }}
+                  className="flex items-center gap-1.5 px-3.5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
+                  title="Report counterfeit marks, substandard quality, or uncertified products"
+                >
+                  <ShieldAlert size={15} /> File Complaint
+                </button>
+                <button
+                  onClick={() => navigate('/certification/tracker')}
+                  className="btn-gold flex items-center gap-2"
+                >
+                  <BarChart2 size={15} /> {t('cert_tracker_btn') || 'Track Application'}
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -215,7 +230,7 @@ export default function Certification() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
                         <h2 className="font-bold text-navy-900 text-xl">{activeScheme.name}</h2>
                         <p className="text-slate-500 text-sm mt-1">{activeScheme.description}</p>
@@ -223,6 +238,40 @@ export default function Certification() {
                       <span className="bg-navy-900 text-white text-sm font-bold px-3 py-1 rounded-full">
                         {activeScheme.steps.length} Steps
                       </span>
+                    </div>
+
+                    {/* Category-specific Violation Notice Card */}
+                    <div className="mb-6 p-4 bg-red-50/80 border border-red-200 rounded-2xl flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap shadow-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                          <ShieldAlert size={18} />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-red-950">
+                            {activeSchemeId === 'hallmarking'
+                              ? 'Suspect Fake Hallmark or Missing 6-digit HUID?'
+                              : activeSchemeId === 'crs'
+                              ? 'Unregistered Electronics Sold Without BIS R-Number?'
+                              : 'Found Substandard Goods or Fake ISI Mark?'}
+                          </h4>
+                          <p className="text-[11px] text-red-700 mt-0.5">
+                            {activeSchemeId === 'hallmarking'
+                              ? 'Report hallmark discrepancies, fake jeweller stamps, or gold purity mismatches directly to BIS.'
+                              : activeSchemeId === 'crs'
+                              ? 'Report IT/electronic products being sold without compulsory BIS registration to the Enforcement Cell.'
+                              : 'Report manufacturers or sellers using unauthorized ISI marks or substandard quality.'}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setComplaintCategory(activeSchemeId)
+                          setShowComplaintModal(true)
+                        }}
+                        className="text-xs px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl flex items-center gap-1.5 shrink-0 shadow-sm transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+                      >
+                        <ShieldAlert size={14} /> Report Violation
+                      </button>
                     </div>
 
                     <div className="pl-2">
@@ -267,6 +316,13 @@ export default function Certification() {
           </div>
         )}
       </div>
+
+      {showComplaintModal && (
+        <ComplaintModal
+          initialData={{ category: complaintCategory }}
+          onClose={() => setShowComplaintModal(false)}
+        />
+      )}
     </div>
   )
 }

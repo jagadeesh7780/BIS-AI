@@ -1,0 +1,146 @@
+{
+  "_label": "DEVELOPMENT EVALUATION DATA — NOT OFFICIAL BIS BENCHMARKS",
+  "_description": "20 manually curated test cases for development testing of BIS AI V2 RAG pipeline. These are not official BIS evaluation benchmarks.",
+  "test_cases": [
+    {
+      "id": "EVAL-001",
+      "category": "Standard Lookup — Pressure Cooker",
+      "query": "What IS standard applies to domestic pressure cookers?",
+      "expected_standard_ids": ["IS-2347", "IS-16046", "IS 2347", "IS 16046"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-002",
+      "category": "Standard Lookup — Helmet",
+      "query": "What is the IS standard for protective helmets for two-wheeler riders?",
+      "expected_standard_ids": ["IS-15410", "IS 15410"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-003",
+      "category": "Standard Lookup — Structural Steel",
+      "query": "Tell me about IS 2062 structural steel requirements",
+      "expected_standard_ids": ["IS-2062", "IS 2062"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-004",
+      "category": "Standard Lookup — LED Bulbs",
+      "query": "Which Indian standard covers LED lamps for general lighting?",
+      "expected_standard_ids": ["IS-16102", "IS-15885", "IS 16102", "IS 15885"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-005",
+      "category": "Standard Lookup — Gold Hallmarking",
+      "query": "What is the IS standard for gold jewellery hallmarking?",
+      "expected_standard_ids": ["IS-1417", "IS 1417"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-006",
+      "category": "Standard Lookup — Packaged Water",
+      "query": "Which IS standard covers packaged drinking water specification?",
+      "expected_standard_ids": ["IS-14543", "IS 14543"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-007",
+      "category": "Standard Lookup — TMT Steel",
+      "query": "What IS standard applies to TMT steel bars used in construction?",
+      "expected_standard_ids": ["IS-1786", "IS 1786"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-008",
+      "category": "Consumer — ISI Mark Verification",
+      "query": "How do I check if an ISI mark on a product is genuine using BIS CARE app?",
+      "expected_standard_ids": ["FAQ-CON-CON-001", "FAQ-CON-CON-002"],
+      "expected_agent": "consumer"
+    },
+    {
+      "id": "EVAL-009",
+      "category": "Consumer — HUID Gold",
+      "query": "What is HUID in gold jewellery and how can a consumer verify it?",
+      "expected_standard_ids": ["FAQ-CON-CON-005", "IS-1417"],
+      "expected_agent": "consumer"
+    },
+    {
+      "id": "EVAL-010",
+      "category": "Consumer — Fake ISI Mark",
+      "query": "How to report a product with a fake or missing ISI Mark?",
+      "expected_standard_ids": ["FAQ-CON-CON-004"],
+      "expected_agent": "consumer"
+    },
+    {
+      "id": "EVAL-011",
+      "category": "Manufacturer — Form V Documentation",
+      "query": "What documents are required for BIS ISI mark certification (Form V)?",
+      "expected_standard_ids": ["FAQ-MFR"],
+      "expected_agent": "manufacturer"
+    },
+    {
+      "id": "EVAL-012",
+      "category": "Manufacturer — FMCS Foreign Manufacturer",
+      "query": "What is the procedure for a foreign manufacturer to obtain BIS certification under FMCS?",
+      "expected_standard_ids": ["FAQ-MFR", "SCHEME-fmcs"],
+      "expected_agent": "manufacturer"
+    },
+    {
+      "id": "EVAL-013",
+      "category": "Manufacturer — CRS Electronics",
+      "query": "What is the Compulsory Registration Scheme (CRS) for electronics and IT goods?",
+      "expected_standard_ids": ["SCHEME-crs", "FAQ-MFR"],
+      "expected_agent": "manufacturer"
+    },
+    {
+      "id": "EVAL-014",
+      "category": "Scheme — ISI Mark Process",
+      "query": "What are the steps to obtain ISI Mark certification in India?",
+      "expected_standard_ids": ["SCHEME-isi-mark", "SCHEME-isi"],
+      "expected_agent": "manufacturer"
+    },
+    {
+      "id": "EVAL-015",
+      "category": "Compliance — QCO Mandatory",
+      "query": "Is BIS certification mandatory for pressure cookers under Quality Control Order?",
+      "expected_standard_ids": ["IS-2347", "IS 2347", "FAQ-MFR"],
+      "expected_agent": "compliance"
+    },
+    {
+      "id": "EVAL-016",
+      "category": "Student — BIS Act 2016",
+      "query": "What is the Bureau of Indian Standards Act 2016?",
+      "expected_standard_ids": ["FAQ-STU"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-017",
+      "category": "Student — Standards Clubs",
+      "query": "What are BIS Standards Clubs in colleges and universities?",
+      "expected_standard_ids": ["FAQ-STU"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-018",
+      "category": "Standard Lookup — Toys",
+      "query": "Which IS standard covers toy safety for children?",
+      "expected_standard_ids": ["IS-9873", "IS 9873"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-019",
+      "category": "Standard Lookup — LPG Cylinder",
+      "query": "What IS standard covers LPG gas cylinders used for domestic cooking?",
+      "expected_standard_ids": ["IS-3196", "IS 3196"],
+      "expected_agent": "standards"
+    },
+    {
+      "id": "EVAL-020",
+      "category": "Standard Lookup — Mobile Charger",
+      "query": "What BIS standard applies to mobile phone chargers and adapters?",
+      "expected_standard_ids": ["IS-16333", "IS 16333"],
+      "expected_agent": "standards"
+    }
+  ]
+}
