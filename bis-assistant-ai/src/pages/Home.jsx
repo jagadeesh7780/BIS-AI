@@ -428,11 +428,11 @@ export default function Home() {
           <AnimatedSection>
             <motion.div variants={fadeUp} className="text-center mb-12">
               <div className="inline-flex items-center gap-2 bg-navy-50 text-navy-700 border border-navy-100 rounded-full px-3 py-1 text-xs font-semibold mb-4">
-                <Users size={12} /> Tailored Portals
+                <Users size={12} /> {t('home_tailored_portals')}
               </div>
-              <h2 className="section-heading">Multi-Agent Specialized Workflows</h2>
+              <h2 className="section-heading">{t('home_workflows_title')}</h2>
               <p className="section-subheading max-w-2xl mx-auto">
-                Select your role to access dedicated AI pipelines, complaint registration, and laboratory certification workflows.
+                {t('home_workflows_sub')}
               </p>
             </motion.div>
           </AnimatedSection>
@@ -450,9 +450,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="text-center mb-12">
-              <h2 className="section-heading">Everything you need, in one place</h2>
+              <h2 className="section-heading">{t('home_everything_title')}</h2>
               <p className="section-subheading max-w-2xl mx-auto">
-                From finding the right IS standard to tracking your certification journey — BIS Assistant AI covers it all.
+                {t('home_everything_sub')}
               </p>
             </motion.div>
           </AnimatedSection>
@@ -470,8 +470,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="text-center mb-14">
-              <h2 className="section-heading">How it works</h2>
-              <p className="section-subheading">Get accurate BIS guidance in three simple steps</p>
+              <h2 className="section-heading">{t('home_how_it_works')}</h2>
+              <p className="section-subheading">{t('home_how_steps')}</p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -481,20 +481,20 @@ export default function Home() {
                 {
                   step: '01',
                   icon: MessageSquare,
-                  title: 'Ask Your Question',
-                  desc: 'Type or speak your query about products, standards, or certification in English, Hindi, or Telugu.',
+                  title: t('home_step1_title'),
+                  desc: t('home_step1_desc'),
                 },
                 {
                   step: '02',
                   icon: Zap,
-                  title: 'AI Searches BIS Database',
-                  desc: 'Our RAG-powered AI searches through 10,000+ official IS standards to find the most relevant information.',
+                  title: t('home_step2_title'),
+                  desc: t('home_step2_desc'),
                 },
                 {
                   step: '03',
                   icon: CheckCircle,
-                  title: 'Get Sourced Answers',
-                  desc: 'Receive precise answers with cited IS standards, confidence scores, and links to official documents.',
+                  title: t('home_step3_title'),
+                  desc: t('home_step3_desc'),
                 },
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp} className="relative text-center">

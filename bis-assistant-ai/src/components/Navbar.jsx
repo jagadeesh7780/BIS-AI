@@ -22,8 +22,8 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: t('nav_home') },
     { to: '/chat', label: t('nav_chat') },
-    { to: '/compliance', label: 'Compliance' },
-    { to: '/ml-risk', label: 'ML Risk Engine' },
+    { to: '/compliance', label: t('nav_compliance') },
+    { to: '/ml-risk', label: t('nav_ml_risk') },
     { to: '/standards', label: t('nav_standards') },
     { to: '/certification', label: t('nav_certification') },
     { to: '/labs', label: t('nav_labs') },
