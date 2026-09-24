@@ -302,6 +302,7 @@ def predict_risk(
         complexity = min(48.0, max(18.0, base_complexity + (voltage_rating_v * 0.02) + (pressure_rating_bar * 1.0) + (3.0 if has_mandatory_qco else 0.0)))
         surveillance = "Annual Factory Surveillance Audit"
         sampling = "Routine In-House Quality Assurance with Annual Independent Verification"
+        expl = "Standard baseline compliance tier with low inherent electrical or pressure hazards, subject to routine surveillance."
     # Dynamic real-time feature sensitivities / attribution for this specific product
     v_norm = min(1.0, float(voltage_rating_v) / 400.0)
     p_norm = min(1.0, float(pressure_rating_bar) / 20.0)

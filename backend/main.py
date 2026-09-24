@@ -630,8 +630,9 @@ async def orchestrate_manufacturer(req: dict[str, Any]):
             user_city=user_city,
             scale=req.get("scale", "MSME"),
         )
+        data: dict[str, Any]
         if hasattr(result, "model_dump"):
-            data = result.model_dump()
+            data = dict(result.model_dump())
         elif isinstance(result, dict):
             data = dict(result)
         else:
