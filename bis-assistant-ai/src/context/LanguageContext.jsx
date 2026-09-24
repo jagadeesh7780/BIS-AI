@@ -4,38 +4,46 @@ import { translateNodeTree } from '../utils/domTranslator'
 
 const LanguageContext = createContext(null)
 
-export function changeSiteLanguage(newLang) {
+export function changeSiteLanguage(newLang, setLanguageState) {
   const host = window.location.hostname
   const isEn = newLang === 'en'
   const cookieVal = isEn ? '/en/en' : `/en/${newLang}`
 
   localStorage.setItem('bis_lang', newLang)
+  if (setLanguageState) setLanguageState(newLang)
+  document.documentElement.lang = newLang
 
-  // Clear existing googtrans cookies across domain levels
-  const expired = '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-  document.cookie = 'googtrans' + expired
-  document.cookie = 'googtrans' + expired + ' domain=' + host + ';'
-  document.cookie = 'googtrans' + expired + ' domain=.' + host + ';'
-
-  const parts = host.split('.')
-  if (parts.length > 1) {
-    const rootDomain = '.' + parts.slice(-2).join('.')
-    document.cookie = 'googtrans' + expired + ' domain=' + rootDomain + ';'
-  }
-
-  // Set active cookie
+  // Sync cookie
   if (!isEn) {
     document.cookie = `googtrans=${cookieVal}; path=/;`
-    document.cookie = `googtrans=${cookieVal}; path=/; domain=${host};`
-    document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host};`
-    if (parts.length > 1) {
-      const rootDomain = '.' + parts.slice(-2).join('.')
-      document.cookie = `googtrans=${cookieVal}; path=/; domain=${rootDomain};`
+    if (host) {
+      document.cookie = `googtrans=${cookieVal}; path=/; domain=${host};`
+      document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host};`
+    }
+  } else {
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    if (host) {
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`
     }
   }
 
-  // Reload the window so Google Translate translates 100% of all fields, cards, and paragraphs
-  window.location.reload()
+  // Instant in-memory translation across the entire DOM tree (no reload needed)
+  const root = document.getElementById('root') || document.body
+  if (root) {
+    translateNodeTree(root, newLang)
+  }
+
+  // Trigger Google Translate gadget if available
+  try {
+    const combo = document.querySelector('.goog-te-combo')
+    if (combo) {
+      combo.value = isEn ? '' : newLang
+      combo.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+  } catch (err) {
+    console.warn('Google Translate gadget trigger:', err)
+  }
 }
 
 export const LanguageProvider = ({ children }) => {
@@ -49,10 +57,10 @@ export const LanguageProvider = ({ children }) => {
   const { t } = useTranslation(language)
 
   const setLanguage = useCallback((newLang) => {
-    changeSiteLanguage(newLang)
+    changeSiteLanguage(newLang, setLanguageState)
   }, [])
 
-  // On mount: ensure document lang is set and exact full matches are applied
+  // On mount: ensure document lang is set and in-memory translation runs
   useEffect(() => {
     const saved = localStorage.getItem('bis_lang') || 'en'
     document.documentElement.lang = saved

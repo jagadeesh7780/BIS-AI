@@ -20,7 +20,7 @@ services:
   # ─── React Frontend Static Site ──────────────────────────────────────────────
   - type: web
     name: bis-assistant-frontend
-    env: static
+    runtime: static
     rootDir: bis-assistant-ai
     plan: free
     buildCommand: npm install && npm run build
