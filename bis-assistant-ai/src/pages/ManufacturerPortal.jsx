@@ -756,36 +756,6 @@ export default function ManufacturerPortal() {
     }
   }
 
-  // 1-Click Flagship Demo Scenarios (SIH Priority #5)
-  const triggerFlagshipDemo = (presetName) => {
-    setProductName(presetName)
-    if (presetName.toLowerCase().includes('cooker')) {
-      setKyc({
-        pan: 'AABCB1234F',
-        aadhaar: '987654321098',
-        businessName: 'Apex Cookware Manufacturing Ltd',
-        factoryAddress: 'Plot No. 42-B, Industrial Development Area, Phase-II',
-        city: 'Mumbai',
-        state: 'Maharashtra',
-        pincode: '400072'
-      })
-      setSelectedCity('Mumbai')
-    } else if (presetName.toLowerCase().includes('helmet')) {
-      setKyc({
-        pan: 'HELM88992K',
-        aadhaar: '887766554433',
-        businessName: 'AeroShield Protective Gears Pvt Ltd',
-        factoryAddress: 'Sector 58, IMT Manesar',
-        city: 'Delhi NCR',
-        state: 'Haryana',
-        pincode: '122051'
-      })
-      setSelectedCity('Delhi NCR')
-    }
-    runAgentPipeline(presetName)
-    setStep(1)
-  }
-
   const majorCities = [
     'Mumbai', 'Delhi NCR', 'Ghaziabad', 'Chennai', 'Kolkata', 'Bangalore', 'Hyderabad', 'Mohali', 'Pune', 'Ahmedabad'
   ]
@@ -793,56 +763,6 @@ export default function ManufacturerPortal() {
   return (
     <div className="min-h-[calc(100vh-64px)] bg-[#f7f8fa] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
-
-        {/* ─── 1. SIH 2026 FLAGSHIP EVALUATION DEMO BAR (Priority #5) ────── */}
-        <div className="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-950 rounded-2xl p-4 sm:p-5 text-white border-2 border-gold-400/40 shadow-xl">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-400/20 text-gold-400 border border-gold-400/30 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                🏆
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-gold-400">
-                    SIH 2026 Evaluation Flagship Demo
-                  </span>
-                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    3–5 Min Automated Workflow
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  Experience the complete end-to-end manufacturer journey from product input to official BIS handoff:
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-              <button
-                type="button"
-                onClick={() => triggerFlagshipDemo('Domestic Pressure Cooker')}
-                className="bg-gold-400 hover:bg-gold-300 text-navy-950 text-xs font-extrabold px-3.5 py-2 rounded-xl transition-all shadow-md flex items-center gap-1.5"
-              >
-                <span>🍲 Preset 1: Pressure Cooker (IS 2347)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => triggerFlagshipDemo('Two Wheeler Safety Helmet')}
-                className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1.5"
-              >
-                <span>🪖 Preset 2: Safety Helmet (IS 4151)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/chat?role=consumer')}
-                className="bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-400/40 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1"
-                title="Witness 30-sec consumer verification (ISI CM/L & HUID Gold)"
-              >
-                <ShieldCheck size={14} className="text-blue-300" />
-                <span>Consumer Verification (30s) →</span>
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* ─── 2. VISIBLE 10-STAGE AUTOMATION PIPELINE (Priority #1) ────────── */}
         <AutomationPipelineVisualizer
