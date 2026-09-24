@@ -112,101 +112,6 @@ function EvidenceCitationCard({
   )
 }
 
-// ─── VISIBLE 10-STAGE AUTOMATION PIPELINE COMPONENT (SIH Priority #1) ──────────
-function AutomationPipelineVisualizer({ pipeline, currentStep }) {
-  const defaultStages = [
-    { stage: 1, name: 'Product Input', status: 'completed', badge: 'Input Registered', automated: true },
-    { stage: 2, name: 'Product Classification', status: 'completed', badge: 'Domain Categorized', automated: true },
-    { stage: 3, name: 'Standard Identification', status: 'completed', badge: 'IS Number Mapped', automated: true },
-    { stage: 4, name: 'QCO / Compliance Check', status: 'completed', badge: 'Mandate Verified', automated: true },
-    { stage: 5, name: 'Document Checklist', status: 'completed', badge: 'Form-V Formulated', automated: true },
-    { stage: 6, name: 'Testing Requirements', status: 'completed', badge: 'Clauses Linked', automated: true },
-    { stage: 7, name: 'Laboratory Recommendation', status: 'completed', badge: 'NABL / LRS Matched', automated: true },
-    { stage: 8, name: 'Fee Estimation', status: 'completed', badge: 'Schedule-VII Costed', automated: true },
-    { stage: 9, name: 'Compliance Roadmap', status: 'completed', badge: '14-Day Timeline', automated: true },
-    { stage: 10, name: 'Human Approval & Official BIS Handoff', status: 'pending', badge: 'Human-in-the-Loop', automated: false }
-  ]
-
-  const stages = (pipeline && pipeline.length === 10) ? pipeline : defaultStages
-
-  return (
-    <div className="bg-gradient-to-br from-slate-900 via-navy-950 to-slate-900 rounded-3xl p-5 sm:p-6 text-white border border-slate-800 shadow-xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-white/10">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <h3 className="text-sm sm:text-base font-extrabold text-white tracking-wide uppercase">
-              Autonomous Manufacturer Certification Pipeline
-            </h3>
-          </div>
-          <p className="text-xs text-slate-300 mt-0.5">
-            10-Stage End-to-End Regulatory Automation Pipeline with Grounded Evidence Citations
-          </p>
-        </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold px-2.5 py-1 rounded-full">
-            ⚡ 9 Stages Automated (280ms)
-          </span>
-          <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full">
-            🛡️ 1 Human Gate
-          </span>
-        </div>
-      </div>
-
-      {/* 10 Stages Sequential Flow */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-        {stages.map((st, idx) => {
-          const isDone = st.status === 'completed' || idx < 9
-          const isHuman = !st.automated || st.stage === 10
-          return (
-            <motion.div
-              key={st.stage}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.04 }}
-              className={`p-2.5 rounded-xl border flex flex-col justify-between transition-all ${
-                isHuman
-                  ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
-                  : isDone
-                  ? 'bg-white/5 border-emerald-500/30 text-slate-200'
-                  : 'bg-white/5 border-white/10 text-slate-400'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-mono font-bold text-slate-400">
-                  {st.stage < 10 ? `0${st.stage}` : st.stage}
-                </span>
-                {isDone ? (
-                  <span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40 flex items-center justify-center text-[10px] font-bold">
-                    ✓
-                  </span>
-                ) : (
-                  <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 border border-amber-400/40 flex items-center justify-center text-[10px] font-bold">
-                    ⏳
-                  </span>
-                )}
-              </div>
-              <div className="font-bold text-xs text-white leading-snug line-clamp-1 mb-1">
-                {st.name}
-              </div>
-              <div className="text-[10px] text-slate-400 truncate mb-1">
-                {st.details || st.badge}
-              </div>
-              <div className="pt-1 border-t border-white/10 flex items-center justify-between">
-                <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${
-                  isHuman ? 'bg-amber-400/20 text-amber-300' : 'bg-emerald-400/20 text-emerald-300'
-                }`}>
-                  {st.badge || (isHuman ? 'HITL Gate' : 'Automated ✓')}
-                </span>
-                {idx < 9 && <span className="text-[10px] text-slate-500 font-mono">↓</span>}
-              </div>
-            </motion.div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 export default function ManufacturerPortal() {
@@ -764,13 +669,7 @@ export default function ManufacturerPortal() {
     <div className="min-h-[calc(100vh-64px)] bg-[#f7f8fa] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
 
-        {/* ─── 2. VISIBLE 10-STAGE AUTOMATION PIPELINE (Priority #1) ────────── */}
-        <AutomationPipelineVisualizer
-          pipeline={agentData?.automation_pipeline}
-          currentStep={step}
-        />
-
-        {/* ─── 3. Header & Stepper Wizard Bar ─────────────────────────────── */}
+        {/* ─── Header & Stepper Wizard Bar ─────────────────────────────── */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
             <div>
