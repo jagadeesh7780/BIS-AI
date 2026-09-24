@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from '../utils/translations'
+import { translateNodeTree, setupUniversalDomTranslator } from '../utils/domTranslator'
 
 const LanguageContext = createContext(null)
 
@@ -9,7 +10,7 @@ export const triggerUniversalTranslation = (langCode) => {
     const targetCookie = isEn ? '/en/en' : `/en/${langCode}`
     const host = window.location.hostname
 
-    // 1. Set Google Translate cookie
+    // 1. Set Google Translate cookie as enhancement
     document.cookie = `googtrans=${targetCookie}; path=/;`
     if (host) {
       document.cookie = `googtrans=${targetCookie}; path=/; domain=${host};`
@@ -17,55 +18,15 @@ export const triggerUniversalTranslation = (langCode) => {
     }
 
     // 2. Manipulate Google Translate combo box if present
-    const applyCombo = () => {
-      const combo = document.querySelector('.goog-te-combo')
-      if (combo) {
-        if (isEn) {
-          const enOpt = Array.from(combo.options).find(o => o.value === 'en' || o.value === '')
-          combo.value = enOpt ? enOpt.value : ''
-        } else {
-          combo.value = langCode
-        }
-        combo.dispatchEvent(new Event('change', { bubbles: true }))
-        return true
+    const combo = document.querySelector('.goog-te-combo')
+    if (combo) {
+      if (isEn) {
+        const enOpt = Array.from(combo.options).find(o => o.value === 'en' || o.value === '')
+        combo.value = enOpt ? enOpt.value : ''
+      } else {
+        combo.value = langCode
       }
-      return false
-    }
-
-    if (!applyCombo()) {
-      let attempts = 0
-      const iv = setInterval(() => {
-        attempts++
-        if (applyCombo() || attempts > 12) {
-          clearInterval(iv)
-        }
-      }, 250)
-    }
-
-    // 3. Clean reversion to English
-    if (isEn) {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      if (host) {
-        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`
-        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`
-      }
-      try {
-        const frame = document.querySelector('.goog-te-banner-frame')
-        if (frame && frame.contentDocument) {
-          const restoreBtn = frame.contentDocument.querySelector('#\\:1\\.restore, .goog-close-link, button')
-          if (restoreBtn) restoreBtn.click()
-        }
-      } catch (err) {
-        // frame cross-origin or inaccessible
-      }
-
-      // Check if Google Translate font tags remain; if so, cleanly reload
-      setTimeout(() => {
-        const fontTags = document.querySelectorAll('font')
-        if (fontTags.length > 0) {
-          window.location.reload()
-        }
-      }, 400)
+      combo.dispatchEvent(new Event('change', { bubbles: true }))
     }
   } catch (err) {
     console.warn('Universal translation trigger error:', err)
@@ -77,24 +38,50 @@ export const LanguageProvider = ({ children }) => {
     return localStorage.getItem('bis_lang') || 'en'
   })
 
+  const currentLangRef = useRef(language)
+  currentLangRef.current = language
+
   const { t } = useTranslation(language)
 
   const setLanguage = useCallback((newLang) => {
     localStorage.setItem('bis_lang', newLang)
     setLanguageState(newLang)
+    currentLangRef.current = newLang
+    document.documentElement.lang = newLang
+
+    // Apply immediate built-in full DOM translation across all page nodes
+    const root = document.getElementById('root') || document.body
+    if (root) {
+      translateNodeTree(root, newLang)
+    }
+
+    // Also trigger external translation if available
     triggerUniversalTranslation(newLang)
   }, [])
 
-  // On initial mount or page refresh, ensure translation is applied if not English
+  // On mount: setup the continuous DOM translator observer and apply saved language
   useEffect(() => {
     const saved = localStorage.getItem('bis_lang') || 'en'
-    if (saved !== 'en') {
-      triggerUniversalTranslation(saved)
+    document.documentElement.lang = saved
+
+    const cleanup = setupUniversalDomTranslator(() => currentLangRef.current)
+
+    // Initial pass after React completes first paint
+    const timer = setTimeout(() => {
+      const root = document.getElementById('root') || document.body
+      if (root && saved !== 'en') {
+        translateNodeTree(root, saved)
+      }
+    }, 50)
+
+    return () => {
+      if (cleanup) cleanup()
+      clearTimeout(timer)
     }
   }, [])
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, translateNodeTree }}>
       {children}
     </LanguageContext.Provider>
   )

@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { LanguageProvider } from './context/LanguageContext'
+import { LanguageProvider, useLang } from './context/LanguageContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -64,7 +64,21 @@ function PageWrapper({ children }) {
 
 function AppRoutes() {
   const location = useLocation()
+  const { language, translateNodeTree } = useLang()
   const isChatPage = location.pathname === '/chat'
+
+  // Seamlessly re-translate newly mounted navigation pages when route changes
+  useEffect(() => {
+    if (language && language !== 'en') {
+      const timer = setTimeout(() => {
+        const root = document.getElementById('root') || document.body
+        if (root && translateNodeTree) {
+          translateNodeTree(root, language)
+        }
+      }, 40)
+      return () => clearTimeout(timer)
+    }
+  }, [location.pathname, language, translateNodeTree])
 
   return (
     <div className="min-h-screen flex flex-col">
