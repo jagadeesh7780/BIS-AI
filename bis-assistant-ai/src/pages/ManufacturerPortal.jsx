@@ -1322,35 +1322,6 @@ export default function ManufacturerPortal() {
                 </button>
               </div>
 
-              {/* ─── Official Manak Online Handoff Gateway Card ─── */}
-              <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-slate-50 border-2 border-blue-400 rounded-3xl p-6 sm:p-7 mb-8 text-center shadow-md">
-                <div className="w-14 h-14 rounded-2xl bg-navy-900 text-gold-400 flex items-center justify-center mx-auto mb-3 shadow-md">
-                  <ShieldCheck size={32} />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-navy-950 mb-1.5">
-                  Application Dossier Ready for Official Manak Online Submission
-                </h3>
-                <p className="text-sm font-medium text-slate-700 max-w-2xl mx-auto mb-4">
-                  All Form-V statutory requirements, technical test matrices, and fee estimates have been compiled with full evidence citations. Submit this dossier directly on the official BIS portal:
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <a
-                    href="https://www.manakonline.in"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all"
-                  >
-                    <span>Launch Official BIS Portal (manakonline.in)</span>
-                    <ExternalLink size={14} />
-                  </a>
-                  <button
-                    onClick={() => navigate('/chat?role=consumer')}
-                    className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-navy-900 px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold transition-all"
-                  >
-                    <span>Continue to Consumer Verification Demo (30s) →</span>
-                  </button>
-                </div>
-              </div>
 
               {/* Dossier Metadata Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 text-xs">
