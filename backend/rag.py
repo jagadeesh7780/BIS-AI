@@ -859,14 +859,17 @@ async def generate_rag_answer(
 
     # 3. Hybrid retrieval
     retrieved = hybrid_retrieve(en_query, top_k=RERANK_TOP_K, role_filter=role_filter)
-    if not retrieved and role_filter:
-        retrieved = hybrid_retrieve(en_query, top_k=RERANK_TOP_K)
+    top_score = _normalize_score(retrieved[0]) if retrieved else 0.0
+    if (not retrieved or top_score < 0.20) and role_filter:
+        broader = hybrid_retrieve(en_query, top_k=RERANK_TOP_K)
+        if broader and (_normalize_score(broader[0]) > top_score):
+            retrieved = broader
+            top_score = _normalize_score(retrieved[0])
 
     progress.append({"step": "Verifying evidence", "status": "done" if retrieved else "warning"})
 
     # 4. STEP 11: Hallucination guard
-    top_score = _normalize_score(retrieved[0]) if retrieved else 0.0
-    sufficient = len(retrieved) > 0 and top_score >= 0.15
+    sufficient = len(retrieved) > 0 and top_score >= 0.12
 
     # 5. Context
     if retrieved:
@@ -879,7 +882,7 @@ async def generate_rag_answer(
             blocks.append(f"{hdr}\n{r.get('text', '')}")
         context = "\n\n---\n\n".join(blocks)
     else:
-        context = "No relevant records found."
+        context = "No relevant records found in local BIS repository."
 
     # 6. LLM generation
     answer_en  = None
@@ -892,8 +895,22 @@ async def generate_rag_answer(
         groq_client = None
         last_err    = e
 
-    if groq_ok and sufficient and groq_client:
-        sys_prompt = _build_prompt(agent)
+    # Target language specification
+    lang_name_map = {
+        "hi": "Hindi (हिंदी)",
+        "te": "Telugu (తెలుగు)",
+        "ta": "Tamil (தமிழ்)",
+        "kn": "Kannada (ಕನ್ನಡ)",
+        "mr": "Marathi (मराठी)",
+    }
+    target_lang_name = lang_name_map.get(language)
+    lang_instruction = (
+        f"\n\nCRITICAL REQUIREMENT: You MUST formulate and output your entire answer in {target_lang_name}. Do NOT answer in English."
+        if target_lang_name else ""
+    )
+
+    if groq_ok and groq_client and (sufficient or len(retrieved) > 0):
+        sys_prompt = _build_prompt(agent) + lang_instruction
         for model_name in [PRIMARY_MODEL] + FALLBACK_MODELS:
             try:
                 completion = groq_client.chat.completions.create(
@@ -903,7 +920,7 @@ async def generate_rag_answer(
                         {"role": "user",   "content": (
                             f"Official BIS Knowledge Context:\n{context}\n\n"
                             f"User Question: {en_query}\n\n"
-                            f"Answer directly citing IS standard numbers where applicable:"
+                            f"Answer directly citing IS standard numbers where applicable:{lang_instruction}"
                         )},
                     ],
                     temperature=0.2,
@@ -921,7 +938,7 @@ async def generate_rag_answer(
 
     # 7. STEP 11: Fallback answers
     if not answer_en:
-        if not sufficient:
+        if not sufficient and not retrieved:
             answer_en = (
                 "Insufficient authoritative evidence was retrieved to answer this reliably. "
                 "Please consult the official Bureau of Indian Standards at https://www.bis.gov.in "
@@ -938,14 +955,22 @@ async def generate_rag_answer(
             )
         else:
             answer_en = (
-                "Insufficient authoritative evidence. "
-                "Please visit https://www.bis.gov.in or call 1800-11-4070."
+                "Insufficient authoritative evidence was retrieved. "
+                "Please consult https://www.bis.gov.in or call 1800-11-4070."
             )
         if last_err:
             logger.error(f"[{trace_id}] LLM unavailable: {last_err}")
 
-    # 8. Translate back
-    final_answer = translate_from_english(answer_en, language)
+    # 8. Translate back if not already in target language
+    # Check if answer contains non-ascii characters when target is non-English
+    if language != "en" and target_lang_name:
+        has_indic = any(ord(char) > 127 for char in answer_en)
+        if has_indic:
+            final_answer = answer_en
+        else:
+            final_answer = translate_from_english(answer_en, language)
+    else:
+        final_answer = answer_en
 
     # 9. STEP 7: Build citations
     citations = _build_citations(retrieved)

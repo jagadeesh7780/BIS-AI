@@ -15,6 +15,7 @@ import {
   CheckCircle, ArrowRight, Info, AlertCircle, Link2, Camera, ShieldAlert
 } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
+import { translatePhrase } from '../utils/domTranslator'
 import { sendChatMessage, transcribeVoice } from '../api/client'
 import { mockChatResponses, getDefaultChatResponse } from '../utils/mockData'
 import ComplaintModal from '../components/ComplaintModal'
@@ -41,15 +42,16 @@ function ConfidencePill({ level, score }) {
 
 // ── Evidence panel — STEP 15 ──────────────────────────────────────────────────
 function EvidencePanel({ activeMsg }) {
+  const { language } = useLang()
   if (!activeMsg) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center px-4 py-12">
         <div className="w-12 h-12 rounded-2xl bg-navy-50 flex items-center justify-center mb-3">
           <Shield size={22} className="text-navy-400" />
         </div>
-        <p className="text-xs font-semibold text-navy-700 mb-1">Evidence Panel</p>
+        <p className="text-xs font-semibold text-navy-700 mb-1">{translatePhrase('Evidence Panel', language)}</p>
         <p className="text-xs text-slate-400 leading-relaxed">
-          Citations and source documents will appear here for each AI response.
+          {translatePhrase('Citations and source documents will appear here for each AI response.', language)}
         </p>
       </div>
     )
@@ -63,7 +65,7 @@ function EvidencePanel({ activeMsg }) {
       <div className="p-4 border-b border-slate-100">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-navy-800 flex items-center gap-1.5">
-            <Shield size={13} className="text-navy-600" /> Evidence
+            <Shield size={13} className="text-navy-600" /> {translatePhrase('Evidence', language)}
           </span>
           {confidence && <ConfidencePill level={confidence.level} score={confidence.score} />}
         </div>
@@ -79,7 +81,7 @@ function EvidencePanel({ activeMsg }) {
         {citations.length > 0 ? (
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Sources ({citations.length})
+              {translatePhrase('Sources', language)} ({citations.length})
             </p>
             <div className="space-y-2">
               {citations.map((c, i) => (
@@ -120,7 +122,7 @@ function EvidencePanel({ activeMsg }) {
                       rel="noopener noreferrer"
                       className="mt-1.5 flex items-center gap-1 text-[10px] text-navy-500 hover:text-navy-700 font-medium"
                     >
-                      <Link2 size={9} /> {c.authority || 'BIS'} Source
+                      <Link2 size={9} /> {c.authority || 'BIS'} {translatePhrase('BIS Source', language)}
                       <ExternalLink size={9} />
                     </a>
                   )}
@@ -131,7 +133,7 @@ function EvidencePanel({ activeMsg }) {
         ) : sources.length > 0 ? (
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Sources ({sources.length})
+              {translatePhrase('Sources', language)} ({sources.length})
             </p>
             <div className="space-y-2">
               {sources.map((s, i) => (
@@ -153,7 +155,7 @@ function EvidencePanel({ activeMsg }) {
         ) : (
           <div className="text-center py-4">
             <AlertCircle size={20} className="text-amber-400 mx-auto mb-2" />
-            <p className="text-xs text-slate-400">No citations available for this response.</p>
+            <p className="text-xs text-slate-400">{translatePhrase('No citations available for this response.', language)}</p>
           </div>
         )}
 
@@ -161,7 +163,7 @@ function EvidencePanel({ activeMsg }) {
         {next_steps?.length > 0 && (
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Recommended Next Steps
+              {translatePhrase('Recommended Next Steps', language)}
             </p>
             <div className="space-y-1.5">
               {next_steps.map((step, i) => (
@@ -267,9 +269,9 @@ function BotMessage({ msg, role, onEvidenceSelect, isSelected }) {
             <div className="flex items-center gap-1.5">
               <Bot size={11} className="text-navy-600" />
               <span className="text-[11px] font-semibold text-navy-800">
-                {role === 'consumer' ? 'Consumer Protection AI'
-                  : role === 'manufacturer' ? 'Manufacturer Licensing AI'
-                  : 'BIS Assistant AI'}
+                {role === 'consumer' ? translatePhrase('Consumer Protection AI', language)
+                  : role === 'manufacturer' ? translatePhrase('Manufacturer Licensing AI', language)
+                  : translatePhrase('BIS Assistant AI', language)}
               </span>
               {msg.agent && msg.agent !== 'general' && (
                 <span className="text-[10px] bg-navy-50 border border-navy-100 text-navy-600 px-1.5 py-0.5 rounded-full font-medium">
@@ -289,7 +291,7 @@ function BotMessage({ msg, role, onEvidenceSelect, isSelected }) {
             </div>
           </div>
           <div className="text-sm text-slate-700 leading-relaxed space-y-0.5">
-            {msg.text.split('\n').map((line, i) => (
+            {translatePhrase(msg.text, language).split('\n').map((line, i) => (
               <p key={i} className={line.startsWith('- ') || /^\d+\./.test(line.trim()) ? 'ml-2' : ''}>
                 {renderText(line)}
               </p>
@@ -299,9 +301,9 @@ function BotMessage({ msg, role, onEvidenceSelect, isSelected }) {
             <div className="mt-2 pt-2 border-t border-slate-100 flex items-center gap-1.5">
               <FileText size={10} className="text-navy-400" />
               <span className="text-[10px] text-navy-500 font-medium">
-                {msg.citations?.length || msg.sources?.length} source{(msg.citations?.length || msg.sources?.length) !== 1 ? 's' : ''} cited
+                {msg.citations?.length || msg.sources?.length} {translatePhrase('sources cited', language)}
               </span>
-              <span className="text-[10px] text-slate-400">· Click to view evidence →</span>
+              <span className="text-[10px] text-slate-400">· {translatePhrase('Click to view evidence →', language)}</span>
             </div>
           )}
           {msg.isDemoFallback && (
@@ -389,10 +391,12 @@ export default function Chat() {
   const sentUrlQ        = useRef(false)
   const isLoadingRef    = useRef(false)
 
-  const welcomeText = (r) => {
-    if (r === 'consumer')     return `Hello! I am your dedicated Consumer Protection AI Agent.\n\nAsk me about verifying ISI marks (CM/L number via BIS CARE app), gold HUID hallmarking, identifying fake marks, mandatory ISI products, or filing complaints. Every answer includes source citations.`
-    if (r === 'manufacturer') return `Hello! I am your dedicated Manufacturer & MSME Licensing AI Agent.\n\nAsk me about applicable IS standards, Form-V documentation, Manak Online portal, factory audits, laboratory testing, Quality Control Orders (QCOs), and FMCS foreign certification. Every answer includes citations.`
-    return `Hello! I am your dedicated BIS Helper & Research AI Agent.\n\nAsk me about Indian Standards formulation, the BIS Act 2016, ISO/IEC international committees, Standards Clubs in colleges, academic internships, and technical specifications. Every answer includes citations.`
+  const welcomeText = (r, lang = language) => {
+    let raw = ''
+    if (r === 'consumer')     raw = `Hello! I am your dedicated Consumer Protection AI Agent.\n\nAsk me about verifying ISI marks (CM/L number via BIS CARE app), gold HUID hallmarking, identifying fake marks, mandatory ISI products, or filing complaints. Every answer includes source citations.`
+    else if (r === 'manufacturer') raw = `Hello! I am your dedicated Manufacturer & MSME Licensing AI Agent.\n\nAsk me about applicable IS standards, Form-V documentation, Manak Online portal, factory audits, laboratory testing, Quality Control Orders (QCOs), and FMCS foreign certification. Every answer includes citations.`
+    else raw = `Hello! I am your dedicated BIS Helper & Research AI Agent.\n\nAsk me about Indian Standards formulation, the BIS Act 2016, ISO/IEC international committees, Standards Clubs in colleges, academic internships, and technical specifications. Every answer includes citations.`
+    return translatePhrase(raw, lang)
   }
 
   useEffect(() => {
@@ -401,12 +405,17 @@ export default function Chat() {
   }, [searchParams])
 
   useEffect(() => {
-    setMessages([{
-      id: newId(), role: 'bot', isWelcome: true,
-      text: welcomeText(role), time: getTime(), sources: [], citations: []
-    }])
+    setMessages(prev => {
+      if (!prev.length || (prev.length === 1 && prev[0].isWelcome)) {
+        return [{
+          id: newId(), role: 'bot', isWelcome: true,
+          text: welcomeText(role, language), time: getTime(), sources: [], citations: []
+        }]
+      }
+      return prev
+    })
     setSelectedMsg(null)
-  }, [role])
+  }, [role, language])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -435,10 +444,12 @@ export default function Chat() {
 
     try {
       const res = await sendChatMessage(text.trim(), language, activeRole)
+      const rawAnswer = res.answer || res.response || res.message || ''
+      const answer = (language && language !== 'en') ? translatePhrase(rawAnswer, language) : rawAnswer
       const botMsg = {
         id:         newId(),
         role:       'bot',
-        text:       res.answer || res.response || res.message || '',
+        text:       answer,
         sources:    res.sources || [],
         citations:  res.citations || [],
         confidence: res.confidence || null,
@@ -455,10 +466,12 @@ export default function Chat() {
       const mock    = mockChatResponses?.find(r => r.query_keywords?.some(kw => text.toLowerCase().includes(kw)))
                       || getDefaultChatResponse?.(text)
                       || { answer: `I'm unable to connect to the BIS knowledge base right now. Please try again shortly or visit https://www.bis.gov.in`, sources: [] }
+      const rawAnswer = mock.answer
+      const answer = (language && language !== 'en') ? translatePhrase(rawAnswer, language) : rawAnswer
       const botMsg  = {
         id:           newId(),
         role:         'bot',
-        text:         mock.answer,
+        text:         answer,
         sources:      mock.sources || [],
         citations:    [],
         isDemoFallback: true,
@@ -513,7 +526,7 @@ export default function Chat() {
   const clearChat = () => {
     setMessages([{
       id: newId(), role: 'bot', isWelcome: true,
-      text: welcomeText(role), time: getTime(), sources: [], citations: []
+      text: welcomeText(role, language), time: getTime(), sources: [], citations: []
     }])
     setSelectedMsg(null)
     setInput('')
@@ -558,10 +571,10 @@ export default function Chat() {
                 <Zap size={14} className="text-gold-400" />
               </div>
               <div>
-                <h2 className="font-extrabold text-navy-900 text-sm leading-tight">BIS Assistant AI</h2>
+                <h2 className="font-extrabold text-navy-900 text-sm leading-tight">{translatePhrase('BIS Assistant AI', language)}</h2>
                 <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  V2 · Hybrid RAG
+                  {translatePhrase('V2 · Hybrid RAG', language)}
                 </span>
               </div>
             </div>
@@ -569,7 +582,7 @@ export default function Chat() {
 
           {/* Role switcher */}
           <div className="p-3 border-b border-slate-100">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Switch Agent</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">{translatePhrase('Switch Agent', language)}</p>
             <div className="space-y-1">
               {[
                 { id: 'consumer',     label: 'Consumer',     sub: 'Verify & Complaints', icon: ShoppingBag },
@@ -587,8 +600,8 @@ export default function Chat() {
                 >
                   <Icon size={15} className={role === id ? 'text-gold-400' : 'text-slate-400'} />
                   <div>
-                    <p className="text-xs font-bold leading-tight">{label}</p>
-                    <p className={`text-[10px] ${role === id ? 'text-slate-300' : 'text-slate-400'}`}>{sub}</p>
+                    <p className="text-xs font-bold leading-tight">{translatePhrase(label, language)}</p>
+                    <p className={`text-[10px] ${role === id ? 'text-slate-300' : 'text-slate-400'}`}>{translatePhrase(sub, language)}</p>
                   </div>
                 </button>
               ))}
@@ -597,15 +610,15 @@ export default function Chat() {
 
           {/* Suggested questions */}
           <div className="p-3 flex-1 overflow-y-auto">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Quick Questions</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">{translatePhrase('Quick Questions', language)}</p>
             <div className="space-y-1.5">
               {(roleQuestions[role] || roleQuestions.consumer).map((q, i) => (
                 <button
                   key={i}
-                  onClick={() => doSend(q)}
+                  onClick={() => doSend(translatePhrase(q, language))}
                   className="w-full text-left text-xs text-slate-600 bg-slate-50 hover:bg-navy-50 hover:text-navy-700 border border-slate-100 hover:border-navy-100 rounded-xl px-3 py-2 transition-all leading-relaxed"
                 >
-                  {q}
+                  {translatePhrase(q, language)}
                 </button>
               ))}
             </div>
@@ -617,7 +630,7 @@ export default function Chat() {
                   onClick={() => setShowComplaint(true)}
                   className="w-full flex items-center gap-2 text-xs text-red-600 font-bold bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl px-3 py-2.5 transition-colors"
                 >
-                  <AlertTriangle size={13} /> Lodge Official Complaint
+                  <AlertTriangle size={13} /> {translatePhrase('Lodge Official Complaint', language)}
                 </button>
               )}
               {role === 'manufacturer' && (
@@ -625,14 +638,14 @@ export default function Chat() {
                   onClick={() => navigate('/manufacturer')}
                   className="w-full flex items-center gap-2 text-xs text-navy-700 font-bold bg-navy-50 hover:bg-navy-100 border border-navy-200 rounded-xl px-3 py-2.5 transition-colors"
                 >
-                  <Factory size={13} /> 5-Step Certification Wizard
+                  <Factory size={13} /> {translatePhrase('5-Step Certification Wizard', language)}
                 </button>
               )}
               <button
                 onClick={clearChat}
                 className="w-full flex items-center gap-2 text-xs text-slate-500 hover:text-slate-700 border border-slate-200 rounded-xl px-3 py-2 transition-colors"
               >
-                <RefreshCw size={12} /> Clear Chat
+                <RefreshCw size={12} /> {translatePhrase('Clear Chat', language)}
               </button>
             </div>
           </div>
@@ -646,12 +659,12 @@ export default function Chat() {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
               <span className="text-xs font-extrabold text-navy-900 tracking-wider uppercase">
                 {role === 'consumer'
-                  ? 'CONSUMER PROTECTION AGENT'
+                  ? translatePhrase('CONSUMER PROTECTION AGENT', language)
                   : role === 'manufacturer'
-                  ? 'MANUFACTURER & MSME AGENT'
-                  : 'RESEARCH & STANDARDS AGENT'}
+                  ? translatePhrase('MANUFACTURER & MSME AGENT', language)
+                  : translatePhrase('RESEARCH & STANDARDS AGENT', language)}
               </span>
-              <span className="text-slate-400 text-xs font-medium">• Active</span>
+              <span className="text-slate-400 text-xs font-medium">• {translatePhrase('Active', language)}</span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -666,7 +679,7 @@ export default function Chat() {
                 title="Lodge an official complaint"
               >
                 <AlertTriangle size={13} className="text-white" />
-                <span>File Complaint</span>
+                <span>{translatePhrase('File Complaint', language)}</span>
               </button>
 
               <button
@@ -675,7 +688,7 @@ export default function Chat() {
                 title="Start a new chat session"
               >
                 <RefreshCw size={12} className="text-slate-500" />
-                <span>New Chat</span>
+                <span>{translatePhrase('New Chat', language)}</span>
               </button>
             </div>
           </div>
@@ -689,10 +702,10 @@ export default function Chat() {
                 </div>
                 <div>
                   <p className="font-bold text-xs sm:text-sm text-red-950">
-                    Not satisfied or found a fake ISI mark / substandard product?
+                    {translatePhrase('Not satisfied or found a fake ISI mark / substandard product?', language)}
                   </p>
                   <p className="text-[11px] sm:text-xs text-red-700">
-                    Click the complaint button to submit live camera proof, product details, and mobile number to BIS Enforcement.
+                    {translatePhrase('Click the complaint button to submit live camera proof, product details, and mobile number to BIS Enforcement.', language)}
                   </p>
                 </div>
               </div>
@@ -703,7 +716,7 @@ export default function Chat() {
                 }}
                 className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow transition cursor-pointer"
               >
-                <Camera size={14} /> Take Photo & File Complaint
+                <Camera size={14} /> {translatePhrase('Take Photo & File Complaint', language)}
               </button>
             </div>
           )}
@@ -765,7 +778,7 @@ export default function Chat() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={recording ? 'Listening… speak now' : 'Ask about BIS standards, certification, or compliance…'}
+                  placeholder={recording ? translatePhrase('Listening… speak now', language) : translatePhrase('Ask about BIS standards, certification, or compliance…', language)}
                   className={`w-full pl-4 pr-4 py-3 rounded-xl border text-sm resize-none focus:outline-none focus:ring-2 focus:ring-navy-400 bg-white transition-all ${
                     recording ? 'border-red-300 ring-2 ring-red-300' : 'border-slate-200'
                   }`}

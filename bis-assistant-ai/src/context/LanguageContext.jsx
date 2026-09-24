@@ -13,18 +13,20 @@ export function changeSiteLanguage(newLang, setLanguageState) {
   if (setLanguageState) setLanguageState(newLang)
   document.documentElement.lang = newLang
 
-  // Sync cookie
+  // Clear old cookies first across domain variations
+  const expired = '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+  document.cookie = 'googtrans' + expired
+  if (host) {
+    document.cookie = 'googtrans' + expired + ' domain=' + host + ';'
+    document.cookie = 'googtrans' + expired + ' domain=.' + host + ';'
+  }
+
+  // Set active cookie for new language
   if (!isEn) {
     document.cookie = `googtrans=${cookieVal}; path=/;`
     if (host) {
       document.cookie = `googtrans=${cookieVal}; path=/; domain=${host};`
       document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host};`
-    }
-  } else {
-    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-    if (host) {
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`
     }
   }
 

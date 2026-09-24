@@ -43,9 +43,9 @@ export default function Navbar() {
             </div>
             <div className="leading-tight">
               <div className="font-extrabold text-navy-900 text-sm sm:text-base tracking-tight flex items-center gap-1.5">
-                BIS Assistant <span className="bg-gradient-to-r from-amber-400 to-yellow-400 text-navy-950 font-black text-[10px] px-1.5 py-0.5 rounded-md shadow-xs">AI</span>
+                {t('nav_logo_title') || 'BIS Assistant'} <span className="bg-gradient-to-r from-amber-400 to-yellow-400 text-navy-950 font-black text-[10px] px-1.5 py-0.5 rounded-md shadow-xs">AI</span>
               </div>
-              <div className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Bureau of Indian Standards</div>
+              <div className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">{t('nav_logo_sub') || 'Bureau of Indian Standards'}</div>
             </div>
           </Link>
 

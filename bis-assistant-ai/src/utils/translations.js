@@ -1,6 +1,8 @@
 // Complete 6-Language Translation Dictionary (English, Hindi, Telugu, Tamil, Kannada, Marathi)
 export const translations = {
   "en": {
+    "nav_logo_title": "BIS Assistant",
+    "nav_logo_sub": "Bureau of Indian Standards",
     "nav_compliance": "Compliance Check",
     "nav_ml_risk": "ML Risk Engine",
     "home_tailored_portals": "Tailored Portals",
