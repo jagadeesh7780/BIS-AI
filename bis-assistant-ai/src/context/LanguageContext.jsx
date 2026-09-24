@@ -1,36 +1,41 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from '../utils/translations'
-import { translateNodeTree, setupUniversalDomTranslator } from '../utils/domTranslator'
+import { translateNodeTree } from '../utils/domTranslator'
 
 const LanguageContext = createContext(null)
 
-export const triggerUniversalTranslation = (langCode) => {
-  try {
-    const isEn = langCode === 'en'
-    const targetCookie = isEn ? '/en/en' : `/en/${langCode}`
-    const host = window.location.hostname
+export function changeSiteLanguage(newLang) {
+  const host = window.location.hostname
+  const isEn = newLang === 'en'
+  const cookieVal = isEn ? '/en/en' : `/en/${newLang}`
 
-    // 1. Set Google Translate cookie as enhancement
-    document.cookie = `googtrans=${targetCookie}; path=/;`
-    if (host) {
-      document.cookie = `googtrans=${targetCookie}; path=/; domain=${host};`
-      document.cookie = `googtrans=${targetCookie}; path=/; domain=.${host};`
-    }
+  localStorage.setItem('bis_lang', newLang)
 
-    // 2. Manipulate Google Translate combo box if present
-    const combo = document.querySelector('.goog-te-combo')
-    if (combo) {
-      if (isEn) {
-        const enOpt = Array.from(combo.options).find(o => o.value === 'en' || o.value === '')
-        combo.value = enOpt ? enOpt.value : ''
-      } else {
-        combo.value = langCode
-      }
-      combo.dispatchEvent(new Event('change', { bubbles: true }))
-    }
-  } catch (err) {
-    console.warn('Universal translation trigger error:', err)
+  // Clear existing googtrans cookies across domain levels
+  const expired = '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+  document.cookie = 'googtrans' + expired
+  document.cookie = 'googtrans' + expired + ' domain=' + host + ';'
+  document.cookie = 'googtrans' + expired + ' domain=.' + host + ';'
+
+  const parts = host.split('.')
+  if (parts.length > 1) {
+    const rootDomain = '.' + parts.slice(-2).join('.')
+    document.cookie = 'googtrans' + expired + ' domain=' + rootDomain + ';'
   }
+
+  // Set active cookie
+  if (!isEn) {
+    document.cookie = `googtrans=${cookieVal}; path=/;`
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=${host};`
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host};`
+    if (parts.length > 1) {
+      const rootDomain = '.' + parts.slice(-2).join('.')
+      document.cookie = `googtrans=${cookieVal}; path=/; domain=${rootDomain};`
+    }
+  }
+
+  // Reload the window so Google Translate translates 100% of all fields, cards, and paragraphs
+  window.location.reload()
 }
 
 export const LanguageProvider = ({ children }) => {
@@ -44,39 +49,22 @@ export const LanguageProvider = ({ children }) => {
   const { t } = useTranslation(language)
 
   const setLanguage = useCallback((newLang) => {
-    localStorage.setItem('bis_lang', newLang)
-    setLanguageState(newLang)
-    currentLangRef.current = newLang
-    document.documentElement.lang = newLang
-
-    // Apply immediate built-in full DOM translation across all page nodes
-    const root = document.getElementById('root') || document.body
-    if (root) {
-      translateNodeTree(root, newLang)
-    }
-
-    // Also trigger external translation if available
-    triggerUniversalTranslation(newLang)
+    changeSiteLanguage(newLang)
   }, [])
 
-  // On mount: setup the continuous DOM translator observer and apply saved language
+  // On mount: ensure document lang is set and exact full matches are applied
   useEffect(() => {
     const saved = localStorage.getItem('bis_lang') || 'en'
     document.documentElement.lang = saved
 
-    const cleanup = setupUniversalDomTranslator(() => currentLangRef.current)
-
-    // Initial pass after React completes first paint
-    const timer = setTimeout(() => {
-      const root = document.getElementById('root') || document.body
-      if (root && saved !== 'en') {
-        translateNodeTree(root, saved)
-      }
-    }, 50)
-
-    return () => {
-      if (cleanup) cleanup()
-      clearTimeout(timer)
+    if (saved !== 'en') {
+      const timer = setTimeout(() => {
+        const root = document.getElementById('root') || document.body
+        if (root) {
+          translateNodeTree(root, saved)
+        }
+      }, 50)
+      return () => clearTimeout(timer)
     }
   }, [])
 

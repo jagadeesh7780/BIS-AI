@@ -67,18 +67,24 @@ function AppRoutes() {
   const { language, translateNodeTree } = useLang()
   const isChatPage = location.pathname === '/chat'
 
-  // Seamlessly re-translate newly mounted navigation pages when route changes
+  // In non-English mode, route transitions reload target page so Google Translate translates 100% of all fields
   useEffect(() => {
     if (language && language !== 'en') {
-      const timer = setTimeout(() => {
-        const root = document.getElementById('root') || document.body
-        if (root && translateNodeTree) {
-          translateNodeTree(root, language)
+      const handleGlobalClick = (e) => {
+        const anchor = e.target.closest('a')
+        if (anchor && anchor.href && anchor.origin === window.location.origin) {
+          const targetPath = anchor.pathname + anchor.search + anchor.hash
+          const currentPath = window.location.pathname + window.location.search + window.location.hash
+          if (!anchor.target && !anchor.hasAttribute('download') && targetPath !== currentPath) {
+            e.preventDefault()
+            window.location.href = targetPath
+          }
         }
-      }, 40)
-      return () => clearTimeout(timer)
+      }
+      document.addEventListener('click', handleGlobalClick, true)
+      return () => document.removeEventListener('click', handleGlobalClick, true)
     }
-  }, [location.pathname, language, translateNodeTree])
+  }, [language])
 
   return (
     <div className="min-h-screen flex flex-col">

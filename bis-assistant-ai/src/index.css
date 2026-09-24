@@ -202,11 +202,14 @@
 /* ─── Google Translate UI Sanitization ─────────── */
 .goog-te-banner-frame,
 .goog-te-banner,
-iframe.goog-te-banner-frame,
-#goog-gt-tt,
-.goog-te-balloon-frame {
-  display: none !important;
-  visibility: hidden !important;
+iframe.goog-te-banner-frame {
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 body {
@@ -214,13 +217,15 @@ body {
   position: static !important;
 }
 
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
 .goog-text-highlight {
   background-color: transparent !important;
   box-shadow: none !important;
   border: none !important;
-}
-
-.goog-tooltip,
-.goog-tooltip:hover {
-  display: none !important;
 }

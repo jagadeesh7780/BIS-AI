@@ -204,18 +204,11 @@ export function translatePhrase(text, targetLang) {
     return DICTIONARY[normalized][targetLang];
   }
 
-  // 2. Case-insensitive lookup
+  // 2. Case-insensitive exact lookup
   const lower = normalized.toLowerCase();
   for (const [key, trans] of Object.entries(DICTIONARY)) {
     if (key.toLowerCase() === lower && trans[targetLang]) {
       return trans[targetLang];
-    }
-  }
-
-  // 3. Match substrings / prefixes like "Step 1: Product Identification"
-  for (const [key, trans] of Object.entries(DICTIONARY)) {
-    if (normalized.includes(key) && trans[targetLang]) {
-      return normalized.replace(key, trans[targetLang]);
     }
   }
 
