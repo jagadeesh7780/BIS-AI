@@ -1,0 +1,12 @@
+line-length = 140
+
+[lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = [
+    "E501",    # Line length limits
+    "E701",    # Multiple statements on one line (colon)
+    "E402",    # Module level import not at top of file
+    "B008",    # FastAPI File(...) and Depends(...) parameter defaults
+    "BLE001",  # Broad exception catches in top-level route handlers
+    "ASYNC230",# Small static json file reading
+]

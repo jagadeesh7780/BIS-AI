@@ -4,6 +4,7 @@ All tunable parameters in one place. No magic numbers scattered through the code
 """
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()

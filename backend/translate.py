@@ -22,6 +22,7 @@ def _translate_with_llm(text: str, target_lang_name: str) -> str:
     """Translate text using Groq LLM when GoogleTranslator is rate-limited."""
     try:
         import os
+
         from groq import Groq
         key = os.getenv("GROQ_API_KEY", "")
         if not key:

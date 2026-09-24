@@ -5,11 +5,11 @@ Calculates REAL evaluation metrics (Accuracy, Precision, Recall, F1, Confusion M
 No fabricated numbers.
 """
 
-import os
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Tuple
+from typing import Any
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -52,7 +52,7 @@ class BISRiskClassifier(nn.Module):
         return self.net(x)
 
 
-def _generate_dataset() -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+def _generate_dataset() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Generates 250 realistic engineering product configurations with balanced risk tiers."""
     np.random.seed(42)
     torch.manual_seed(42)
@@ -134,7 +134,7 @@ def _generate_dataset() -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     )
 
 
-def train_and_evaluate_model() -> Dict[str, Any]:
+def train_and_evaluate_model() -> dict[str, Any]:
     """Trains PyTorch classifier and computes real evaluation metrics."""
     X, y, _ = _generate_dataset()
     n_samples = len(X)
@@ -238,7 +238,7 @@ def predict_risk(
     pressure_rating_bar: float = 0.0,
     target_user_group: str = "general",
     has_mandatory_qco: bool = True
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Runs PyTorch model inference for product risk classification."""
     if not MODEL_PATH.exists() or not METRICS_PATH.exists():
         train_and_evaluate_model()
@@ -246,9 +246,6 @@ def predict_risk(
     model = BISRiskClassifier(input_dim=6, num_classes=3)
     model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu", weights_only=True))
     model.eval()
-
-    with open(METRICS_PATH, "r", encoding="utf-8") as f:
-        metrics = json.load(f)
 
     d_clean = (material_domain or "metal").lower().strip()
     domain_idx = DOMAINS.index(d_clean) if d_clean in DOMAINS else 0
@@ -284,9 +281,9 @@ def predict_risk(
         if pressure_rating_bar >= 5.0:
             expl = f"Critical life safety tier driven by severe pressure explosion hazard ({pressure_rating_bar} bar) requiring quarterly surveillance."
         elif domain_idx == DOMAINS.index("ppe"):
-            expl = f"Critical life safety tier for Personal Protective Equipment protecting human life from fatal physical impact."
+            expl = "Critical life safety tier for Personal Protective Equipment protecting human life from fatal physical impact."
         elif user_idx == USER_GROUPS.index("infant"):
-            expl = f"Critical life safety tier due to vulnerable infant user group requiring zero-defect chemical and physical testing."
+            expl = "Critical life safety tier due to vulnerable infant user group requiring zero-defect chemical and physical testing."
         else:
             expl = f"Critical life safety tier driven by active hazards in {d_clean} domain for {u_clean} user group."
     elif pred_idx == 1:
@@ -299,7 +296,7 @@ def predict_risk(
         elif pressure_rating_bar >= 1.5:
             expl = f"High assurance category driven by {pressure_rating_bar} bar operating pressure under Scheme of Inspection & Testing (SIT)."
         else:
-            expl = f"High assurance category requiring systematic factory quality control and verified NABL lab test reports."
+            expl = "High assurance category requiring systematic factory quality control and verified NABL lab test reports."
     else:
         base_complexity = 28.0
         complexity = min(48.0, max(18.0, base_complexity + (voltage_rating_v * 0.02) + (pressure_rating_bar * 1.0) + (3.0 if has_mandatory_qco else 0.0)))
@@ -352,12 +349,12 @@ def predict_risk(
     }
 
 
-def get_model_metrics() -> Dict[str, Any]:
+def get_model_metrics() -> dict[str, Any]:
     """Retrieve saved real evaluation metrics or train if missing."""
     if not METRICS_PATH.exists():
         data = train_and_evaluate_model()
     else:
-        with open(METRICS_PATH, "r", encoding="utf-8") as f:
+        with open(METRICS_PATH, encoding="utf-8") as f:
             data = json.load(f)
     data["precision"] = data.get("precision_macro", 0.991)
     data["recall"] = data.get("recall_macro", 0.952)

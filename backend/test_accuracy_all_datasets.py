@@ -1,6 +1,5 @@
-import sys
 import asyncio
-import json
+import sys
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -8,7 +7,8 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
-from rag import retrieve, generate_rag_answer, get_chroma_collection
+from rag import generate_rag_answer, get_chroma_collection, retrieve
+
 
 async def run_accuracy_tests():
     collection = get_chroma_collection()
@@ -50,13 +50,13 @@ async def run_accuracy_tests():
     for idx, tc in enumerate(test_cases, 1):
         print(f"\n[{idx}/{len(test_cases)}] TEST CATEGORY: {tc['category']}")
         print(f"QUERY: '{tc['query']}'")
-        
+
         # Test Retrieval
         retrieved = retrieve(tc['query'], top_k=3)
         print(f"Retrieved {len(retrieved)} relevant chunks:")
         for r in retrieved:
             print(f"  - [{r['id']}] {r['title']} (Confidence: {r['confidence']}%, Category: {r['category']})")
-        
+
         # Test Generation
         try:
             result = await generate_rag_answer(tc['query'], language="en")

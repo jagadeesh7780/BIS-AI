@@ -1,4 +1,3 @@
-import json
 from fastapi.testclient import TestClient
 from main import app
 
@@ -6,7 +5,7 @@ client = TestClient(app)
 
 def test_all():
     print("Testing FastAPI Endpoints...")
-    
+
     # 1. Health
     r = client.get("/api/health")
     assert r.status_code == 200, f"Health failed: {r.text}"

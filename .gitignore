@@ -1,4 +1,4 @@
-﻿# Environment Variables
+# Environment Variables
 .env
 */.env
 *.env.local
@@ -27,3 +27,4 @@ dist/
 Thumbs.db
 .idea/
 *.swp
+.ruff_cache/

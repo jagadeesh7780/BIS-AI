@@ -13,16 +13,16 @@ FIXES from V1 audit:
   STEP 12: trace_id on every response
 """
 
-import os
-import sys
-import re
 import json
+import logging
+import math
+import os
+import re
+import sys
 import time
 import uuid
-import math
-import logging
 from pathlib import Path
-from typing import List, Dict, Optional, Any
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
@@ -35,6 +35,7 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 logger = logging.getLogger("bis.rag")
@@ -80,7 +81,7 @@ except ImportError:
     Groq = None
     HAS_GROQ = False
 
-from translate import translate_to_english, translate_from_english
+from translate import translate_from_english, translate_to_english
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
@@ -126,8 +127,8 @@ _chroma_client   = None
 _collection      = None
 _groq_client     = None
 _bm25_index      = None
-_bm25_corpus: List[Dict[str, Any]]      = []
-_in_memory_corpus: List[Dict[str, Any]] = []
+_bm25_corpus: list[dict[str, Any]]      = []
+_in_memory_corpus: list[dict[str, Any]] = []
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -150,7 +151,7 @@ def get_embedding_model():
     return _embedding_model
 
 
-def embed(text: str) -> List[float]:
+def embed(text: str) -> list[float]:
     if not text or not str(text).strip():
         return [0.0] * 384
     m = get_embedding_model()
@@ -163,7 +164,7 @@ def embed(text: str) -> List[float]:
         return [0.0] * 384
 
 
-def embed_batch(texts: List[str], batch_size: int = 32) -> List[List[float]]:
+def embed_batch(texts: list[str], batch_size: int = 32) -> list[list[float]]:
     if not texts:
         return []
     clean = [str(t) if t and str(t).strip() else " " for t in texts]
@@ -200,7 +201,7 @@ def get_reranker():
     return None if _reranker_model == "unavailable" else _reranker_model
 
 
-def rerank(query: str, candidates: List[Dict[str, Any]], top_k: int = 5) -> List[Dict[str, Any]]:
+def rerank(query: str, candidates: list[dict[str, Any]], top_k: int = 5) -> list[dict[str, Any]]:
     """Rerank using cross-encoder. Falls back to original order."""
     if not candidates:
         return candidates
@@ -291,7 +292,7 @@ def get_groq_client():
 # STEP 10: INGESTION WITH FULL CHUNK METADATA
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _make_chunk(doc_id: str, text: str, meta: Dict[str, Any]) -> Dict[str, Any]:
+def _make_chunk(doc_id: str, text: str, meta: dict[str, Any]) -> dict[str, Any]:
     """Return a chunk with every required metadata field populated."""
     return {
         "chunk_id":           doc_id,
@@ -322,10 +323,10 @@ def ingest_all_datasets(force_reingest: bool = False) -> None:
         return
 
     logger.info("Ingesting all BIS datasets (V2)…")
-    ids: List[str]              = []
-    docs: List[str]             = []
-    flat_metas: List[Dict]      = []
-    chunks: List[Dict[str, Any]] = []
+    ids: list[str]              = []
+    docs: list[str]             = []
+    flat_metas: list[dict]      = []
+    chunks: list[dict[str, Any]] = []
 
     def _add(doc_id, blob, meta):
         ids.append(doc_id)
@@ -521,7 +522,7 @@ def ingest_standards():
 # STEPS 5 & 6: DENSE + BM25 + RRF HYBRID RETRIEVAL
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _dense_retrieve(query: str, top_k: int = 8, role_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+def _dense_retrieve(query: str, top_k: int = 8, role_filter: str | None = None) -> list[dict[str, Any]]:
     q_emb = embed(query)
     if all(v == 0.0 for v in q_emb):
         return []
@@ -603,7 +604,7 @@ def _dense_retrieve(query: str, top_k: int = 8, role_filter: Optional[str] = Non
     return result
 
 
-def _bm25_retrieve(query: str, top_k: int = 8, role_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+def _bm25_retrieve(query: str, top_k: int = 8, role_filter: str | None = None) -> list[dict[str, Any]]:
     """STEP 5: BM25 keyword retrieval."""
     if not HAS_BM25 or _bm25_index is None or not _bm25_corpus:
         return []
@@ -631,10 +632,10 @@ def _bm25_retrieve(query: str, top_k: int = 8, role_filter: Optional[str] = None
         return []
 
 
-def _rrf_fusion(dense: List[Dict], bm25: List[Dict], k: int = 60) -> List[Dict]:
+def _rrf_fusion(dense: list[dict], bm25: list[dict], k: int = 60) -> list[dict]:
     """STEP 6: Reciprocal Rank Fusion."""
-    scores: Dict[str, float]      = {}
-    items:  Dict[str, Dict]       = {}
+    scores: dict[str, float]      = {}
+    items:  dict[str, dict]       = {}
     for rank, item in enumerate(dense):
         cid = item.get("chunk_id", item.get("id", str(rank)))
         scores[cid] = scores.get(cid, 0.0) + 1.0 / (k + rank + 1)
@@ -654,7 +655,7 @@ def _rrf_fusion(dense: List[Dict], bm25: List[Dict], k: int = 60) -> List[Dict]:
     return fused
 
 
-def hybrid_retrieve(query: str, top_k: int = 5, role_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+def hybrid_retrieve(query: str, top_k: int = 5, role_filter: str | None = None) -> list[dict[str, Any]]:
     """Full hybrid pipeline: Dense + BM25 → RRF → Rerank."""
     if not _in_memory_corpus:
         ingest_all_datasets()
@@ -672,13 +673,13 @@ def hybrid_retrieve(query: str, top_k: int = 5, role_filter: Optional[str] = Non
 
 
 # Backward-compat aliases
-def retrieve(query: str, top_k: int = 5, role_filter: Optional[str] = None) -> List[Dict]:
+def retrieve(query: str, top_k: int = 5, role_filter: str | None = None) -> list[dict]:
     return hybrid_retrieve(query, top_k=top_k, role_filter=role_filter)
 
-def retrieve_relevant_standards(query: str, top_k: int = 4) -> List[Dict]:
+def retrieve_relevant_standards(query: str, top_k: int = 4) -> list[dict]:
     return hybrid_retrieve(query, top_k=top_k)
 
-def retrieve_relevant_chunks(query: str, top_k: int = 5) -> List[Dict]:
+def retrieve_relevant_chunks(query: str, top_k: int = 5) -> list[dict]:
     return hybrid_retrieve(query, top_k=top_k)
 
 
@@ -686,7 +687,7 @@ def retrieve_relevant_chunks(query: str, top_k: int = 5) -> List[Dict]:
 # STEP 9: INTENT CLASSIFIER
 # ══════════════════════════════════════════════════════════════════════════════
 
-def classify_intent(query: str, role_hint: Optional[str] = None) -> str:
+def classify_intent(query: str, role_hint: str | None = None) -> str:
     if role_hint:
         r = role_hint.lower()
         if r in ("consumer", "consumer_protection"):   return "consumer"
@@ -755,7 +756,7 @@ def _build_prompt(agent: str) -> str:
     return f"{_BASE_PROMPT}\n\nAGENT ROLE:\n{_AGENT_PROMPTS.get(agent, _AGENT_PROMPTS['standards'])}"
 
 
-def _normalize_score(r: Dict[str, Any]) -> float:
+def _normalize_score(r: dict[str, Any]) -> float:
     """Extract and normalize confidence score in 0.0 - 1.0 from retrieved record."""
     if not isinstance(r, dict):
         return 0.5
@@ -781,7 +782,7 @@ def _normalize_score(r: Dict[str, Any]) -> float:
     return 0.5
 
 
-def _build_citations(retrieved: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _build_citations(retrieved: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Build standardized citations list from retrieved records."""
     citations, seen = [], set()
     for r in retrieved:
@@ -837,8 +838,8 @@ def _clean_llm(text: str) -> str:
 async def generate_rag_answer(
     query: str,
     language: str = "en",
-    role: Optional[str] = None,
-) -> Dict[str, Any]:
+    role: str | None = None,
+) -> dict[str, Any]:
     t0       = time.time()
     trace_id = str(uuid.uuid4())[:12]
 
@@ -1017,7 +1018,7 @@ async def generate_rag_answer(
     }
 
 
-def answer_query(query: str, top_k: int = 5, role: Optional[str] = None) -> Dict[str, Any]:
+def answer_query(query: str, top_k: int = 5, role: str | None = None) -> dict[str, Any]:
     import asyncio
     try:
         loop = asyncio.get_running_loop()

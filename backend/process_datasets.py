@@ -6,7 +6,7 @@ data_dir = Path("e:/BIS-AI/backend/data")
 data_dir.mkdir(parents=True, exist_ok=True)
 
 # 1. Process Standards
-with open(downloads_dir / "standards_large.json", "r", encoding="utf-8") as f:
+with open(downloads_dir / "standards_large.json", encoding="utf-8") as f:
     raw_standards = json.load(f)
 
 processed_standards = []
@@ -18,7 +18,7 @@ for s in raw_standards:
     summary = s.get("summary", "")
     scope = s.get("scope", "")
     cert_scheme = s.get("certification_scheme", "ISI Mark")
-    
+
     # Generate relevant search keywords
     keywords = s.get("keywords", [])
     if not keywords:
@@ -29,7 +29,7 @@ for s in raw_standards:
                 if len(w_clean) > 3 and w_clean not in {"with", "from", "this", "that", "have", "such", "into", "under", "used", "cover", "covers", "including", "requirements", "general"}:
                     kw_set.add(w_clean)
         keywords = sorted(list(kw_set))[:10]
-    
+
     processed_standards.append({
         "id": std_id,
         "number": number,
@@ -52,14 +52,14 @@ for faq_name, filename in [
     ("consumer_faq_large.json", "consumer_faq.json"),
     ("student_faq_large.json", "student_faq.json")
 ]:
-    with open(downloads_dir / faq_name, "r", encoding="utf-8") as f:
+    with open(downloads_dir / faq_name, encoding="utf-8") as f:
         faq_data = json.load(f)
     with open(data_dir / filename, "w", encoding="utf-8") as f:
         json.dump(faq_data, f, indent=2, ensure_ascii=False)
     print(f"Saved {len(faq_data)} items to {filename}")
 
 # 3. Process Schemes
-with open(downloads_dir / "schemes_large.json", "r", encoding="utf-8") as f:
+with open(downloads_dir / "schemes_large.json", encoding="utf-8") as f:
     raw_schemes = json.load(f)
 
 schemes_dict = {}
@@ -96,14 +96,14 @@ with open(data_dir / "schemes.json", "w", encoding="utf-8") as f:
 print(f"Saved {len(schemes_dict)} schemes to schemes.json")
 
 # 4. Process Labs
-with open(downloads_dir / "labs_large.json", "r", encoding="utf-8") as f:
+with open(downloads_dir / "labs_large.json", encoding="utf-8") as f:
     raw_labs_large = json.load(f)
 
 existing_labs_file = data_dir / "labs.json"
 existing_labs = []
 if existing_labs_file.exists():
     try:
-        with open(existing_labs_file, "r", encoding="utf-8") as f:
+        with open(existing_labs_file, encoding="utf-8") as f:
             existing_labs = json.load(f)
     except Exception:
         existing_labs = []
@@ -115,12 +115,12 @@ for lab in raw_labs_large + existing_labs:
     if not name or name.lower() in seen_names:
         continue
     seen_names.add(name.lower())
-    
+
     city = lab.get("city", "General")
     state = lab.get("state", "")
     address = lab.get("address", f"{city}, India")
     specs = lab.get("specialization", lab.get("specializations", ["General Testing"]))
-    
+
     clean_city = city.lower().replace(" ", "")
     merged_labs.append({
         "id": len(merged_labs) + 1,

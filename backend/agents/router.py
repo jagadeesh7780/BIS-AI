@@ -11,13 +11,12 @@ Orchestrates:
   4. Strict Statutory Disclaimers
 """
 
-import re
+import logging
 import time
 import uuid
-import logging
-from typing import Dict, Any, List, Optional
-from schemas.api_models import ChatResponse, Confidence, Citation
+
 from rag import generate_grounded_answer
+from schemas.api_models import ChatResponse
 
 logger = logging.getLogger("bis.agents")
 
@@ -26,7 +25,7 @@ class AgentRouter:
     """Classifies user intent and routes to specialized BIS AI domain agents."""
 
     @staticmethod
-    def classify_intent(query: str, requested_role: Optional[str] = None) -> str:
+    def classify_intent(query: str, requested_role: str | None = None) -> str:
         """Classify query into standards | compliance | manufacturer | consumer."""
         if requested_role and requested_role in ("standards", "compliance", "manufacturer", "consumer"):
             return requested_role
@@ -53,7 +52,7 @@ class AgentRouter:
         cls,
         query: str,
         language: str = "en",
-        role: Optional[str] = "all"
+        role: str | None = "all"
     ) -> ChatResponse:
         """Execute routed multi-agent pipeline with safe telemetry."""
         t0 = time.time()

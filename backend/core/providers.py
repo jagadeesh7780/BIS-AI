@@ -3,13 +3,12 @@ BIS AI V2 — LLM, Embedding, and Reranker Providers
 Decoupled provider abstractions avoiding tight coupling to any single vendor.
 """
 
-import os
-import re
-import time
-import math
 import hashlib
 import logging
-from typing import List, Dict, Any, Optional
+import math
+import re
+from typing import Any
+
 from core.config import settings
 
 logger = logging.getLogger("bis.providers")
@@ -114,7 +113,7 @@ class EmbeddingProvider:
             self._model = None
             logger.info("Using optimized PyTorch deterministic dense embedding provider.")
 
-    def embed_text(self, text: str) -> List[float]:
+    def embed_text(self, text: str) -> list[float]:
         if not text or not text.strip():
             return [0.0] * self.dim
 
@@ -130,7 +129,7 @@ class EmbeddingProvider:
         # High-dimensional deterministic subword hashing embedding
         return self._hash_embed(text)
 
-    def embed_batch(self, texts: List[str], batch_size: int = 32) -> List[List[float]]:
+    def embed_batch(self, texts: list[str], batch_size: int = 32) -> list[list[float]]:
         if not texts:
             return []
 
@@ -146,7 +145,7 @@ class EmbeddingProvider:
 
         return [self._hash_embed(t) for t in texts]
 
-    def _hash_embed(self, text: str) -> List[float]:
+    def _hash_embed(self, text: str) -> list[float]:
         vec = [0.0] * self.dim
         words = str(text).lower().replace("-", " ").replace("_", " ").split()
         for word in words:
@@ -172,7 +171,7 @@ class RerankerProvider:
     def __init__(self):
         self._model = None
 
-    def rerank(self, query: str, candidate_chunks: List[Dict[str, Any]], top_k: int = 4) -> List[Dict[str, Any]]:
+    def rerank(self, query: str, candidate_chunks: list[dict[str, Any]], top_k: int = 4) -> list[dict[str, Any]]:
         if not candidate_chunks:
             return []
 

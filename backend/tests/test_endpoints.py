@@ -4,8 +4,9 @@ Tests every major API endpoint for correct status codes and response schemas.
 Run: pytest tests/test_endpoints.py -v
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))

@@ -62,7 +62,7 @@ def test_v2_pipeline():
     chat_data = chat_res.json()
     assert len(chat_data["answer"]) > 50, "Answer text should be substantive"
     assert any("2347" in c.get("standard_number", "") or "pressure" in c.get("document_title", "").lower() or len(c.get("standard_number", "")) > 0 for c in chat_data["citations"]), "Expected relevant citation"
-    print(f"[OK] [4/8] Hybrid RAG Chat Passed:")
+    print("[OK] [4/8] Hybrid RAG Chat Passed:")
     print(f"       Agent: {chat_data['agent']} | Confidence: {chat_data['confidence']['score']} ({chat_data['confidence']['level']})")
     print(f"       Citations: {len(chat_data['citations'])} authoritative sources attached")
     print(f"       Top Citation: {chat_data['citations'][0]['standard_number']} — {chat_data['citations'][0]['section']}")
@@ -95,7 +95,7 @@ def test_v2_pipeline():
     ml_data = ml_res.json()
     assert "predicted_risk_tier" in ml_data
     assert ml_data["audit_complexity_score"] > 0
-    print(f"[OK] [6/8] PyTorch ML Inference Passed:")
+    print("[OK] [6/8] PyTorch ML Inference Passed:")
     print(f"       Predicted Risk Tier: {ml_data['predicted_risk_tier']} (Confidence: {ml_data['confidence']})")
     print(f"       Predicted Audit Complexity: {ml_data['audit_complexity_score']}/100")
 
@@ -104,7 +104,7 @@ def test_v2_pipeline():
     assert metrics_res.status_code == 200
     metrics_data = metrics_res.json()
     assert metrics_data["accuracy"] >= 0.85
-    print(f"[OK] [7/8] ML Evaluation Metrics Verified:")
+    print("[OK] [7/8] ML Evaluation Metrics Verified:")
     print(f"       Accuracy: {metrics_data['accuracy']:.4f} | F1: {metrics_data['f1_macro']:.4f} | Samples: {metrics_data['dataset_sample_count']}")
 
     # 7. Live RAG Evaluation Benchmark
@@ -113,7 +113,7 @@ def test_v2_pipeline():
     eval_data = eval_res.json()
     assert eval_data["hit_at_1"] >= 0.30
     assert eval_data["mean_reciprocal_rank_mrr"] >= 0.50
-    print(f"[OK] [8/8] Live RAG Benchmark Evaluation Passed:")
+    print("[OK] [8/8] Live RAG Benchmark Evaluation Passed:")
     print(f"       Hit@1: {eval_data['hit_at_1']} | Hit@3: {eval_data['hit_at_3']} | MRR: {eval_data['mean_reciprocal_rank_mrr']}")
     print(f"       Mean Retrieval Latency: {eval_data['mean_retrieval_latency_ms']} ms")
 

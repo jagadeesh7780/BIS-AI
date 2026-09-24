@@ -17,7 +17,7 @@
 **BIS AI V2** is an enterprise-grade technical intelligence platform engineered to streamline Indian Standards (IS) discovery, statutory Quality Control Order (QCO) compliance, manufacturer certification roadmaps, and consumer mark verification for MSMEs, industrial manufacturers, testing laboratories, and Indian citizens.
 
 Unlike basic conversational bots, **BIS AI V2** implements a strict **Evidence-First Architecture**:
-- **Zero Hallucination Guarantee:** Answers are grounded strictly in retrieved clauses, standards numbers, pages, and official gazette citations.
+- **Evidence-Grounded Responses:** Answers are grounded strictly in retrieved clauses, standards numbers, pages, and official gazette citations (⚠️ Verify current regulatory status with BIS).
 - **Hybrid Retrieval:** Reciprocal Rank Fusion (RRF) combining dense semantic search with sparse BM25 keyword retrieval, followed by cross-encoder reranking.
 - **Specialized Multi-Agent Routing:** Dedicated specialist agents for Standards Discovery, Regulatory Compliance, Manufacturer Roadmaps, and Consumer Protection.
 - **Deep Learning Classification:** Authentic PyTorch neural network classifying product hazard profiles into compliance risk tiers with real, verifiable evaluation metrics.

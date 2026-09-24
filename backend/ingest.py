@@ -12,9 +12,10 @@ Usage:
     python ingest.py
 """
 
+import logging
 import os
 import sys
-import logging
+
 from dotenv import load_dotenv
 
 # Disable telemetry before importing chromadb to prevent PostHog crashes
@@ -39,6 +40,7 @@ load_dotenv()
 try:
     # pyrefly: ignore [missing-import]
     import chromadb  # noqa: F401
+
     # pyrefly: ignore [missing-import]
     from chromadb.config import Settings  # noqa: F401
 except ImportError:
@@ -52,11 +54,11 @@ except ImportError:
     SentenceTransformer = None
 
 from rag import (
-    ingest_all_datasets,
-    get_chroma_collection,
-    reset_chroma_collection,
-    get_embedding_model,
     HAS_SENTENCE_TRANSFORMERS,
+    get_chroma_collection,
+    get_embedding_model,
+    ingest_all_datasets,
+    reset_chroma_collection,
 )
 
 

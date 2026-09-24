@@ -5,32 +5,40 @@ STEP 12: trace_id on all responses
 STEP 13: No API keys in responses; CORS from config
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
 import time
 import uuid
-import asyncio
-import logging
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
 os.environ["CHROMA_TELEMETRY"] = "false"
 
-if hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-    except Exception:
-        pass
+import contextlib
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile, File, Query, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response, JSONResponse
-from pydantic import BaseModel
 from dotenv import load_dotenv
+
+if hasattr(sys.stdout, "reconfigure"):
+    with contextlib.suppress(Exception):
+        sys.stdout.reconfigure(encoding="utf-8")
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
+from pydantic import BaseModel
+from schemas.api_models import (
+    ChatRequest,
+    CompareRequest,
+    ComplaintRequest,
+    SpeakRequest,
+)
 
 load_dotenv()
 logging.basicConfig(
@@ -50,19 +58,10 @@ except Exception:
 
 DATA_DIR = Path(__file__).parent / "data"
 
-# ── Schemas ────────────────────────────────────────────────────────────────────
-from schemas.api_models import (
-    ChatRequest, SpeakRequest, CompareRequest, ComplaintRequest,
-    HealthResponse,
-)
-
-
-# ── Startup ────────────────────────────────────────────────────────────────────
-from contextlib import asynccontextmanager
 
 async def _warmup():
     try:
-        from rag import ingest_all_datasets, get_embedding_model, get_chroma_collection
+        from rag import get_chroma_collection, get_embedding_model, ingest_all_datasets
         await asyncio.to_thread(get_embedding_model)
         await asyncio.to_thread(ingest_all_datasets)
         try:
@@ -113,7 +112,7 @@ def load_json(filename: str):
     path = DATA_DIR / filename
     if not path.exists():
         raise HTTPException(status_code=500, detail=f"Data file {filename} not found")
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -130,16 +129,21 @@ async def root():
     return {"status": "ok", "service": "BIS Assistant AI", "version": "2.0.0"}
 
 
+@app.get("/health")
 @app.get("/api/health")
 @app.get("/api/v1/health")
 async def health():
-    from rag import get_chroma_collection, HAS_CHROMA, HAS_BM25, RERANKER_ENABLED, _bm25_index
+    from rag import (
+        HAS_BM25,
+        HAS_CHROMA,
+        RERANKER_ENABLED,
+        _bm25_index,
+        get_chroma_collection,
+    )
     chunks = 0
-    try:
+    with contextlib.suppress(Exception):
         if HAS_CHROMA:
             chunks = get_chroma_collection().count()
-    except Exception:
-        pass
     return {
         "status": "ok",
         "service": "BIS Assistant AI",
@@ -171,7 +175,7 @@ async def chat(req: ChatRequest):
         logger.error(f"RAG error: {e}")
         raise HTTPException(status_code=503, detail={"error": "AI service temporarily unavailable", "details": str(e)})
     except Exception as e:
-        logger.error(f"Chat error: {e}", exc_info=True)
+        logger.exception("Chat error")
         raise HTTPException(status_code=500, detail={"error": str(e), "trace_id": new_trace()})
 
 
@@ -182,8 +186,8 @@ async def chat(req: ChatRequest):
 @app.get("/api/standards")
 @app.get("/api/v1/standards/search")
 async def list_standards(
-    search:   Optional[str] = None,
-    category: Optional[str] = None,
+    search:   str | None = None,
+    category: str | None = None,
     limit:    int = 50,
     offset:   int = 0,
 ):
@@ -291,7 +295,7 @@ async def get_scheme(scheme_id: str):
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ⚠️ DEVELOPMENT DEMO DATA — NOT OFFICIAL BIS TRACKING
-_TRACKER_DEMO: Dict[str, Any] = {
+_TRACKER_DEMO: dict[str, Any] = {
     "BIS-2024-001": {
         "app_id": "BIS-2024-001", "product": "Domestic Pressure Cooker",
         "standard": "IS 2347", "scheme": "ISI Mark",
@@ -337,7 +341,7 @@ _TRACKER_DEMO: Dict[str, Any] = {
 }
 
 # Runtime-created applications stored here (lost on restart — demo only)
-_RUNTIME_TRACKER: Dict[str, Any] = {}
+_RUNTIME_TRACKER: dict[str, Any] = {}
 
 
 @app.get("/api/certification/tracker/{application_id}")
@@ -362,7 +366,7 @@ async def get_tracker(application_id: str):
 @app.get("/api/v1/laboratories")
 async def get_labs(
     city: str = Query(..., description="City name to search labs in"),
-    state: Optional[str] = None,
+    state: str | None = None,
 ):
     labs      = load_json("labs.json")
     city_low  = city.lower().strip()
@@ -397,23 +401,21 @@ async def get_labs(
 @app.get("/api/faq")
 @app.get("/api/v1/faq")
 async def get_faqs(
-    role:   Optional[str] = None,
-    search: Optional[str] = None,
+    role:   str | None = None,
+    search: str | None = None,
 ):
     file_map = {
         "manufacturer": "manufacturer_faq.json",
         "consumer":     "consumer_faq.json",
         "student":      "student_faq.json",
     }
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     if role and role.lower() in file_map:
         results = load_json(file_map[role.lower()])
     else:
         for fn in file_map.values():
-            try:
+            with contextlib.suppress(Exception):
                 results.extend(load_json(fn))
-            except Exception:
-                pass
 
     if search:
         sl = search.lower().strip()
@@ -444,7 +446,7 @@ async def detect_from_image(image: UploadFile = File(...)):
         result = await detect_standards_from_image(image_bytes)
         return result
     except Exception as e:
-        logger.error(f"Image detection error: {e}", exc_info=True)
+        logger.exception("Image detection error")
         raise HTTPException(status_code=500, detail={"error": str(e), "trace_id": new_trace()})
 
 
@@ -492,8 +494,8 @@ async def voice_speak(req: SpeakRequest):
 @app.get("/api/services")
 @app.get("/api/v1/services")
 async def get_services(
-    category: Optional[str] = Query(None),
-    search:   Optional[str] = Query(None),
+    category: str | None = Query(None),
+    search:   str | None = Query(None),
 ):
     sf = DATA_DIR / "bis_services.json"
     if not sf.exists():
@@ -523,7 +525,7 @@ async def get_services(
 # COMPLAINTS
 # ══════════════════════════════════════════════════════════════════════════════
 
-_COMPLAINTS_STORE: List[Dict[str, Any]] = []  # In-memory demo store
+_COMPLAINTS_STORE: list[dict[str, Any]] = []  # In-memory demo store
 
 
 @app.post("/api/complaints")
@@ -575,8 +577,8 @@ async def get_complaint(complaint_id: str):
 
 class ComplianceRequest(BaseModel):
     product_name: str
-    city:         Optional[str] = "Mumbai"
-    scale:        Optional[str] = "MSME"
+    city:         str | None = "Mumbai"
+    scale:        str | None = "MSME"
 
 
 @app.post("/api/v1/compliance/analyze")
@@ -591,9 +593,9 @@ async def compliance_analyze(req: ComplianceRequest):
             user_city=req.city or "Mumbai",
             scale=req.scale or "MSME",
         )
-        return result.model_dump()
+        return result.model_dump() if hasattr(result, "model_dump") else result
     except Exception as e:
-        logger.error(f"Compliance analyze error: {e}", exc_info=True)
+        logger.exception("Compliance analyze error")
         raise HTTPException(status_code=500, detail={"error": str(e), "trace_id": new_trace()})
 
 
@@ -607,18 +609,18 @@ class ManufacturerProcessRequest(BaseModel):
     aadhaar_number:   str
     business_name:    str
     factory_address:  str
-    selected_lab:     Optional[str] = None
-    slot_date:        Optional[str] = None
-    slot_time:        Optional[str] = None
-    payment_method:   Optional[str] = "UPI"
-    payment_amount:   Optional[float] = 13500.0
-    city:             Optional[str] = "Mumbai"
-    scale:            Optional[str] = "MSME"
+    selected_lab:     str | None = None
+    slot_date:        str | None = None
+    slot_time:        str | None = None
+    payment_method:   str | None = "UPI"
+    payment_amount:   float | None = 13500.0
+    city:             str | None = "Mumbai"
+    scale:            str | None = "MSME"
 
 
 @app.post("/api/agents/manufacturer/orchestrate")
 @app.post("/api/v1/agents/manufacturer/orchestrate")
-async def orchestrate_manufacturer(req: Dict[str, Any]):
+async def orchestrate_manufacturer(req: dict[str, Any]):
     try:
         from supervisor import mfr_orchestrator
         product_name = (req.get("product_name") or req.get("product_input") or "Domestic Pressure Cooker").strip()
@@ -628,9 +630,15 @@ async def orchestrate_manufacturer(req: Dict[str, Any]):
             user_city=user_city,
             scale=req.get("scale", "MSME"),
         )
-        data = result.model_dump()
-        # Add legacy keys for frontend compatibility
-        if data.get("applicable_standard"):
+        if hasattr(result, "model_dump"):
+            data = result.model_dump()
+        elif isinstance(result, dict):
+            data = dict(result)
+        else:
+            data = {"result": str(result)}
+
+        # Add legacy keys for frontend compatibility if not already present
+        if data.get("applicable_standard") and "standards" not in data:
             std = data["applicable_standard"]
             data["standards"] = {
                 "standard_number": std.get("number", "IS Standard"),
@@ -638,34 +646,32 @@ async def orchestrate_manufacturer(req: Dict[str, Any]):
                 "scheme":          std.get("certification_scheme", "Scheme-I (ISI Mark)"),
                 "required_mark":   "Standard ISI Mark with CM/L Number",
                 "summary":         std.get("summary", ""),
+                "evidence":        std.get("evidence"),
             }
-        data["product"] = {
-            "product_name": product_name,
-            "category":     data.get("identified_category", ""),
-        }
-        data["qco"] = {
-            "qco_status":      "MANDATORY UNDER QUALITY CONTROL ORDER (QCO)",
-            "issuing_authority": data.get("issuing_ministry", "DPIIT"),
-            "statutory_act":   "Section 16 of the BIS Act 2016",
-            "penalty_warning": data.get("penalty_provision", ""),
-        }
-        data["fees_and_timeline"] = {
-            "fee_breakdown":       data.get("estimated_statutory_fees", {}),
-            "estimated_turnaround": "14 Calendar Days (Fast-Track Protocol)",
-        }
-        data["human_approval_gate"] = {
-            "approval_token": f"HITL-TOKEN-{new_trace()}",
-            "status": "PENDING_HUMAN_APPROVAL",
-        }
+        if "product" not in data:
+            data["product"] = {
+                "product_name": product_name,
+                "category":     data.get("identified_category", ""),
+            }
+        if "fees_and_timeline" not in data:
+            data["fees_and_timeline"] = {
+                "fee_breakdown":       data.get("estimated_statutory_fees", {}),
+                "estimated_turnaround": "14 Calendar Days (Fast-Track Protocol)",
+            }
+        if "human_approval_gate" not in data:
+            data["human_approval_gate"] = {
+                "approval_token": f"HITL-TOKEN-{new_trace()}",
+                "status": "PENDING_HUMAN_APPROVAL",
+            }
         return data
     except Exception as e:
-        logger.error(f"Orchestration error: {e}", exc_info=True)
+        logger.exception("Orchestration error")
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
 @app.post("/api/agents/manufacturer/approve-and-submit")
 @app.post("/api/v1/agents/manufacturer/approve-and-submit")
-async def approve_and_submit(req: Dict[str, Any]):
+async def approve_and_submit(req: dict[str, Any]):
     app_id = f"BIS-MFR-2026-{int(time.time()) % 100000:05d}"
     tx_id  = f"TXN-BIS-{int(time.time() * 1000) % 100000000:08d}"
     paid   = req.get("payment_amount", 13500.0)
@@ -679,21 +685,30 @@ async def approve_and_submit(req: Dict[str, Any]):
         "applicant":       req.get("business_name", "Applicant"),
         "submitted_on":    time.strftime("%Y-%m-%d"),
         "current_stage":   2,
-        "demo_disclaimer": "⚠️ DEMO — Not an official BIS certification record",
+        "demo_disclaimer": "⚠️ Advisory Demo — Not an official BIS certification record. Official handoff to https://www.manakonline.in.",
         "stages": [
-            {"id": 1, "name": "Application & Documents",          "status": "done",    "date": time.strftime("%Y-%m-%d")},
-            {"id": 2, "name": "Lab Slot Reserved & Payment",      "status": "done",    "date": time.strftime("%Y-%m-%d")},
-            {"id": 3, "name": "Factory Inspection & Sample Test", "status": "current", "date": "In Progress"},
-            {"id": 4, "name": "Grant of Licence / CM/L",         "status": "pending", "date": "Within 2 weeks"},
+            {"id": 1, "name": "Application Dossier & Documents",          "status": "done",    "date": time.strftime("%Y-%m-%d")},
+            {"id": 2, "name": "Accredited Lab Recommendation",            "status": "done",    "date": time.strftime("%Y-%m-%d")},
+            {"id": 3, "name": "Official Manak Online Portal Handoff",     "status": "current", "date": "In Progress"},
+            {"id": 4, "name": "Official BIS Grant of Licence / CM/L",    "status": "pending", "date": "As per BIS timeline"},
         ],
+    }
+
+    submission_dict = {
+        "tracking_id": app_id,
+        "transaction_hash": tx_id,
+        "status": "Application Dossier Formulated & Official BIS Workflow Handoff Ready",
+        "submitted_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "signed_by": req.get("signature_name", "Authorized Signatory"),
     }
 
     return {
         "success":           True,
         "application_id":   app_id,
-        "status":            "Application Approved & Testing Slot Confirmed",
+        "submission":       submission_dict,
+        "status":            "Application Dossier Formulated & Official BIS Workflow Handoff Ready",
         "disclaimer":        (
-            "⚠️ STATUTORY NOTICE: This is an AI-generated guidance summary. "
+            "⚠️ STATUTORY NOTICE: This is an AI-assisted domain advisory tool. "
             "Official BIS certification and licensing are conducted solely by BIS "
             "through https://www.manakonline.in. BIS AI does not grant official certification."
         ),
@@ -701,9 +716,9 @@ async def approve_and_submit(req: Dict[str, Any]):
         "signed_by":         req.get("signature_name", "Authorized Signatory"),
         "payment_receipt": {
             "transaction_id":  tx_id,
-            "payment_method":  req.get("payment_method", "UPI"),
+            "payment_method":  req.get("payment_method", "Simulated BharatKosh Treasury"),
             "amount_paid":     paid,
-            "payment_status":  "DEMO RECEIPT — NOT AN OFFICIAL BIS PAYMENT",
+            "payment_status":  "SIMULATED ESTIMATE — NOT AN OFFICIAL BIS PAYMENT",
         },
         "official_portal":   "https://www.manakonline.in",
         "bis_helpline":      "1800-11-4070",
@@ -725,7 +740,7 @@ async def process_manufacturer(req: ManufacturerProcessRequest):
 # Consumer agent endpoints (stubs that route to chat)
 @app.post("/api/agents/consumer/verify")
 @app.post("/api/agents/consumer/triage")
-async def consumer_agent(req: Dict[str, Any]):
+async def consumer_agent(req: dict[str, Any]):
     query = req.get("query") or req.get("description") or req.get("text") or ""
     if not query:
         raise HTTPException(status_code=400, detail="query/description required")
@@ -746,7 +761,7 @@ async def run_evaluation():
         result = await asyncio.to_thread(run_eval)
         return result
     except Exception as e:
-        logger.error(f"Evaluation error: {e}", exc_info=True)
+        logger.exception("Evaluation error")
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
@@ -756,7 +771,7 @@ async def run_evaluation():
 
 @app.post("/api/ml/predict")
 @app.post("/api/v1/ml/predict")
-async def ml_predict(req: Dict[str, Any]):
+async def ml_predict(req: dict[str, Any]):
     """
     Real PyTorch Deep Neural Network endpoint for BIS compliance risk tier
     and dynamic audit complexity prediction.
@@ -782,7 +797,7 @@ async def ml_predict(req: Dict[str, Any]):
         res["trace_id"] = new_trace()
         return res
     except Exception as e:
-        logger.error(f"PyTorch prediction error: {e}", exc_info=True)
+        logger.exception("PyTorch prediction error")
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 
@@ -798,7 +813,7 @@ async def ml_metrics():
         metrics["trace_id"] = new_trace()
         return metrics
     except Exception as e:
-        logger.error(f"ML metrics error: {e}", exc_info=True)
+        logger.exception("ML metrics error")
         raise HTTPException(status_code=500, detail={"error": str(e)})
 
 

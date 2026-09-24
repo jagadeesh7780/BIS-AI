@@ -8,32 +8,32 @@ All test cases are manually curated for development testing only.
 """
 
 import json
-import time
 import logging
+import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 logger = logging.getLogger("bis.eval")
 
 EVAL_DATASET_PATH = Path(__file__).parent / "eval_dataset.json"
 
 
-def _load_eval_dataset() -> List[Dict[str, Any]]:
+def _load_eval_dataset() -> list[dict[str, Any]]:
     if not EVAL_DATASET_PATH.exists():
         logger.warning("eval_dataset.json not found.")
         return []
-    with open(EVAL_DATASET_PATH, "r", encoding="utf-8") as f:
+    with open(EVAL_DATASET_PATH, encoding="utf-8") as f:
         data = json.load(f)
     return data.get("test_cases", []) if isinstance(data, dict) else data
 
 
-def _hit_at_k(retrieved_ids: List[str], expected_ids: List[str], k: int) -> float:
+def _hit_at_k(retrieved_ids: list[str], expected_ids: list[str], k: int) -> float:
     """1 if any expected ID appears in top-K retrieved, else 0."""
     top_k = set(retrieved_ids[:k])
     return 1.0 if any(eid in top_k for eid in expected_ids) else 0.0
 
 
-def _recall_at_k(retrieved_ids: List[str], expected_ids: List[str], k: int) -> float:
+def _recall_at_k(retrieved_ids: list[str], expected_ids: list[str], k: int) -> float:
     """Fraction of expected IDs found in top-K."""
     if not expected_ids:
         return 0.0
@@ -42,7 +42,7 @@ def _recall_at_k(retrieved_ids: List[str], expected_ids: List[str], k: int) -> f
     return found / len(expected_ids)
 
 
-def _reciprocal_rank(retrieved_ids: List[str], expected_ids: List[str]) -> float:
+def _reciprocal_rank(retrieved_ids: list[str], expected_ids: list[str]) -> float:
     """1/rank of first relevant result. 0 if none found."""
     for rank, rid in enumerate(retrieved_ids, start=1):
         if rid in expected_ids:
@@ -50,7 +50,7 @@ def _reciprocal_rank(retrieved_ids: List[str], expected_ids: List[str]) -> float
     return 0.0
 
 
-def _citation_coverage(result: Dict[str, Any]) -> float:
+def _citation_coverage(result: dict[str, Any]) -> float:
     """Fraction of answer citations that have a standard_number."""
     citations = result.get("citations", [])
     if not citations:
@@ -59,13 +59,13 @@ def _citation_coverage(result: Dict[str, Any]) -> float:
     return with_number / len(citations)
 
 
-def run_eval() -> Dict[str, Any]:
+def run_eval() -> dict[str, Any]:
     """
     Run evaluation on the dev test dataset.
     Returns actual computed metrics.
     ⚠️ DEVELOPMENT EVALUATION DATA — NOT OFFICIAL BIS BENCHMARKS
     """
-    from rag import hybrid_retrieve, classify_intent
+    from rag import classify_intent, hybrid_retrieve
 
     test_cases = _load_eval_dataset()
     if not test_cases:
@@ -74,14 +74,14 @@ def run_eval() -> Dict[str, Any]:
             "label": "DEVELOPMENT EVALUATION DATA — NOT OFFICIAL BIS BENCHMARKS",
         }
 
-    hit1_scores:    List[float] = []
-    hit3_scores:    List[float] = []
-    hit5_scores:    List[float] = []
-    mrr_scores:     List[float] = []
-    recall5_scores: List[float] = []
-    cit_scores:     List[float] = []
-    latencies:      List[float] = []
-    intent_correct: List[int]   = []
+    hit1_scores:    list[float] = []
+    hit3_scores:    list[float] = []
+    hit5_scores:    list[float] = []
+    mrr_scores:     list[float] = []
+    recall5_scores: list[float] = []
+    cit_scores:     list[float] = []
+    latencies:      list[float] = []
+    intent_correct: list[int]   = []
 
     for tc in test_cases:
         query        = tc.get("query", "")
@@ -158,6 +158,5 @@ def run_eval() -> Dict[str, Any]:
 
 
 if __name__ == "__main__":
-    import asyncio
     result = run_eval()
     print(json.dumps(result, indent=2))

@@ -8,12 +8,12 @@ Computes REAL execution metrics on DEVELOPMENT EVALUATION DATA:
 No fabricated numbers.
 """
 
-import sys
-import time
 import json
 import logging
+import sys
+import time
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any
 
 # Ensure backend root is in sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -23,7 +23,7 @@ from rag import hybrid_retrieve, index_knowledge_base
 logger = logging.getLogger("bis.eval")
 
 # DEVELOPMENT EVALUATION DATA — NOT OFFICIAL BIS BENCHMARK
-EVALUATION_DATASET: List[Dict[str, Any]] = [
+EVALUATION_DATASET: list[dict[str, Any]] = [
     {
         "query": "What Indian Standard specifies domestic pressure cookers and safety relief valves?",
         "expected_standard": "IS 2347",
@@ -75,7 +75,7 @@ EVALUATION_DATASET: List[Dict[str, Any]] = [
 ]
 
 
-def run_rag_evaluation(top_k: int = 5) -> Dict[str, Any]:
+def run_rag_evaluation(top_k: int = 5) -> dict[str, Any]:
     """Executes real queries and calculates actual retrieval metrics."""
     index_knowledge_base()
 

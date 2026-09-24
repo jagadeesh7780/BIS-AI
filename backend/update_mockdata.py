@@ -2,13 +2,13 @@ import json
 from pathlib import Path
 
 data_dir = Path("e:/BIS-AI/backend/data")
-with open(data_dir / "standards.json", "r", encoding="utf-8") as f:
+with open(data_dir / "standards.json", encoding="utf-8") as f:
     standards = json.load(f)
 
-with open(data_dir / "schemes.json", "r", encoding="utf-8") as f:
+with open(data_dir / "schemes.json", encoding="utf-8") as f:
     schemes = json.load(f)
 
-with open(data_dir / "labs.json", "r", encoding="utf-8") as f:
+with open(data_dir / "labs.json", encoding="utf-8") as f:
     labs = json.load(f)
 
 mock_standards = []

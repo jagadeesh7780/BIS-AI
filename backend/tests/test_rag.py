@@ -4,9 +4,9 @@ Tests: dense retrieval, BM25, hybrid, reranking, intent, citations, hallucinatio
 Run: pytest tests/test_rag.py -v
 """
 
-import sys
 import os
-import asyncio
+import sys
+
 import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -19,7 +19,7 @@ os.environ["CHROMA_TELEMETRY"] = "false"
 @pytest.fixture(scope="module")
 def ingested_corpus():
     """Ensure corpus is ingested before running retrieval tests."""
-    from rag import ingest_all_datasets, _in_memory_corpus
+    from rag import _in_memory_corpus, ingest_all_datasets
     ingest_all_datasets(force_reingest=False)
     return _in_memory_corpus
 
@@ -64,14 +64,14 @@ def test_confidence_never_over_100(ingested_corpus):
 # ── STEP 5: BM25 TESTS ────────────────────────────────────────────────────────
 
 def test_bm25_returns_results_when_available(ingested_corpus):
-    from rag import _bm25_retrieve, HAS_BM25, _bm25_index
+    from rag import HAS_BM25, _bm25_index, _bm25_retrieve
     if not HAS_BM25 or _bm25_index is None:
         pytest.skip("BM25 not available")
     results = _bm25_retrieve("pressure cooker IS 2347 safety valve", top_k=5)
     assert len(results) > 0, "BM25 should return results for known query"
 
 def test_bm25_results_have_required_fields(ingested_corpus):
-    from rag import _bm25_retrieve, HAS_BM25, _bm25_index
+    from rag import HAS_BM25, _bm25_index, _bm25_retrieve
     if not HAS_BM25 or _bm25_index is None:
         pytest.skip("BM25 not available")
     results = _bm25_retrieve("gold jewellery hallmark HUID", top_k=3)
@@ -133,7 +133,7 @@ def test_rrf_fusion_deduplicates():
 # ── STEP 8: RERANKER TEST ──────────────────────────────────────────────────────
 
 def test_rerank_preserves_all_items_or_top_k(ingested_corpus):
-    from rag import rerank, hybrid_retrieve
+    from rag import hybrid_retrieve, rerank
     candidates = hybrid_retrieve("IS standard pressure cooker", top_k=8)
     reranked   = rerank("IS standard pressure cooker", candidates, top_k=5)
     assert len(reranked) <= min(5, len(candidates))

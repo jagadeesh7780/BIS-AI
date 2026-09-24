@@ -4,9 +4,9 @@ STEP 7: Full V2 response schema with citations, agent, confidence, trace_id.
 Every endpoint returns a documented, typed contract.
 """
 import uuid
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
+from typing import Any
 
+from pydantic import BaseModel, Field
 
 # ─── Shared building blocks ────────────────────────────────────────────────────
 
@@ -17,7 +17,7 @@ class Citation(BaseModel):
     document_title: str = ""
     standard_number: str = ""
     section: str = ""
-    page: Optional[int] = None
+    page: int | None = None
     source_url: str = ""
     source_type: str = "standard"   # standard | faq | scheme | service
     authority: str = "BIS"
@@ -43,19 +43,19 @@ class AgentProgress(BaseModel):
 
 class ChatRequest(BaseModel):
     query: str
-    language: Optional[str] = "en"
-    role: Optional[str] = "all"     # consumer | manufacturer | student | all
-    session_id: Optional[str] = None
+    language: str | None = "en"
+    role: str | None = "all"     # consumer | manufacturer | student | all
+    session_id: str | None = None
 
 
 class ChatResponse(BaseModel):
     answer: str
     agent: str = "general"          # standards | compliance | manufacturer | consumer
     confidence: ConfidenceScore = Field(default_factory=ConfidenceScore)
-    citations: List[Citation] = Field(default_factory=list)
-    sources: List[Dict[str, Any]] = Field(default_factory=list)   # legacy compat
-    next_steps: List[str] = Field(default_factory=list)
-    progress: List[AgentProgress] = Field(default_factory=list)
+    citations: list[Citation] = Field(default_factory=list)
+    sources: list[dict[str, Any]] = Field(default_factory=list)   # legacy compat
+    next_steps: list[str] = Field(default_factory=list)
+    progress: list[AgentProgress] = Field(default_factory=list)
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4())[:12])
     response_time_s: float = 0.0
     language: str = "en"
@@ -76,29 +76,29 @@ class StandardItem(BaseModel):
     summary: str = ""
     certification_scheme: str = ""
     mandatory_qco: bool = False
-    source_url: Optional[str] = None
-    keywords: List[str] = Field(default_factory=list)
+    source_url: str | None = None
+    keywords: list[str] = Field(default_factory=list)
 
 
 class StandardsSearchResponse(BaseModel):
     total: int
     limit: int
     offset: int
-    standards: List[Dict[str, Any]]
+    standards: list[dict[str, Any]]
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4())[:12])
 
 
 class CompareRequest(BaseModel):
-    standard_id_1: Optional[str] = None
-    standard_id_2: Optional[str] = None
-    standard1: Optional[str] = ""
-    standard2: Optional[str] = ""
+    standard_id_1: str | None = None
+    standard_id_2: str | None = None
+    standard1: str | None = ""
+    standard2: str | None = ""
 
 
 class CompareResponse(BaseModel):
     standard1: StandardItem
     standard2: StandardItem
-    differences: List[str] = Field(default_factory=list)
+    differences: list[str] = Field(default_factory=list)
     similarity_score: float = 0.0
 
 
@@ -108,9 +108,9 @@ class VisionAnalysisResponse(BaseModel):
     detected_category: str
     clip_confidence: int
     rag_query_used: str
-    standards: List[Dict[str, Any]]
+    standards: list[dict[str, Any]]
     description: str
-    citations: List[Citation] = Field(default_factory=list)
+    citations: list[Citation] = Field(default_factory=list)
     disclaimer: str = (
         "IMPORTANT: Computer vision product detection is AI-assisted only. "
         "This does NOT constitute official BIS product verification or certification."
@@ -120,12 +120,12 @@ class VisionAnalysisResponse(BaseModel):
 
 class ComplianceAnalysisRequest(BaseModel):
     product_name: str
-    category: Optional[str] = None
-    business_size: Optional[str] = "MSME"
-    user_city: Optional[str] = "Mumbai"
-    scale: Optional[str] = "MSME"
-    category: Optional[str] = None
-    business_size: Optional[str] = "MSME"
+    category: str | None = None
+    business_size: str | None = "MSME"
+    user_city: str | None = "Mumbai"
+    scale: str | None = "MSME"
+    category: str | None = None
+    business_size: str | None = "MSME"
 
 
 class MilestoneStep(BaseModel):
@@ -134,69 +134,69 @@ class MilestoneStep(BaseModel):
     action: str
     evidence_citation: str = ""
     status: str = "PENDING"          # COMPLETED | IN_PROGRESS | PENDING_DISPATCH | STATUTORY_HANDOVER
-    statutory_handover: Optional[str] = None
+    statutory_handover: str | None = None
 
 
 class ComplianceAnalysisResponse(BaseModel):
     product_name: str
     identified_category: str = ""
-    applicable_standard: Optional[StandardItem] = None
-    qco_mandatory: bool = True
+    applicable_standard: StandardItem | None = None
+    qco_mandatory: bool = False
     qco_order_title: str = ""
     issuing_ministry: str = ""
     penalty_provision: str = ""
-    required_documents: List[Dict[str, Any]] = Field(default_factory=list)
-    testing_parameters: List[Dict[str, Any]] = Field(default_factory=list)
-    recommended_laboratories: List[Dict[str, Any]] = Field(default_factory=list)
-    estimated_statutory_fees: Dict[str, Any] = Field(default_factory=dict)
-    roadmap_steps: List[MilestoneStep] = Field(default_factory=list)
+    required_documents: list[dict[str, Any]] = Field(default_factory=list)
+    testing_parameters: list[dict[str, Any]] = Field(default_factory=list)
+    recommended_laboratories: list[dict[str, Any]] = Field(default_factory=list)
+    estimated_statutory_fees: dict[str, Any] = Field(default_factory=dict)
+    roadmap_steps: list[MilestoneStep] = Field(default_factory=list)
     statutory_disclaimer: str = (
         "STATUTORY NOTICE: BIS AI is an intelligent domain advisory tool. "
         "It does NOT grant official BIS certification, licenses, or testing approvals. "
         "All statutory filings and certificate grants are conducted solely by BIS "
-        "through https://www.manakonline.in."
+        "through https://www.manakonline.in. ⚠️ Verify current regulatory status with BIS."
     )
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4())[:12])
     # Backward compatibility for ManufacturerPortal wizard
-    product: Optional[Dict[str, Any]] = None
-    standards: Optional[Dict[str, Any]] = None
-    qco: Optional[Dict[str, Any]] = None
-    documents_and_tests: Optional[Dict[str, Any]] = None
-    labs: Optional[Dict[str, Any]] = None
-    fees_and_timeline: Optional[Dict[str, Any]] = None
+    product: dict[str, Any] | None = None
+    standards: dict[str, Any] | None = None
+    qco: dict[str, Any] | None = None
+    documents_and_tests: dict[str, Any] | None = None
+    labs: dict[str, Any] | None = None
+    fees_and_timeline: dict[str, Any] | None = None
 
 
 # ─── Machine Learning Risk Models ─────────────────────────────────────────────
 
 class MLPredictRequest(BaseModel):
-    product_name: Optional[str] = None
-    product_category: Optional[str] = "Consumer Electronics"
-    material_domain: Optional[str] = None
-    voltage_rating_v: Optional[float] = 0.0
-    pressure_rating_bar: Optional[float] = 0.0
-    target_user_group: Optional[str] = None
-    has_mandatory_qco: Optional[bool] = None
-    factory_scale: Optional[str] = "Small"
-    test_parameters_count: Optional[int] = 8
-    has_inhouse_lab: Optional[bool] = True
-    qco_mandatory: Optional[bool] = True
-    target_scheme: Optional[str] = "Scheme-I (ISI Mark)"
+    product_name: str | None = None
+    product_category: str | None = "Consumer Electronics"
+    material_domain: str | None = None
+    voltage_rating_v: float | None = 0.0
+    pressure_rating_bar: float | None = 0.0
+    target_user_group: str | None = None
+    has_mandatory_qco: bool | None = None
+    factory_scale: str | None = "Small"
+    test_parameters_count: int | None = 8
+    has_inhouse_lab: bool | None = True
+    qco_mandatory: bool | None = False
+    target_scheme: str | None = "Scheme-I (ISI Mark)"
 
 
 class MLPredictResponse(BaseModel):
-    product_name: Optional[str] = None
+    product_name: str | None = None
     risk_tier: str = "Class-II (High Assurance)"
-    predicted_risk_tier: Optional[str] = "Class-II (High Assurance)"
+    predicted_risk_tier: str | None = "Class-II (High Assurance)"
     confidence: float = 0.86
-    class_probabilities: Dict[str, float] = Field(default_factory=dict)
+    class_probabilities: dict[str, float] = Field(default_factory=dict)
     predicted_audit_complexity: float = 50.0
     audit_complexity_score: float = 50.0
-    surveillance_frequency: Optional[str] = "Bi-Annual Factory Audits"
-    sampling_intensity: Optional[str] = "Statistical Lot Sampling under SIT"
-    sampling_protocol: Optional[str] = "Statistical Lot Sampling under SIT"
-    explanation: Optional[str] = None
-    model_explanation: Optional[str] = None
-    key_factors: List[str] = Field(default_factory=list)
+    surveillance_frequency: str | None = "Bi-Annual Factory Audits"
+    sampling_intensity: str | None = "Statistical Lot Sampling under SIT"
+    sampling_protocol: str | None = "Statistical Lot Sampling under SIT"
+    explanation: str | None = None
+    model_explanation: str | None = None
+    key_factors: list[str] = Field(default_factory=list)
     statutory_disclaimer: str = (
         "AI Advisory Notice: Predicted risk tiers and audit complexity are generated by "
         "BIS AI PyTorch Deep Neural Network for pre-audit preparation. Formal classification "
@@ -205,15 +205,15 @@ class MLPredictResponse(BaseModel):
 
 
 class MLMetricsResponse(BaseModel):
-    model_name: Optional[str] = "BIS Product Risk Classifier (PyTorch MLP)"
-    model_type: Optional[str] = "PyTorch Deep Neural Network (MLP 6x32x16x3)"
-    algorithm: Optional[str] = "PyTorch Deep Neural Network (MLP 6x32x16x3)"
+    model_name: str | None = "BIS Product Risk Classifier (PyTorch MLP)"
+    model_type: str | None = "PyTorch Deep Neural Network (MLP 6x32x16x3)"
+    algorithm: str | None = "PyTorch Deep Neural Network (MLP 6x32x16x3)"
     training_samples: int = 1000
     test_samples: int = 250
-    dataset_sample_count: Optional[int] = 250
-    train_test_split: Optional[str] = "80% Train (200) / 20% Test (50)"
-    features_used: List[str] = Field(default_factory=list)
-    feature_importances: Dict[str, float] = Field(default_factory=dict)
+    dataset_sample_count: int | None = 250
+    train_test_split: str | None = "80% Train (200) / 20% Test (50)"
+    features_used: list[str] = Field(default_factory=list)
+    feature_importances: dict[str, float] = Field(default_factory=dict)
     accuracy: float = 0.98
     precision: float = 0.991
     precision_macro: float = 0.991
@@ -221,8 +221,8 @@ class MLMetricsResponse(BaseModel):
     recall_macro: float = 0.952
     f1_score: float = 0.9698
     f1_macro: float = 0.9698
-    confusion_matrix: List[List[int]] = Field(default_factory=list)
-    classes: List[str] = Field(default_factory=list)
+    confusion_matrix: list[list[int]] = Field(default_factory=list)
+    classes: list[str] = Field(default_factory=list)
     status: str = "VERIFIED_PYTORCH_EVALUATION"
 
 
@@ -231,7 +231,7 @@ class MLMetricsResponse(BaseModel):
 class LabsResponse(BaseModel):
     city: str
     count: int
-    labs: List[Dict[str, Any]]
+    labs: list[dict[str, Any]]
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4())[:12])
 
 
@@ -239,7 +239,7 @@ class LabsResponse(BaseModel):
 
 class SpeakRequest(BaseModel):
     text: str
-    language: Optional[str] = "en"
+    language: str | None = "en"
 
 
 class TranscribeResponse(BaseModel):
@@ -252,10 +252,10 @@ class TranscribeResponse(BaseModel):
 class ComplaintRequest(BaseModel):
     contact_number: str
     description: str
-    isi_number: Optional[str] = None
-    product_name: Optional[str] = None
-    photo_type: Optional[str] = "upload"
-    photo_data: Optional[str] = None
+    isi_number: str | None = None
+    product_name: str | None = None
+    photo_type: str | None = "upload"
+    photo_data: str | None = None
 
 
 # ─── Evaluation ───────────────────────────────────────────────────────────────
